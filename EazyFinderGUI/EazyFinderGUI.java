@@ -248,10 +248,10 @@ public class EazyFinderGUI {
 
             if(!(hasLowerCaseLetter && hasUpperCaseLetter && hasDigit && !hasWhiteSpace && hasSpecialCharacter)) {
                 StringBuilder message = new StringBuilder();
-                if (!hasLowerCaseLetter) message.append("Password Must Contain Atleast one Lowercase letter").append("\n");
-                if (!hasUpperCaseLetter) message.append("Password Must Contain Atleast one Uppercase letter").append("\n");
-                if (!hasDigit) message.append("Password Must Contain Atleast one Digit").append("\n");
-                if (!hasSpecialCharacter) message.append("Password Must Contain Atleast one Special Character").append("\n");
+                if (!hasLowerCaseLetter) message.append("Password Must Contain at least one Lowercase letter").append("\n");
+                if (!hasUpperCaseLetter) message.append("Password Must Contain at least one Uppercase letter").append("\n");
+                if (!hasDigit) message.append("Password Must Contain at least one Digit").append("\n");
+                if (!hasSpecialCharacter) message.append("Password Must Contain at least one Special Character").append("\n");
                 if (hasWhiteSpace) message.append("Password Shouldn't Contain a White space Character");
 
                 JOptionPane.showConfirmDialog(frame, message, "Password Not Accepted",
