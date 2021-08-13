@@ -323,7 +323,7 @@ public class EazyFinderGUI {
             verifyButton.setForeground(Color.WHITE);
             if (case_ == 'B') {
                 verifyButton.addActionListener(new BookingsUI());
-            } else if(case_ == 'A'){
+            } else if (case_ == 'A') {
                 verifyButton.setText("Delete Account");
                 verifyButton.setBackground(Color.RED);
             }
@@ -1066,6 +1066,7 @@ public class EazyFinderGUI {
 
         void updateUsernameUI() {
             updateUsernameFrame.setSize(400, 400);
+            updateUsernameFrame.setTitle("Update Username");
             updateUsernameFrame.setLocationRelativeTo(frame);
             updateUsernameFrame.setVisible(true);
             updateUsernameFrame.setLayout(null);
@@ -1074,13 +1075,13 @@ public class EazyFinderGUI {
             updateUsernameFrame.add(newUsernameText);
             updateUsernameFrame.add(changeUsernameButton);
 
-            newUsernameLabel.setBounds(90, 180, 120, 25);
+            newUsernameLabel.setBounds(90, 160, 120, 25);
             newUsernameLabel.setFont(timesNewRoman);
 
-            newUsernameText.setBounds(210, 180, 100, 25);
+            newUsernameText.setBounds(210, 160, 100, 25);
             newUsernameText.setFont(timesNewRoman);
 
-            changeUsernameButton.setBounds(50, 220, 200, 25);
+            changeUsernameButton.setBounds(100, 230, 200, 25);
             changeUsernameButton.setBackground(Color.RED);
             changeUsernameButton.setForeground(Color.WHITE);
             changeUsernameButton.setFont(timesNewRoman);
@@ -1093,57 +1094,61 @@ public class EazyFinderGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String newUsername = newUsernameText.getText();
-                boolean found = false;
 
                 updateUsernameFrame.add(msg);
                 msg.setBounds(0, 250, 300, 25);
                 msg.setHorizontalAlignment(0);
 
-                if (newUsername.equals(username)) {
-                    msg.setText("New Username Cannot be the Same as old one");
+                if (newUsername.equals("")) {
+                    msg.setText("Please type new Username");
                 } else {
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader(db));
-                        String str;
-                        while ((str = reader.readLine()) != null) {
-                            if (str.split(" ")[0].equals(newUsername)) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        reader.close();
-                    } catch (Exception ignored) {
-                    }
-
-                    if (found) {
-                        msg.setText("Username Already taken. Try with Another One");
+                    boolean found = false;
+                    if (newUsername.equals(username)) {
+                        msg.setText("New Username Cannot be the Same as old one");
                     } else {
-                        int result = JOptionPane.showConfirmDialog(updateUsernameFrame, "Are You Sure?", "Confirmation",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.PLAIN_MESSAGE);
-                        if (result == JOptionPane.YES_OPTION) {
-                            boolean updated = new UpdateUsernameMainCode().updateUsername(username, newUsername, password);
-                            File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
-                            File enq = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
-                            File newTH = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + newUsername + ".txt");
-                            File newENQ = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + newUsername + ".txt");
+                        try {
+                            BufferedReader reader = new BufferedReader(new FileReader(db));
+                            String str;
+                            while ((str = reader.readLine()) != null) {
+                                if (str.split(" ")[0].equals(newUsername)) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            reader.close();
+                        } catch (Exception ignored) {
+                        }
 
-                            if (th.renameTo(newTH) && enq.renameTo(newENQ) && updated) {
-                                updateUsernameFrame.dispose();
+                        if (found) {
+                            msg.setText("Username Already taken. Try with Another One");
+                        } else {
+                            int result = JOptionPane.showConfirmDialog(updateUsernameFrame, "Are You Sure?", "Confirmation",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE);
+                            if (result == JOptionPane.YES_OPTION) {
+                                boolean updated = new UpdateUsernameMainCode().updateUsername(username, newUsername, password);
+                                File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                                File enq = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                                File newTH = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + newUsername + ".txt");
+                                File newENQ = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + newUsername + ".txt");
 
-                                username = newUsername;
+                                if (th.renameTo(newTH) && enq.renameTo(newENQ) && updated) {
+                                    updateUsernameFrame.dispose();
 
-                                usernameLabel.setText("Username: " + username);
+                                    username = newUsername;
 
-                                JOptionPane.showConfirmDialog(frame, "Username Changed Successfully", "Successful",
-                                        JOptionPane.OK_CANCEL_OPTION,
-                                        JOptionPane.PLAIN_MESSAGE);
+                                    usernameLabel.setText("Username: " + username);
 
-                                displayMenu();
-                            } else {
-                                JOptionPane.showConfirmDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
-                                        JOptionPane.OK_CANCEL_OPTION,
-                                        JOptionPane.PLAIN_MESSAGE);
+                                    JOptionPane.showConfirmDialog(frame, "Username Changed Successfully", "Successful",
+                                            JOptionPane.OK_CANCEL_OPTION,
+                                            JOptionPane.PLAIN_MESSAGE);
+
+                                    displayMenu();
+                                } else {
+                                    JOptionPane.showConfirmDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
+                                            JOptionPane.OK_CANCEL_OPTION,
+                                            JOptionPane.PLAIN_MESSAGE);
+                                }
                             }
                         }
                     }
