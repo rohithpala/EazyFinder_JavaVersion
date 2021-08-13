@@ -246,7 +246,7 @@ public class EazyFinderGUI {
                 } else hasSpecialCharacter = true;
             }
 
-            if(!(hasLowerCaseLetter && hasUpperCaseLetter && hasDigit && !hasWhiteSpace && hasSpecialCharacter)) {
+            if (!(hasLowerCaseLetter && hasUpperCaseLetter && hasDigit && !hasWhiteSpace && hasSpecialCharacter)) {
                 StringBuilder message = new StringBuilder();
                 if (!hasLowerCaseLetter) message.append("Password Must Contain at least one Lowercase letter").append("\n");
                 if (!hasUpperCaseLetter) message.append("Password Must Contain at least one Uppercase letter").append("\n");
