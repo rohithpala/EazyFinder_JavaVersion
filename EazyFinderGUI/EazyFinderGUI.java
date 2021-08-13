@@ -1040,8 +1040,8 @@ public class EazyFinderGUI {
                     // store the enquiries
                     File enquiryFile = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile));
-                        writer.write(city.toUpperCase() + "," + source.toUpperCase() + "," + destination.toUpperCase() + "\n");
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile, true));
+                        writer.write(city.toUpperCase() + "," + source.toUpperCase() + "," + destination.toUpperCase() + "," + cost + "\n");
                         writer.flush();
                         writer.close();
                     } catch (Exception ex) {
