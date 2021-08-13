@@ -18,24 +18,25 @@ public class AccountDeletionMainCode {
         StringBuilder credentials = new StringBuilder();
         File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
         File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+        File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
         try {
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
                 if (!(username + " " + encryptPassword(password)).equals(str)) {
-                    credentials.append(str).append("\n:");
+                    credentials.append(str).append("\n,");
                 }
             }
             reader.close();
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(db));
-            String[] s = String.valueOf(credentials).split(":");
-            for(String s1 : s)
+            String[] s = String.valueOf(credentials).split(",");
+            for (String s1 : s)
                 writer.write(s1);
             writer.flush();
             writer.close();
         } catch (Exception ignored) {
         }
 
-        return th.delete();
+        return th.delete() && en.delete();
     }
 }

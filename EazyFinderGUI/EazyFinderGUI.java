@@ -24,6 +24,7 @@ public class EazyFinderGUI {
 
     JButton loginButton = new JButton();
     JButton signupButton = new JButton();
+
     void HomePage() {
         frame.getContentPane().removeAll();
         frame.repaint();
@@ -322,6 +323,9 @@ public class EazyFinderGUI {
             verifyButton.setForeground(Color.WHITE);
             if (case_ == 'B') {
                 verifyButton.addActionListener(new BookingsUI());
+            } else if(case_ == 'A'){
+                verifyButton.setText("Delete Account");
+                verifyButton.setBackground(Color.RED);
             }
 
             verifyButton.addActionListener(new Checking());
@@ -394,6 +398,7 @@ public class EazyFinderGUI {
         frame.add(logoutButton);
 
         usernameLabel.setBounds(0, 0, frameSize, 25);
+        usernameLabel.setBackground(Color.cyan);
         usernameLabel.setForeground(Color.DARK_GRAY);
         usernameLabel.setHorizontalAlignment(0);
         usernameLabel.setFont(timesNewRoman);
@@ -414,17 +419,17 @@ public class EazyFinderGUI {
         menuTHButton.setFont(timesNewRoman);
         menuTHButton.addActionListener(new Verification('T'));
 
-        menuUpdateUsernameButton.setBounds(200, 270, 300, 30);
-        menuUpdateUsernameButton.setBackground(Color.DARK_GRAY);
-        menuUpdateUsernameButton.setForeground(Color.WHITE);
-        menuUpdateUsernameButton.setFont(timesNewRoman);
-        menuUpdateUsernameButton.addActionListener(new Verification('U'));
-
-        menuEnquiryButton.setBounds(200, 340, 300, 30);
+        menuEnquiryButton.setBounds(200, 270, 300, 30);
         menuEnquiryButton.setBackground(Color.DARK_GRAY);
         menuEnquiryButton.setForeground(Color.WHITE);
         menuEnquiryButton.setFont(timesNewRoman);
         menuEnquiryButton.addActionListener(new EnquireUI());
+
+        menuUpdateUsernameButton.setBounds(200, 340, 300, 30);
+        menuUpdateUsernameButton.setBackground(Color.DARK_GRAY);
+        menuUpdateUsernameButton.setForeground(Color.WHITE);
+        menuUpdateUsernameButton.setFont(timesNewRoman);
+        menuUpdateUsernameButton.addActionListener(new Verification('U'));
 
         menuPasswordChangeButton.setBounds(200, 410, 300, 30);
         menuPasswordChangeButton.setBackground(Color.DARK_GRAY);
@@ -1023,7 +1028,7 @@ public class EazyFinderGUI {
                         routeCost.append(route[i].toUpperCase());
                         if (i != 0) routeCost.append(" -> ");
                     }
-                    routeCost.append("\nCost: ").append(cost).append("</html>");
+                    routeCost.append("\nCost: ").append(cost).append(" /-").append("</html>");
 
                     enquireFrame.setTitle(enquiryObj.source.toUpperCase() + " to " + enquiryObj.destination.toUpperCase());
 
@@ -1075,7 +1080,7 @@ public class EazyFinderGUI {
             newUsernameText.setBounds(160, 110, 100, 25);
             newUsernameText.setFont(timesNewRoman);
 
-            changeUsernameButton.setBounds(50, 135, 200, 25);
+            changeUsernameButton.setBounds(50, 150, 200, 25);
             changeUsernameButton.setBackground(Color.RED);
             changeUsernameButton.setForeground(Color.WHITE);
             changeUsernameButton.setFont(timesNewRoman);
@@ -1094,48 +1099,52 @@ public class EazyFinderGUI {
                 msg.setBounds(0, 200, 300, 25);
                 msg.setHorizontalAlignment(0);
 
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(db));
-                    String str;
-                    while ((str = reader.readLine()) != null) {
-                        if (str.split(" ")[0].equals(newUsername)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    reader.close();
-                } catch (Exception ignored) {
-                }
-
-                if (found) {
-                    msg.setText("Username Already taken. Try with Another One");
+                if (newUsername.equals(username)) {
+                    msg.setText("New Username Cannot be the Same as old one");
                 } else {
-                    int result = JOptionPane.showConfirmDialog(updateUsernameFrame, "Are You Sure?", "Confirmation",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.PLAIN_MESSAGE);
-                    if (result == JOptionPane.YES_OPTION) {
-                        boolean updated = new UpdateUsernameMainCode().updateUsername(username, newUsername, password);
-                        File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
-                        File enq = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
-                        File newTH = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + newUsername + ".txt");
-                        File newENQ = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + newUsername + ".txt");
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(db));
+                        String str;
+                        while ((str = reader.readLine()) != null) {
+                            if (str.split(" ")[0].equals(newUsername)) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        reader.close();
+                    } catch (Exception ignored) {
+                    }
 
-                        if (th.renameTo(newTH) && enq.renameTo(newENQ) && updated) {
-                            updateUsernameFrame.dispose();
+                    if (found) {
+                        msg.setText("Username Already taken. Try with Another One");
+                    } else {
+                        int result = JOptionPane.showConfirmDialog(updateUsernameFrame, "Are You Sure?", "Confirmation",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.PLAIN_MESSAGE);
+                        if (result == JOptionPane.YES_OPTION) {
+                            boolean updated = new UpdateUsernameMainCode().updateUsername(username, newUsername, password);
+                            File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                            File enq = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                            File newTH = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + newUsername + ".txt");
+                            File newENQ = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + newUsername + ".txt");
 
-                            username = newUsername;
+                            if (th.renameTo(newTH) && enq.renameTo(newENQ) && updated) {
+                                updateUsernameFrame.dispose();
 
-                            usernameLabel.setText("Username: " + username);
+                                username = newUsername;
 
-                            JOptionPane.showConfirmDialog(frame, "Username Changed Successfully", "Successful",
-                                    JOptionPane.OK_CANCEL_OPTION,
-                                    JOptionPane.PLAIN_MESSAGE);
+                                usernameLabel.setText("Username: " + username);
 
-                            displayMenu();
-                        } else {
-                            JOptionPane.showConfirmDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
-                                    JOptionPane.OK_CANCEL_OPTION,
-                                    JOptionPane.PLAIN_MESSAGE);
+                                JOptionPane.showConfirmDialog(frame, "Username Changed Successfully", "Successful",
+                                        JOptionPane.OK_CANCEL_OPTION,
+                                        JOptionPane.PLAIN_MESSAGE);
+
+                                displayMenu();
+                            } else {
+                                JOptionPane.showConfirmDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
+                                        JOptionPane.OK_CANCEL_OPTION,
+                                        JOptionPane.PLAIN_MESSAGE);
+                            }
                         }
                     }
                 }
@@ -1146,8 +1155,8 @@ public class EazyFinderGUI {
 
     class PasswordChangeUI {
         JFrame passwordChangeFrame;
-        JLabel oldPasswordLabel, newPasswordLabel;
-        JPasswordField oldPasswordText, newPasswordText;
+        JLabel newPasswordLabel;
+        JPasswordField newPasswordField;
 
         void passwordChangeUI() {
             passwordChangeFrame = new JFrame("Change Password");
@@ -1157,35 +1166,29 @@ public class EazyFinderGUI {
             passwordChangeFrame.setLocationRelativeTo(frame);
 
             backButton = new JButton("Back");
-            oldPasswordLabel = new JLabel("Old Password:");
             newPasswordLabel = new JLabel("New Password:");
             rePasswordLabel = new JLabel("Retype New Password:");
-            oldPasswordText = new JPasswordField();
-            newPasswordText = new JPasswordField();
+            newPasswordField = new JPasswordField();
             rePasswordField = new JPasswordField();
             JButton passwordChangeButton = new JButton("Change Password");
 
-            passwordChangeFrame.add(oldPasswordLabel);
             passwordChangeFrame.add(newPasswordLabel);
             passwordChangeFrame.add(rePasswordLabel);
-            passwordChangeFrame.add(oldPasswordText);
-            passwordChangeFrame.add(newPasswordText);
+            passwordChangeFrame.add(newPasswordField);
             passwordChangeFrame.add(rePasswordField);
             passwordChangeFrame.add(passwordChangeButton);
 
-            oldPasswordLabel.setBounds(90, 100, 120, 25);
-            oldPasswordLabel.setFont(timesNewRoman);
-            oldPasswordText.setBounds(210, 100, 100, 25);
-
-            newPasswordLabel.setBounds(90, 150, 120, 25);
+            newPasswordLabel.setBounds(90, 100, 120, 25);
             newPasswordLabel.setFont(timesNewRoman);
-            newPasswordText.setBounds(210, 150, 100, 25);
 
-            rePasswordLabel.setBounds(40, 200, 180, 25);
+            newPasswordField.setBounds(210, 100, 100, 25);
+
+            rePasswordLabel.setBounds(90, 150, 120, 25);
             rePasswordLabel.setFont(timesNewRoman);
-            rePasswordField.setBounds(210, 200, 100, 25);
 
-            passwordChangeButton.setBounds(110, 250, 180, 25);
+            rePasswordField.setBounds(210, 150, 100, 25);
+
+            passwordChangeButton.setBounds(40, 200, 180, 25);
             passwordChangeButton.setBackground(Color.RED);
             passwordChangeButton.setForeground(Color.WHITE);
             passwordChangeButton.setFont(timesNewRoman);
@@ -1208,15 +1211,12 @@ public class EazyFinderGUI {
                 msg.setFont(timesNewRoman);
                 msg.setHorizontalAlignment(0);
 
-                String oldPassword = String.valueOf(oldPasswordText.getPassword());
-                String newPassword = String.valueOf(newPasswordText.getPassword());
+                String newPassword = String.valueOf(newPasswordField.getPassword());
                 String rePassword = String.valueOf(rePasswordField.getPassword());
 
-                if (oldPassword.equals("") || newPassword.equals("") || rePassword.equals("")) {
+                if (newPassword.equals("") || rePassword.equals("")) {
                     msg.setText("Please fill all the fields");
-                } else if (!password.equals(oldPassword)) {
-                    msg.setText("Old Password is incorrect");
-                } else if (oldPassword.equals(newPassword)) {
+                } else if (password.equals(newPassword)) {
                     msg.setText("New Password cannot be same as Old one");
                 } else if (!newPassword.equals(rePassword)) {
                     msg.setText("Passwords doesn't match");
