@@ -221,23 +221,45 @@ public class EazyFinderGUI {
         }
     }
 
-    boolean isPasswordNotAccepted(String password) {
-        boolean inRange = false, hasWhiteSpace = true, hasLowerCaseLetter = false, hasUpperCaseLetter = false, hasDigit = false,
+    boolean isPasswordAccepted(String password) {
+        boolean inRange = false, hasWhiteSpace = false, hasLowerCaseLetter = false, hasUpperCaseLetter = false, hasDigit = false,
                 hasSpecialCharacter = false;
         byte i, len = (byte) password.length();
-        byte maxPasswordLength = 16;
-        if (len >= 8 && len <= maxPasswordLength) inRange = true;
-        if (!password.contains(" ")) hasWhiteSpace = false;
+        if (len >= 8 && len <= 16) inRange = true;
 
-        for (i = 0; i < len; i++) {
-            if (Character.isAlphabetic(password.charAt(i))) {
-                if (Character.isLowerCase(password.charAt(i))) hasLowerCaseLetter = true;
-                else hasUpperCaseLetter = true;
-            } else if (Character.isDigit(password.charAt(i))) hasDigit = true;
-            else hasSpecialCharacter = true;
+        msg.setText("");
+
+        if (!inRange) {
+            JOptionPane.showConfirmDialog(frame, "Password isn't in the Range of 8-16\nPlease try with another Password",
+                    "Password Not Accepted",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            for (i = 0; i < len; i++) {
+                if (Character.isAlphabetic(password.charAt(i))) {
+                    if (Character.isLowerCase(password.charAt(i))) hasLowerCaseLetter = true;
+                    else hasUpperCaseLetter = true;
+                } else if (Character.isDigit(password.charAt(i))) {
+                    hasDigit = true;
+                } else if (Character.isWhitespace(password.charAt(i))) {
+                    hasWhiteSpace = true;
+                } else hasSpecialCharacter = true;
+            }
+
+            if(!(hasLowerCaseLetter && hasUpperCaseLetter && hasDigit && !hasWhiteSpace && hasSpecialCharacter)) {
+                StringBuilder message = new StringBuilder();
+                if (!hasLowerCaseLetter) message.append("Password Must Contain Atleast one Lowercase letter").append("\n");
+                if (!hasUpperCaseLetter) message.append("Password Must Contain Atleast one Uppercase letter").append("\n");
+                if (!hasDigit) message.append("Password Must Contain Atleast one Digit").append("\n");
+                if (!hasSpecialCharacter) message.append("Password Must Contain Atleast one Special Character").append("\n");
+                if (hasWhiteSpace) message.append("Password Shouldn't Contain a White space Character");
+
+                JOptionPane.showConfirmDialog(frame, message, "Password Not Accepted",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+            }
         }
 
-        return !inRange || hasWhiteSpace || !hasLowerCaseLetter || !hasUpperCaseLetter || !hasDigit || !hasSpecialCharacter;
+        return inRange && !hasWhiteSpace && hasLowerCaseLetter && hasUpperCaseLetter && hasDigit && hasSpecialCharacter;
     }
 
     class SignUp implements ActionListener {
@@ -250,9 +272,7 @@ public class EazyFinderGUI {
                 msg.setText("Please Fill all the fields");
             } else if (!password.equals(rePassword)) {
                 msg.setText("Passwords doesn't match");
-            } else if (isPasswordNotAccepted(password)) {
-                msg.setText("Password Doesn't Follow Rules");
-            } else {
+            } else if (isPasswordAccepted(password)) {
                 String str;
                 String[] credentials;
                 boolean found = false;
@@ -1222,9 +1242,7 @@ public class EazyFinderGUI {
                     msg.setText("New Password cannot be same as Old one");
                 } else if (!newPassword.equals(rePassword)) {
                     msg.setText("Passwords doesn't match");
-                } else if (isPasswordNotAccepted(newPassword)) {
-                    msg.setText("New Password Doesn't Follow Rules");
-                } else {
+                } else if (isPasswordAccepted(newPassword)) {
                     int result = JOptionPane.showConfirmDialog(passwordChangeFrame, "Are You Sure?", "Confirm",
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.WARNING_MESSAGE);
