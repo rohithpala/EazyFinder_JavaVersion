@@ -60,8 +60,8 @@ public class EazyFinderGUI {
     class Back implements ActionListener {
         byte num;
 
-        Back(int num) {
-            this.num = (byte) num;
+        Back(byte num) {
+            this.num = num;
         }
 
         @Override
@@ -133,7 +133,7 @@ public class EazyFinderGUI {
             backButton.setBackground(Color.BLACK);
             backButton.setForeground(Color.WHITE);
             backButton.setFont(timesNewRoman);
-            backButton.addActionListener(new Back(1));
+            backButton.addActionListener(new Back((byte)1));
 
             if (buttonName.equals("LogIn")) {
                 loginButton = new JButton("LogIn");
@@ -448,7 +448,7 @@ public class EazyFinderGUI {
         logoutButton.setBackground(Color.RED);
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setFont(timesNewRoman);
-        logoutButton.addActionListener(new Back(1));
+        logoutButton.addActionListener(new Back((byte)1));
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -584,7 +584,7 @@ public class EazyFinderGUI {
             backButton.setBackground(Color.BLACK);
             backButton.setForeground(Color.WHITE);
             backButton.setFont(timesNewRoman);
-            backButton.addActionListener(new Back(2));
+            backButton.addActionListener(new Back((byte)2));
 
             nameLabel.setBounds(200, 50, 100, 25);
             phoneLabel.setBounds(200, 100, 100, 25);
@@ -620,7 +620,7 @@ public class EazyFinderGUI {
             logoutButton.setBackground(Color.RED);
             logoutButton.setForeground(Color.WHITE);
             logoutButton.setFont(timesNewRoman);
-            logoutButton.addActionListener(new Back(1));
+            logoutButton.addActionListener(new Back((byte)1));
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
@@ -745,13 +745,13 @@ public class EazyFinderGUI {
                 backButton.setBackground(Color.BLACK);
                 backButton.setForeground(Color.WHITE);
                 backButton.setFont(timesNewRoman);
-                backButton.addActionListener(new Back(2));
+                backButton.addActionListener(new Back((byte)2));
 
                 logoutButton.setBounds(586, 0, 100, 30);
                 logoutButton.setBackground(Color.RED);
                 logoutButton.setForeground(Color.WHITE);
                 logoutButton.setFont(timesNewRoman);
-                logoutButton.addActionListener(new Back(1));
+                logoutButton.addActionListener(new Back((byte)1));
 
                 short i;
                 Object[][] rows = new Object[noOfVehicles][3];
@@ -844,7 +844,7 @@ public class EazyFinderGUI {
                     backButton.setBounds(0, 0, 80, 30);
                     backButton.setBackground(Color.BLACK);
                     backButton.setForeground(Color.WHITE);
-                    backButton.addActionListener(new Back(2));
+                    backButton.addActionListener(new Back((byte)2));
 
                     msg.setBounds(0, 0, frameSize, frameSize);
                     msg.setHorizontalAlignment(0);
@@ -854,7 +854,7 @@ public class EazyFinderGUI {
                     logoutButton.setBackground(Color.RED);
                     logoutButton.setForeground(Color.WHITE);
                     logoutButton.setFont(timesNewRoman);
-                    logoutButton.addActionListener(new Back(1));
+                    logoutButton.addActionListener(new Back((byte)1));
                 }
             }
 
@@ -879,13 +879,13 @@ public class EazyFinderGUI {
         backButton.setBounds(0, 0, 80, 30);
         backButton.setBackground(Color.BLACK);
         backButton.setForeground(Color.WHITE);
-        backButton.addActionListener(new Back(2));
+        backButton.addActionListener(new Back((byte)2));
 
         logoutButton.setBounds(586, 0, 100, 30);
         logoutButton.setBackground(Color.RED);
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setFont(timesNewRoman);
-        logoutButton.addActionListener(new Back(1));
+        logoutButton.addActionListener(new Back((byte)1));
 
         JLabel thHeading = new JLabel("Your Transactions:");
         thHeading.setBounds(0, 0, frameSize, 30);
@@ -945,7 +945,7 @@ public class EazyFinderGUI {
             backButton.setBounds(0, 0, 80, 30);
             backButton.setBackground(Color.BLACK);
             backButton.setForeground(Color.WHITE);
-            backButton.addActionListener(new Back(2));
+            backButton.addActionListener(new Back((byte)2));
 
             cityLabel.setBounds(200, 200, 100, 25);
             cityLabel.setFont(timesNewRoman);
@@ -973,7 +973,7 @@ public class EazyFinderGUI {
             logoutButton.setBackground(Color.RED);
             logoutButton.setForeground(Color.WHITE);
             logoutButton.setFont(timesNewRoman);
-            logoutButton.addActionListener(new Back(1));
+            logoutButton.addActionListener(new Back((byte)1));
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
