@@ -1183,12 +1183,12 @@ public class EazyFinderGUI {
 
             newPasswordField.setBounds(210, 100, 100, 25);
 
-            rePasswordLabel.setBounds(90, 150, 120, 25);
+            rePasswordLabel.setBounds(40, 150, 180, 25);
             rePasswordLabel.setFont(timesNewRoman);
 
             rePasswordField.setBounds(210, 150, 100, 25);
 
-            passwordChangeButton.setBounds(40, 200, 180, 25);
+            passwordChangeButton.setBounds(100, 200, 180, 25);
             passwordChangeButton.setBackground(Color.RED);
             passwordChangeButton.setForeground(Color.WHITE);
             passwordChangeButton.setFont(timesNewRoman);
