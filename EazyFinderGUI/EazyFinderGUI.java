@@ -67,8 +67,7 @@ public class EazyFinderGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (num == 1) {
-                int result = JOptionPane.showConfirmDialog(frame,
-                        "Are You Sure?", "Confirmation",
+                int result = JOptionPane.showConfirmDialog(frame, "Are You Sure?", "Confirmation",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE);
 
@@ -354,6 +353,7 @@ public class EazyFinderGUI {
                 } else {
                     verificationFrame.dispose();
                     if (case_ == 'T') TransactionHistory();
+                    else if (case_ == 'U') new UpdateUsernameUI().updateUsernameUI();
                     else if (case_ == 'A') AccountDeletion();
                     else if (case_ == 'P') new PasswordChangeUI().passwordChangeUI();
                     else if (case_ == 'S') new SwitchAccounts().switchAccountsUI();
@@ -398,6 +398,8 @@ public class EazyFinderGUI {
         usernameLabel.setBounds(0, 0, frameSize, 25);
         usernameLabel.setForeground(Color.DARK_GRAY);
         usernameLabel.setHorizontalAlignment(0);
+        usernameLabel.setFont(timesNewRoman);
+        usernameLabel.setOpaque(true);
 
         finderImage.setBounds(318, 33, 64, 64); // Change the values as per the image
 
@@ -1053,6 +1055,96 @@ public class EazyFinderGUI {
     }
 
 
+    class UpdateUsernameUI{
+        JFrame updateUsernameFrame = new JFrame();
+        JLabel newUsernameLabel = new JLabel("New Username:");
+        JTextField newUsernameText = new JTextField();
+        JButton changeUsernameButton = new JButton("Change Username");
+
+        void updateUsernameUI(){
+            updateUsernameFrame.setSize(300, 300);
+            updateUsernameFrame.setLocationRelativeTo(frame);
+            updateUsernameFrame.setVisible(true);
+            updateUsernameFrame.setLayout(null);
+
+            updateUsernameFrame.add(newUsernameLabel);
+            updateUsernameFrame.add(newUsernameText);
+            updateUsernameFrame.add(changeUsernameButton);
+
+            newUsernameLabel.setBounds(40, 110, 120, 25);
+            newUsernameLabel.setFont(timesNewRoman);
+
+            newUsernameText.setBounds(160, 110, 100, 25);
+            newUsernameText.setFont(timesNewRoman);
+
+            changeUsernameButton.setBounds(50, 135, 200, 25);
+            changeUsernameButton.setBackground(Color.RED);
+            changeUsernameButton.setForeground(Color.WHITE);
+            changeUsernameButton.setFont(timesNewRoman);
+            changeUsernameButton.addActionListener(new UpdateUsername());
+
+            updateUsernameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
+
+        class UpdateUsername implements ActionListener{
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newUsername = newUsernameText.getText();
+                boolean found = false;
+
+                updateUsernameFrame.add(msg);
+                msg.setBounds(0, 200, 300, 25);
+                msg.setHorizontalAlignment(0);
+
+                try{
+                    BufferedReader reader = new BufferedReader(new FileReader(db));
+                    String str;
+                    while ((str = reader.readLine()) != null) {
+                        if (str.split(" ")[0].equals(newUsername)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    reader.close();
+                } catch(Exception ignored){}
+
+                if(found){
+                    msg.setText("Username Already taken. Try with Another One");
+                } else {
+                    int result = JOptionPane.showConfirmDialog(updateUsernameFrame, "Are You Sure?", "Confirmation",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.PLAIN_MESSAGE);
+                    if(result == JOptionPane.YES_OPTION){
+                        boolean updated = new UpdateUsernameMainCode().updateUsername(username, newUsername, password);
+                        File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                        File enq = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                        File newTH = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + newUsername + ".txt");
+                        File newENQ = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + newUsername + ".txt");
+
+                        if(th.renameTo(newTH) && enq.renameTo(newENQ) && updated){
+                            updateUsernameFrame.dispose();
+
+                            username = newUsername;
+
+                            usernameLabel.setText("Username: " + username);
+
+                            JOptionPane.showConfirmDialog(frame, "Username Changed Successfully", "Successful",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE);
+
+                            displayMenu();
+                        } else {
+                            JOptionPane.showConfirmDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     class PasswordChangeUI {
         JFrame passwordChangeFrame;
         JLabel oldPasswordLabel, newPasswordLabel;
@@ -1267,13 +1359,14 @@ public class EazyFinderGUI {
                     if (!found) {
                         msg.setText("No User With Given Credentials");
                     } else {
-                        int result = JOptionPane.showConfirmDialog(switchAccountsFrame, "Switched Accounts Successfully", "Successful",
+                        int result = JOptionPane.showConfirmDialog(switchAccountsFrame, "Are You Sure?", "Confirmation",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.PLAIN_MESSAGE);
                         if (result == JOptionPane.YES_OPTION) {
                             username = localUsername;
                             password = localPassword;
                             switchAccountsFrame.dispose();
+                            usernameLabel.setText("Username: " + username);
                             JOptionPane.showConfirmDialog(frame, "Switched Accounts Successfully", "Successful",
                                     JOptionPane.OK_CANCEL_OPTION,
                                     JOptionPane.PLAIN_MESSAGE);
