@@ -1096,7 +1096,7 @@ public class EazyFinderGUI {
                 String newUsername = newUsernameText.getText();
 
                 updateUsernameFrame.add(msg);
-                msg.setBounds(0, 250, 300, 25);
+                msg.setBounds(0, 300, 400, 25);
                 msg.setHorizontalAlignment(0);
 
                 if (newUsername.equals("")) {
