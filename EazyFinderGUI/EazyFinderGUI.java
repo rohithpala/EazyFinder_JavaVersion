@@ -548,7 +548,7 @@ public class EazyFinderGUI {
             nameText = new JTextField();
             nameText.setFont(timesNewRoman);
 
-            phoneLabel = new JLabel("Phone:");
+            phoneLabel = new JLabel("Mobile Number:");
             phoneLabel.setFont(timesNewRoman);
             phoneText = new JTextField();
             phoneText.setFont(timesNewRoman);
@@ -612,22 +612,21 @@ public class EazyFinderGUI {
             backButton.addActionListener(new Back((byte) 2));
 
             nameLabel.setBounds(200, 50, 100, 25);
-            phoneLabel.setBounds(200, 100, 100, 25);
+            phoneLabel.setBounds(200, 100, 130, 25);
             cityLabel.setBounds(200, 150, 100, 25);
             sourceLabel.setBounds(200, 200, 100, 25);
             destinationLabel.setBounds(200, 250, 100, 25);
             adultLabel.setBounds(200, 300, 100, 25);
             childrenLabel.setBounds(200, 350, 100, 25);
 
-            nameText.setBounds(300, 50, 200, 25);
+            nameText.setBounds(330, 50, 200, 25);
             nameText.setText(username);
-
-            phoneText.setBounds(300, 100, 200, 25);
-            cityField.setBounds(300, 150, 200, 25);
-            sourceField.setBounds(300, 200, 200, 25);
-            destinationField.setBounds(300, 250, 200, 25);
-            adultField.setBounds(300, 300, 200, 25);
-            childrenField.setBounds(300, 350, 200, 25);
+            phoneText.setBounds(330, 100, 200, 25);
+            cityField.setBounds(330, 150, 200, 25);
+            sourceField.setBounds(330, 200, 200, 25);
+            destinationField.setBounds(330, 250, 200, 25);
+            adultField.setBounds(330, 300, 200, 25);
+            childrenField.setBounds(330, 350, 200, 25);
 
             continueButton.setBounds(275, 400, 150, 25);
             continueButton.setBackground(Color.GREEN);
@@ -635,7 +634,7 @@ public class EazyFinderGUI {
             continueButton.setFont(timesNewRoman);
             continueButton.addActionListener(new ContinueToModeOfTransportation());
 
-            phoneMessage.setBounds(500, 100, 200, 25);
+            phoneMessage.setBounds(510, 100, 200, 25);
             phoneMessage.setFont(timesNewRoman);
             phoneMessage.setForeground(Color.RED);
             phoneMessage.setFont(timesNewRoman);
@@ -683,7 +682,7 @@ public class EazyFinderGUI {
                 } else if (!phone.matches("^[6-9]\\d{9}")) {
                     phoneMessage.setText("Invalid Phone Number");
                 } else {
-                    BookingMainCode bookingObj = new BookingMainCode(city, source, destination, noOfAdults, noOfChildren);
+                    bookingObj = new BookingMainCode(city, source, destination, noOfAdults, noOfChildren);
 
                     bookingObj.new EnquireAndBookings().bookings();
 
