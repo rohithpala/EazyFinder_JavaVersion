@@ -986,16 +986,13 @@ public class EazyFinderGUI {
         class EnquireMainCode implements ActionListener { // Save Enquiries for recommendations
             @Override
             public void actionPerformed(ActionEvent e) {
-                msg = new JLabel();
-                msg.setFont(timesNewRoman);
-                msg.setOpaque(true);
-
-                frame.add(msg);
-
                 msg.setBounds(0, 400, frameSize, frameSize);
                 msg.setFont(timesNewRoman);
                 msg.setForeground(Color.RED);
                 msg.setHorizontalAlignment(0);
+                msg.setOpaque(true);
+
+                frame.add(msg);
 
                 String city = String.valueOf(cityField.getSelectedItem());
                 source = String.valueOf(sourceField.getSelectedItem());
@@ -1041,10 +1038,10 @@ public class EazyFinderGUI {
                     enquireFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
                     // store the enquiries
-                    File enquiryFile = new File(dirname + "\\Enquiries\\" + username + ".txt");
+                    File enquiryFile = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
                     try {
                         BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile));
-                        writer.write(city.toLowerCase() + "," + source.toLowerCase() + "," + destination.toLowerCase());
+                        writer.write(city.toUpperCase() + "," + source.toUpperCase() + "," + destination.toUpperCase() + "\n");
                         writer.flush();
                         writer.close();
                     } catch (Exception ex) {
