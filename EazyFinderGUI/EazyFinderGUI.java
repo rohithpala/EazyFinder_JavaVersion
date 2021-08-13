@@ -1124,7 +1124,7 @@ public class EazyFinderGUI {
                         } else {
                             int result = JOptionPane.showConfirmDialog(updateUsernameFrame, "Are You Sure?", "Confirmation",
                                     JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.PLAIN_MESSAGE);
+                                    JOptionPane.WARNING_MESSAGE);
                             if (result == JOptionPane.YES_OPTION) {
                                 boolean updated = new UpdateUsernameMainCode().updateUsername(username, newUsername, password);
                                 File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
@@ -1141,13 +1141,13 @@ public class EazyFinderGUI {
 
                                     JOptionPane.showConfirmDialog(frame, "Username Changed Successfully", "Successful",
                                             JOptionPane.OK_CANCEL_OPTION,
-                                            JOptionPane.PLAIN_MESSAGE);
+                                            JOptionPane.WARNING_MESSAGE);
 
                                     displayMenu();
                                 } else {
                                     JOptionPane.showConfirmDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
                                             JOptionPane.OK_CANCEL_OPTION,
-                                            JOptionPane.PLAIN_MESSAGE);
+                                            JOptionPane.WARNING_MESSAGE);
                                 }
                             }
                         }
@@ -1365,7 +1365,7 @@ public class EazyFinderGUI {
                     } else {
                         int result = JOptionPane.showConfirmDialog(switchAccountsFrame, "Are You Sure?", "Confirmation",
                                 JOptionPane.YES_NO_OPTION,
-                                JOptionPane.PLAIN_MESSAGE);
+                                JOptionPane.WARNING_MESSAGE);
                         if (result == JOptionPane.YES_OPTION) {
                             username = localUsername;
                             password = localPassword;
@@ -1373,7 +1373,7 @@ public class EazyFinderGUI {
                             usernameLabel.setText("Username: " + username);
                             JOptionPane.showConfirmDialog(frame, "Switched Accounts Successfully", "Successful",
                                     JOptionPane.OK_CANCEL_OPTION,
-                                    JOptionPane.PLAIN_MESSAGE);
+                                    JOptionPane.WARNING_MESSAGE);
                         } else {
                             displayMenu();
                         }
