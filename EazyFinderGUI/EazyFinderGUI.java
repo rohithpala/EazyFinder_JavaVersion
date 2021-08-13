@@ -1065,7 +1065,7 @@ public class EazyFinderGUI {
         JButton changeUsernameButton = new JButton("Change Username");
 
         void updateUsernameUI() {
-            updateUsernameFrame.setSize(300, 300);
+            updateUsernameFrame.setSize(400, 400);
             updateUsernameFrame.setLocationRelativeTo(frame);
             updateUsernameFrame.setVisible(true);
             updateUsernameFrame.setLayout(null);
@@ -1074,13 +1074,13 @@ public class EazyFinderGUI {
             updateUsernameFrame.add(newUsernameText);
             updateUsernameFrame.add(changeUsernameButton);
 
-            newUsernameLabel.setBounds(40, 110, 120, 25);
+            newUsernameLabel.setBounds(90, 180, 120, 25);
             newUsernameLabel.setFont(timesNewRoman);
 
-            newUsernameText.setBounds(160, 110, 100, 25);
+            newUsernameText.setBounds(210, 180, 100, 25);
             newUsernameText.setFont(timesNewRoman);
 
-            changeUsernameButton.setBounds(50, 150, 200, 25);
+            changeUsernameButton.setBounds(50, 220, 200, 25);
             changeUsernameButton.setBackground(Color.RED);
             changeUsernameButton.setForeground(Color.WHITE);
             changeUsernameButton.setFont(timesNewRoman);
@@ -1096,7 +1096,7 @@ public class EazyFinderGUI {
                 boolean found = false;
 
                 updateUsernameFrame.add(msg);
-                msg.setBounds(0, 200, 300, 25);
+                msg.setBounds(0, 250, 300, 25);
                 msg.setHorizontalAlignment(0);
 
                 if (newUsername.equals(username)) {
