@@ -16,7 +16,6 @@ public class EazyFinderGUI {
     JLabel msg; // Used to print corresponding messages
     Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
     short frameSize = 700;
-
     String dirname = System.getProperty("user.dir"); // Path upto src
 
     public static void main(String[] args) {
@@ -25,13 +24,9 @@ public class EazyFinderGUI {
 
     JButton loginButton = new JButton();
     JButton signupButton = new JButton();
-
     void HomePage() {
         frame.getContentPane().removeAll();
         frame.repaint();
-
-        loginButton = new JButton("LogIn");
-        signupButton = new JButton("SignUp");
 
         frame.setSize(350, 300);
         frame.setTitle("Home Page");
@@ -41,18 +36,21 @@ public class EazyFinderGUI {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
 
+        loginButton = new JButton("LogIn");
+        signupButton = new JButton("SignUp");
+
         frame.add(loginButton);
         frame.add(signupButton);
 
         loginButton.setBounds(50, 103, 100, 30);
         loginButton.setBackground(Color.ORANGE);
         loginButton.setFont(timesNewRoman);
-        loginButton.addActionListener(new LoginSignupMainCode("LogIn"));
+        loginButton.addActionListener(new LogInUI());
 
         signupButton.setBounds(180, 103, 100, 30);
         signupButton.setBackground(Color.ORANGE);
         signupButton.setFont(timesNewRoman);
-        signupButton.addActionListener(new LoginSignupMainCode("SignUp"));
+        signupButton.addActionListener(new SignUpUI());
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -87,13 +85,106 @@ public class EazyFinderGUI {
     JPasswordField passwordField = new JPasswordField();
     JPasswordField rePasswordField = new JPasswordField();
 
-    class LoginSignupMainCode implements ActionListener {
-        String buttonName;
+//    class LoginSignupMainCode implements ActionListener {
+//        String buttonName;
+//
+//        LoginSignupMainCode(String buttonName) {
+//            this.buttonName = buttonName;
+//        }
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            frame.getContentPane().removeAll();
+//            frame.repaint();
+//
+//            backButton = new JButton("Back");
+//            msg = new JLabel();
+//
+//            frame.setTitle(buttonName);
+////            frame.add(panel);
+//            frame.add(userLabel);
+//            frame.add(passwordLabel);
+//            frame.add(userText);
+//            frame.add(passwordField);
+//            frame.add(msg);
+//            frame.add(backButton);
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//            userLabel.setBounds(50, 50, 80, 25);
+//            userLabel.setFont(timesNewRoman);
+//
+//            userText.setBounds(130, 50, 120, 25);
+//            userText.setFont(timesNewRoman);
+//
+//            passwordLabel.setBounds(50, 80, 80, 25);
+//            passwordLabel.setFont(timesNewRoman);
+//
+//            passwordField.setBounds(130, 80, 120, 25);
+//
+//            userText.setText("");
+//            passwordField.setText("");
+//            rePasswordField.setText("");
+//            msg.setText("");
+//
+//            backButton.setBounds(0, 0, 80, 30);
+//            backButton.setBackground(Color.BLACK);
+//            backButton.setForeground(Color.WHITE);
+//            backButton.setFont(timesNewRoman);
+//            backButton.addActionListener(new Back((byte) 1));
+//
+//            if (buttonName.equals("LogIn")) {
+//                loginButton = new JButton("LogIn");
+//                frame.add(loginButton);
+//
+//                loginButton.setBounds(120, 120, 80, 25);
+//                loginButton.setBackground(Color.DARK_GRAY);
+//                loginButton.setForeground(Color.WHITE);
+//                loginButton.setFont(timesNewRoman);
+//                loginButton.addActionListener(new LogIn());
+//
+//                msg.setBounds(0, 170, 350, 25);
+//                msg.setFont(timesNewRoman);
+//                msg.setHorizontalAlignment(0);
+//            } else {
+//                signupButton = new JButton("SignUp");
+//                frame.add(signupButton);
+//
+//                frame.add(rePasswordLabel);
+//                frame.add(rePasswordField);
+//
+//                rePasswordLabel.setBounds(0, 110, 130, 25);
+//                rePasswordLabel.setFont(timesNewRoman);
+//                rePasswordField.setBounds(130, 110, 120, 25);
+//
+//                signupButton.setBounds(125, 150, 100, 25);
+//                signupButton.setBackground(Color.DARK_GRAY);
+//                signupButton.setForeground(Color.WHITE);
+//                signupButton.setFont(timesNewRoman);
+//                signupButton.addActionListener(new SignUp());
+//
+//                msg.setBounds(0, 180, 350, 25);
+//                msg.setFont(timesNewRoman);
+//                msg.setHorizontalAlignment(JLabel.CENTER);
+//            }
+//
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        }
+//    }
 
-        LoginSignupMainCode(String buttonName) {
-            this.buttonName = buttonName;
+    long encryptPassword(String password) {
+        long encryptedPassword = 0, a = 1;
+        short i, len = (short) password.length();
+        for (i = 0; i < len; i++) {
+            encryptedPassword += ((int) password.charAt(i)) * a;
+            a *= 100;
         }
+        return encryptedPassword;
+    }
 
+    String username;
+    String password;
+    File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
+    class LogInUI implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             frame.getContentPane().removeAll();
@@ -102,7 +193,7 @@ public class EazyFinderGUI {
             backButton = new JButton("Back");
             msg = new JLabel();
 
-            frame.setTitle(buttonName);
+            frame.setTitle("LogIn");
 //            frame.add(panel);
             frame.add(userLabel);
             frame.add(passwordLabel);
@@ -132,93 +223,55 @@ public class EazyFinderGUI {
             backButton.setBackground(Color.BLACK);
             backButton.setForeground(Color.WHITE);
             backButton.setFont(timesNewRoman);
-            backButton.addActionListener(new Back((byte)1));
+            backButton.addActionListener(new Back((byte) 1));
 
-            if (buttonName.equals("LogIn")) {
-                loginButton = new JButton("LogIn");
-                frame.add(loginButton);
+            loginButton = new JButton("LogIn");
+            frame.add(loginButton);
 
-                loginButton.setBounds(120, 120, 80, 25);
-                loginButton.setBackground(Color.DARK_GRAY);
-                loginButton.setForeground(Color.WHITE);
-                loginButton.setFont(timesNewRoman);
-                loginButton.addActionListener(new Login());
+            loginButton.setBounds(120, 120, 80, 25);
+            loginButton.setBackground(Color.DARK_GRAY);
+            loginButton.setForeground(Color.WHITE);
+            loginButton.setFont(timesNewRoman);
+            loginButton.addActionListener(new LogIn());
 
-                msg.setBounds(0, 170, 350, 25);
-                msg.setFont(timesNewRoman);
-                msg.setHorizontalAlignment(0);
-            } else {
-                signupButton = new JButton("SignUp");
-                frame.add(signupButton);
-
-                frame.add(rePasswordLabel);
-                frame.add(rePasswordField);
-
-                rePasswordLabel.setBounds(0, 110, 130, 25);
-                rePasswordLabel.setFont(timesNewRoman);
-                rePasswordField.setBounds(130, 110, 120, 25);
-
-                signupButton.setBounds(125, 150, 100, 25);
-                signupButton.setBackground(Color.DARK_GRAY);
-                signupButton.setForeground(Color.WHITE);
-                signupButton.setFont(timesNewRoman);
-                signupButton.addActionListener(new SignUp());
-
-                msg.setBounds(0, 180, 350, 25);
-                msg.setFont(timesNewRoman);
-                msg.setHorizontalAlignment(JLabel.CENTER);
-            }
-
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            msg.setBounds(0, 170, 350, 25);
+            msg.setFont(timesNewRoman);
+            msg.setHorizontalAlignment(0);
         }
-    }
 
-    long encryptPassword(String password) {
-        long encryptedPassword = 0, a = 1;
-        short i, len = (short) password.length();
-        for (i = 0; i < len; i++) {
-            encryptedPassword += ((int) password.charAt(i)) * a;
-            a *= 100;
-        }
-        return encryptedPassword;
-    }
-
-    String username;
-    String password;
-    File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
-
-    class Login implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            username = userText.getText();
-            password = String.valueOf(passwordField.getPassword());
-            if (username.equals("") || password.equals("")) {
-                msg.setText("Please Fill all the Fields");
-            } else {
-                String str;
-                String[] credentials;
-                boolean found = false;
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(db));
-                    while ((str = reader.readLine()) != null) {
-                        credentials = str.split(" ");
-                        if (username.equals(credentials[0]) && String.valueOf(encryptPassword(password)).equals(credentials[1])) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    reader.close();
-                } catch (Exception ex) {
-                    msg.setText("Error in reading file");
-                }
-                if (!found) {
-                    msg.setText("No User With Given Credentials");
+        class LogIn implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                username = userText.getText();
+                password = String.valueOf(passwordField.getPassword());
+                if (username.equals("") || password.equals("")) {
+                    msg.setText("Please Fill all the Fields");
                 } else {
-                    displayMenu();
+                    String str;
+                    String[] credentials;
+                    boolean found = false;
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(db));
+                        while ((str = reader.readLine()) != null) {
+                            credentials = str.split(" ");
+                            if (username.equals(credentials[0]) && String.valueOf(encryptPassword(password)).equals(credentials[1])) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        reader.close();
+                    } catch (Exception ex) {
+                        msg.setText("Error in reading file");
+                    }
+                    if (!found) {
+                        msg.setText("No User With Given Credentials");
+                    } else {
+                        displayMenu();
+                    }
                 }
-            }
 
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            }
         }
     }
 
@@ -241,52 +294,115 @@ public class EazyFinderGUI {
         return !inRange || hasWhiteSpace || !hasLowerCaseLetter || !hasUpperCaseLetter || !hasDigit || !hasSpecialCharacter;
     }
 
-    class SignUp implements ActionListener {
+    class SignUpUI implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            username = userText.getText();
-            password = String.valueOf(passwordField.getPassword());
-            String rePassword = String.valueOf(rePasswordField.getPassword());
-            if (username.equals("") || password.equals("") || rePassword.equals("")) {
-                msg.setText("Please Fill all the fields");
-            } else if (!password.equals(rePassword)) {
-                msg.setText("Passwords doesn't match");
-            } else if (isPasswordNotAccepted(password)) {
-                msg.setText("Password Doesn't Follow Rules");
-            } else {
-                String str;
-                String[] credentials;
-                boolean found = false;
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(db));
-                    while ((str = reader.readLine()) != null) {
-                        credentials = str.split(" ");
-                        if (username.equals(credentials[0])) {
-                            msg.setText("Username Already Taken");
-                            found = true;
-                            break;
-                        }
-                    }
-                    reader.close();
-                    if (!found) {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(db, true));
-                        writer.write(username + " " + encryptPassword(password) + "\n");
-                        writer.flush();
-                        writer.close();
-                        File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
-                        File en = new File(dirname + "\\Enquiries\\" + username + ".txt");
-                        if (th.createNewFile() && en.createNewFile()) {
-                            displayMenu();
-                        } else {
-                            msg.setText("Due to some Error we couldn't create your account");
-                        }
-                    }
-                } catch (Exception ex) {
-                    msg.setText("Error in reading file");
-                }
-            }
+            frame.getContentPane().removeAll();
+            frame.repaint();
 
+            backButton = new JButton("Back");
+            msg = new JLabel();
+
+            frame.setTitle("SignUp");
+//            frame.add(panel);
+            frame.add(userLabel);
+            frame.add(passwordLabel);
+            frame.add(userText);
+            frame.add(passwordField);
+            frame.add(msg);
+            frame.add(backButton);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            userLabel.setBounds(50, 50, 80, 25);
+            userLabel.setFont(timesNewRoman);
+
+            userText.setBounds(130, 50, 120, 25);
+            userText.setFont(timesNewRoman);
+
+            passwordLabel.setBounds(50, 80, 80, 25);
+            passwordLabel.setFont(timesNewRoman);
+
+            passwordField.setBounds(130, 80, 120, 25);
+
+            userText.setText("");
+            passwordField.setText("");
+            rePasswordField.setText("");
+            msg.setText("");
+
+            backButton.setBounds(0, 0, 80, 30);
+            backButton.setBackground(Color.BLACK);
+            backButton.setForeground(Color.WHITE);
+            backButton.setFont(timesNewRoman);
+            backButton.addActionListener(new Back((byte) 1));
+
+            signupButton = new JButton("SignUp");
+            frame.add(signupButton);
+
+            frame.add(rePasswordLabel);
+            frame.add(rePasswordField);
+
+            rePasswordLabel.setBounds(0, 110, 130, 25);
+            rePasswordLabel.setFont(timesNewRoman);
+            rePasswordField.setBounds(130, 110, 120, 25);
+
+            signupButton.setBounds(125, 150, 100, 25);
+            signupButton.setBackground(Color.DARK_GRAY);
+            signupButton.setForeground(Color.WHITE);
+            signupButton.setFont(timesNewRoman);
+            signupButton.addActionListener(new SignUp());
+
+            msg.setBounds(0, 180, 350, 25);
+            msg.setFont(timesNewRoman);
+            msg.setHorizontalAlignment(JLabel.CENTER);
+        }
+
+        class SignUp implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                username = userText.getText();
+                password = String.valueOf(passwordField.getPassword());
+                String rePassword = String.valueOf(rePasswordField.getPassword());
+                if (username.equals("") || password.equals("") || rePassword.equals("")) {
+                    msg.setText("Please Fill all the fields");
+                } else if (!password.equals(rePassword)) {
+                    msg.setText("Passwords doesn't match");
+                } else if (isPasswordNotAccepted(password)) {
+                    msg.setText("Password Doesn't Follow Rules");
+                } else {
+                    String str;
+                    String[] credentials;
+                    boolean found = false;
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(db));
+                        while ((str = reader.readLine()) != null) {
+                            credentials = str.split(" ");
+                            if (username.equals(credentials[0])) {
+                                msg.setText("Username Already Taken");
+                                found = true;
+                                break;
+                            }
+                        }
+                        reader.close();
+                        if (!found) {
+                            BufferedWriter writer = new BufferedWriter(new FileWriter(db, true));
+                            writer.write(username + " " + encryptPassword(password) + "\n");
+                            writer.flush();
+                            writer.close();
+                            File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                            File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                            if (th.createNewFile() && en.createNewFile()) {
+                                displayMenu();
+                            } else {
+                                msg.setText("Due to some Error we couldn't create your account");
+                            }
+                        }
+                    } catch (Exception ex) {
+                        msg.setText("Error in reading file");
+                    }
+                }
+
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            }
         }
     }
 
@@ -450,7 +566,7 @@ public class EazyFinderGUI {
         logoutButton.setBackground(Color.RED);
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setFont(timesNewRoman);
-        logoutButton.addActionListener(new Back((byte)1));
+        logoutButton.addActionListener(new Back((byte) 1));
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -586,7 +702,7 @@ public class EazyFinderGUI {
             backButton.setBackground(Color.BLACK);
             backButton.setForeground(Color.WHITE);
             backButton.setFont(timesNewRoman);
-            backButton.addActionListener(new Back((byte)2));
+            backButton.addActionListener(new Back((byte) 2));
 
             nameLabel.setBounds(200, 50, 100, 25);
             phoneLabel.setBounds(200, 100, 100, 25);
@@ -622,7 +738,7 @@ public class EazyFinderGUI {
             logoutButton.setBackground(Color.RED);
             logoutButton.setForeground(Color.WHITE);
             logoutButton.setFont(timesNewRoman);
-            logoutButton.addActionListener(new Back((byte)1));
+            logoutButton.addActionListener(new Back((byte) 1));
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
@@ -747,13 +863,13 @@ public class EazyFinderGUI {
                 backButton.setBackground(Color.BLACK);
                 backButton.setForeground(Color.WHITE);
                 backButton.setFont(timesNewRoman);
-                backButton.addActionListener(new Back((byte)2));
+                backButton.addActionListener(new Back((byte) 2));
 
                 logoutButton.setBounds(586, 0, 100, 30);
                 logoutButton.setBackground(Color.RED);
                 logoutButton.setForeground(Color.WHITE);
                 logoutButton.setFont(timesNewRoman);
-                logoutButton.addActionListener(new Back((byte)1));
+                logoutButton.addActionListener(new Back((byte) 1));
 
                 short i;
                 Object[][] rows = new Object[noOfVehicles][3];
@@ -846,7 +962,7 @@ public class EazyFinderGUI {
                     backButton.setBounds(0, 0, 80, 30);
                     backButton.setBackground(Color.BLACK);
                     backButton.setForeground(Color.WHITE);
-                    backButton.addActionListener(new Back((byte)2));
+                    backButton.addActionListener(new Back((byte) 2));
 
                     msg.setBounds(0, 0, frameSize, frameSize);
                     msg.setHorizontalAlignment(0);
@@ -856,7 +972,7 @@ public class EazyFinderGUI {
                     logoutButton.setBackground(Color.RED);
                     logoutButton.setForeground(Color.WHITE);
                     logoutButton.setFont(timesNewRoman);
-                    logoutButton.addActionListener(new Back((byte)1));
+                    logoutButton.addActionListener(new Back((byte) 1));
                 }
             }
 
@@ -881,13 +997,13 @@ public class EazyFinderGUI {
         backButton.setBounds(0, 0, 80, 30);
         backButton.setBackground(Color.BLACK);
         backButton.setForeground(Color.WHITE);
-        backButton.addActionListener(new Back((byte)2));
+        backButton.addActionListener(new Back((byte) 2));
 
         logoutButton.setBounds(586, 0, 100, 30);
         logoutButton.setBackground(Color.RED);
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setFont(timesNewRoman);
-        logoutButton.addActionListener(new Back((byte)1));
+        logoutButton.addActionListener(new Back((byte) 1));
 
         JLabel thHeading = new JLabel("Your Transactions:");
         thHeading.setBounds(0, 0, frameSize, 30);
@@ -947,7 +1063,7 @@ public class EazyFinderGUI {
             backButton.setBounds(0, 0, 80, 30);
             backButton.setBackground(Color.BLACK);
             backButton.setForeground(Color.WHITE);
-            backButton.addActionListener(new Back((byte)2));
+            backButton.addActionListener(new Back((byte) 2));
 
             cityLabel.setBounds(200, 200, 100, 25);
             cityLabel.setFont(timesNewRoman);
@@ -975,7 +1091,7 @@ public class EazyFinderGUI {
             logoutButton.setBackground(Color.RED);
             logoutButton.setForeground(Color.WHITE);
             logoutButton.setFont(timesNewRoman);
-            logoutButton.addActionListener(new Back((byte)1));
+            logoutButton.addActionListener(new Back((byte) 1));
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
@@ -1055,13 +1171,13 @@ public class EazyFinderGUI {
     }
 
 
-    class UpdateUsernameUI{
+    class UpdateUsernameUI {
         JFrame updateUsernameFrame = new JFrame();
         JLabel newUsernameLabel = new JLabel("New Username:");
         JTextField newUsernameText = new JTextField();
         JButton changeUsernameButton = new JButton("Change Username");
 
-        void updateUsernameUI(){
+        void updateUsernameUI() {
             updateUsernameFrame.setSize(300, 300);
             updateUsernameFrame.setLocationRelativeTo(frame);
             updateUsernameFrame.setVisible(true);
@@ -1086,7 +1202,7 @@ public class EazyFinderGUI {
             updateUsernameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
 
-        class UpdateUsername implements ActionListener{
+        class UpdateUsername implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String newUsername = newUsernameText.getText();
@@ -1096,7 +1212,7 @@ public class EazyFinderGUI {
                 msg.setBounds(0, 200, 300, 25);
                 msg.setHorizontalAlignment(0);
 
-                try{
+                try {
                     BufferedReader reader = new BufferedReader(new FileReader(db));
                     String str;
                     while ((str = reader.readLine()) != null) {
@@ -1106,22 +1222,23 @@ public class EazyFinderGUI {
                         }
                     }
                     reader.close();
-                } catch(Exception ignored){}
+                } catch (Exception ignored) {
+                }
 
-                if(found){
+                if (found) {
                     msg.setText("Username Already taken. Try with Another One");
                 } else {
                     int result = JOptionPane.showConfirmDialog(updateUsernameFrame, "Are You Sure?", "Confirmation",
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.PLAIN_MESSAGE);
-                    if(result == JOptionPane.YES_OPTION){
+                    if (result == JOptionPane.YES_OPTION) {
                         boolean updated = new UpdateUsernameMainCode().updateUsername(username, newUsername, password);
                         File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
                         File enq = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
                         File newTH = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + newUsername + ".txt");
                         File newENQ = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + newUsername + ".txt");
 
-                        if(th.renameTo(newTH) && enq.renameTo(newENQ) && updated){
+                        if (th.renameTo(newTH) && enq.renameTo(newENQ) && updated) {
                             updateUsernameFrame.dispose();
 
                             username = newUsername;
