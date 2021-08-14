@@ -112,7 +112,6 @@ public class EazyFinderGUI {
             frame.add(passwordField);
             frame.add(msg);
             frame.add(backButton);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             userLabel.setBounds(50, 50, 80, 25);
             userLabel.setFont(timesNewRoman);
@@ -271,14 +270,14 @@ public class EazyFinderGUI {
             username = userText.getText();
             password = String.valueOf(passwordField.getPassword());
             String rePassword = String.valueOf(rePasswordField.getPassword());
+            boolean found = false;
             if (username.equals("") || password.equals("") || rePassword.equals("")) {
                 msg.setText("Please Fill all the fields");
-            } else if (!password.equals(rePassword)) {
+            } else if (!password.equals(rePassword)) { // TODO
                 msg.setText("Passwords doesn't match");
-            } else if (isPasswordAccepted(password)) {
+            } else { // Checking if username is already present
                 String str;
                 String[] credentials;
-                boolean found = false;
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(db));
                     while ((str = reader.readLine()) != null) {
@@ -290,21 +289,25 @@ public class EazyFinderGUI {
                         }
                     }
                     reader.close();
-                    if (!found) {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(db, true));
-                        writer.write(username + " " + encryptPassword(password) + "\n");
-                        writer.flush();
-                        writer.close();
-                        File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
-                        File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
-                        if (th.createNewFile() && en.createNewFile()) {
-                            displayMenu();
-                        } else {
-                            msg.setText("Due to some Error we couldn't create your account");
-                        }
-                    }
                 } catch (Exception ex) {
                     msg.setText("Error in reading file");
+                }
+            }
+
+            // TODO
+            if (!found && isPasswordAccepted(password)) {
+                try {
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(db, true));
+                    writer.write(username + " " + encryptPassword(password) + "\n");
+                    writer.flush();
+                    writer.close();
+                    File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                    File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                    if (th.createNewFile() && en.createNewFile()) {
+                        displayMenu();
+                    }
+                } catch (Exception ex) {
+                    msg.setText("Due to some Error we couldn't create your account");
                 }
             }
 
@@ -760,9 +763,6 @@ public class EazyFinderGUI {
                 motRB[2] = new JRadioButton("Auto");
                 motRB[3] = new JRadioButton("Metro");
                 motRB[4] = new JRadioButton("Cab");
-
-//                motGroup.add(motRB[0]); motGroup.add(motRB[1]); motGroup.add(motRB[2]);
-//                motGroup.add(motRB[3]); motGroup.add(motRB[4]);
 
                 backButton = new JButton("Back to Menu");
 
