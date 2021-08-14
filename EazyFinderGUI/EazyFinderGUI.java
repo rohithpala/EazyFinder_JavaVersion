@@ -19,18 +19,18 @@ public class EazyFinderGUI {
     String dirname = System.getProperty("user.dir"); // Path upto src
 
     public static void main(String[] args) {
-        new EazyFinderGUI().HomePage();
+        new EazyFinderGUI().Homepage();
     }
 
     JButton loginButton = new JButton();
     JButton signupButton = new JButton();
 
-    void HomePage() {
+    void Homepage() {
         frame.getContentPane().removeAll();
         frame.repaint();
 
         frame.setSize(350, 300);
-        frame.setTitle("Home Page");
+        frame.setTitle("Homepage");
 //        frame.add(panel);
         frame.setLayout(null);
 //        panel.setLayout(null);
@@ -65,13 +65,16 @@ public class EazyFinderGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (num == 0) {
+                Homepage();
+            }
             if (num == 1) {
                 int result = JOptionPane.showConfirmDialog(frame, "Are You Sure?", "Confirmation",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE);
 
                 if (result == JOptionPane.YES_OPTION) {
-                    HomePage();
+                    Homepage();
                 }
             } else if (num == 2) {
                 displayMenu();
@@ -373,10 +376,11 @@ public class EazyFinderGUI {
                     msg.setForeground(Color.RED);
                     msg.setText("Password Incorrect");
                 } else {
-                    verificationFrame.dispose();
+                    if (case_ != 'A') verificationFrame.dispose();
+                    else AccountDeletion(verificationFrame);
+
                     if (case_ == 'T') TransactionHistory();
                     else if (case_ == 'U') new UpdateUsernameUI().updateUsernameUI();
-                    else if (case_ == 'A') AccountDeletion();
                     else if (case_ == 'P') new PasswordChangeUI().passwordChangeUI();
                     else if (case_ == 'S') new SwitchAccounts().switchAccountsUI();
                 }
@@ -1265,14 +1269,14 @@ public class EazyFinderGUI {
     }
 
 
-    void AccountDeletion() {
-        int result = JOptionPane.showConfirmDialog(frame, "Are You Sure?", "Confirm",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
+    void AccountDeletion(JFrame frame1) {
+        int result = JOptionPane.showConfirmDialog(frame1,
+                "Are You Sure?\nAll Your Transactions, Enquiries will be lost\nThis is un-reversible",
+                "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (result == JOptionPane.YES_OPTION) {
             boolean deleted = new AccountDeletionMainCode().accountDeletion(username, password);
             if (deleted) {
-                HomePage();
+                Homepage();
 
                 msg = new JLabel();
                 frame.add(msg);
@@ -1283,7 +1287,7 @@ public class EazyFinderGUI {
 
                 msg.setText("Account Deleted Successfully");
 
-                msg.setBounds(25, 200, 250, 25);
+                msg.setBounds(25, 200, 300, 25);
                 msg.setHorizontalAlignment(0);
             } else {
                 msg.setText("<html>Some Error Occurred<br>Account not Deleted</html>");
