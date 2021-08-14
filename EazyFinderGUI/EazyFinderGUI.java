@@ -329,16 +329,16 @@ public class EazyFinderGUI {
             verificationFrame.setSize(300, 300);
             verificationFrame.setLocationRelativeTo(frame);
 
-            passwordLabel = new JLabel("Enter Password:");
+            JLabel verificationPasswordLabel = new JLabel("Enter Password:");
             passwordField = new JPasswordField();
             JButton verifyButton = new JButton("Verify");
 
-            verificationFrame.add(passwordLabel);
+            verificationFrame.add(verificationPasswordLabel);
             verificationFrame.add(passwordField);
             verificationFrame.add(verifyButton);
 
-            passwordLabel.setBounds(40, 100, 120, 25);
-            passwordLabel.setFont(timesNewRoman);
+            verificationPasswordLabel.setBounds(40, 100, 120, 25);
+            verificationPasswordLabel.setFont(timesNewRoman);
             passwordField.setBounds(160, 100, 100, 25);
 
             verifyButton.setBounds(75, 150, 150, 25);
@@ -1161,13 +1161,13 @@ public class EazyFinderGUI {
 
                                     JOptionPane.showConfirmDialog(frame, "Username Changed Successfully", "Successful",
                                             JOptionPane.OK_CANCEL_OPTION,
-                                            JOptionPane.WARNING_MESSAGE);
+                                            JOptionPane.INFORMATION_MESSAGE);
 
                                     displayMenu();
                                 } else {
                                     JOptionPane.showConfirmDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
                                             JOptionPane.OK_CANCEL_OPTION,
-                                            JOptionPane.WARNING_MESSAGE);
+                                            JOptionPane.ERROR_MESSAGE);
                                 }
                             }
                         }
@@ -1252,10 +1252,16 @@ public class EazyFinderGUI {
                     if (result == JOptionPane.YES_OPTION) {
                         if (new PasswordChangeMainCode().passwordChange(username, password, newPassword)) {
                             password = newPassword;
-                            msg.setForeground(Color.GREEN);
-                            msg.setText("Password Changed Successfully");
+                            passwordChangeFrame.dispose();
+                            JOptionPane.showConfirmDialog(frame, "Password Changed Successfully",
+                                    "Password Change Successful",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.INFORMATION_MESSAGE);
                         } else {
-                            msg.setText("Some Error Occurred");
+                            JOptionPane.showConfirmDialog(passwordChangeFrame, "Some Error Occurred. Couldn't Change Password\nTry After Some time",
+                                    "Error Occurred",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.ERROR_MESSAGE);
                         }
                     } else if (result == JOptionPane.NO_OPTION) {
                         passwordChangeFrame.dispose();
@@ -1311,14 +1317,14 @@ public class EazyFinderGUI {
             switchAccountsFrame.setTitle("Switching Accounts");
 
             msg = new JLabel();
-            userLabel = new JLabel("Username:");
-            passwordLabel = new JLabel("Password:");
+            JLabel switchingUserLabel = new JLabel("Username:");
+            JLabel switchingPasswordLabel = new JLabel("Password:");
             userText = new JTextField();
             passwordField = new JPasswordField();
             JButton switchAccountButton = new JButton("Switch Account");
 
-            switchAccountsFrame.add(userLabel);
-            switchAccountsFrame.add(passwordLabel);
+            switchAccountsFrame.add(switchingUserLabel);
+            switchAccountsFrame.add(switchingPasswordLabel);
             switchAccountsFrame.add(userText);
             switchAccountsFrame.add(passwordField);
             switchAccountsFrame.add(switchAccountButton);
@@ -1329,14 +1335,14 @@ public class EazyFinderGUI {
             rePasswordField.setText("");
             msg.setText("");
 
-            userLabel.setBounds(50, 80, 80, 25);
-            userLabel.setFont(timesNewRoman);
+            switchingUserLabel.setBounds(50, 80, 80, 25);
+            switchingUserLabel.setFont(timesNewRoman);
 
             userText.setBounds(130, 80, 120, 25);
             userText.setFont(timesNewRoman);
 
-            passwordLabel.setBounds(50, 110, 80, 25);
-            passwordLabel.setFont(timesNewRoman);
+            switchingPasswordLabel.setBounds(50, 110, 80, 25);
+            switchingPasswordLabel.setFont(timesNewRoman);
 
             passwordField.setBounds(130, 110, 120, 25);
 
@@ -1391,7 +1397,7 @@ public class EazyFinderGUI {
                             usernameLabel.setText("Username: " + username);
                             JOptionPane.showConfirmDialog(frame, "Switched Accounts Successfully", "Successful",
                                     JOptionPane.OK_CANCEL_OPTION,
-                                    JOptionPane.WARNING_MESSAGE);
+                                    JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             displayMenu();
                         }
