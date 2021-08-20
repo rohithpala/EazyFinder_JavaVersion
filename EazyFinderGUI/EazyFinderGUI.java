@@ -277,12 +277,10 @@ public class EazyFinderGUI {
                 msg.setText("Passwords doesn't match");
             } else { // Checking if username is already present
                 String str;
-                String[] credentials;
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(db));
                     while ((str = reader.readLine()) != null) {
-                        credentials = str.split(" ");
-                        if (username.equals(credentials[0])) {
+                        if (username.equals(str.split(" ")[0])) {
                             msg.setText("Username Already Taken");
                             found = true;
                             break;
