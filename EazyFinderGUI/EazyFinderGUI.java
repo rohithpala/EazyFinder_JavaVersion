@@ -15,7 +15,7 @@ public class EazyFinderGUI {
     JButton backButton, logoutButton = new JButton("Logout");
     JLabel msg; // Used to print corresponding messages
     Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
-    short frameSize = 700;
+    final short frameSize = 700;
     String dirname = System.getProperty("user.dir"); // Path upto src
 
     public static void main(String[] args) {
@@ -429,9 +429,10 @@ public class EazyFinderGUI {
         usernameLabel.setFont(timesNewRoman);
         usernameLabel.setOpaque(true);
 
-        finderImage.setBounds(318, 33, 64, 64); // Change the values as per the image
+        final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64;
+        int x = (frameSize - IMAGE_WIDTH) / 2, y = (130 - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
+        finderImage.setBounds(x, y, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-        // change all ActionListeners to Verification Class
         menuBookingButton.setBounds(200, 130, 300, 30);
         menuBookingButton.setBackground(Color.DARK_GRAY);
         menuBookingButton.setForeground(Color.WHITE);
