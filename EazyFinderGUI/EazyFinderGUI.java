@@ -16,7 +16,8 @@ public class EazyFinderGUI {
     JLabel msg; // Used to print corresponding messages
     Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
     final short frameSize = 700;
-    String dirname = System.getProperty("user.dir"); // Path upto src
+    String dirname = System.getProperty("user.dir"); // While using an IDE "Edit Configurations" by setting the
+                                                     // Working Directory path till src if it is not already there
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
@@ -381,6 +382,7 @@ public class EazyFinderGUI {
                     else AccountDeletion(verificationFrame);
 
                     if (case_ == 'T') TransactionHistory();
+                    else if(case_ == 'E') new EnquireUI().enquireUI();
                     else if (case_ == 'U') new UpdateUsernameUI().updateUsernameUI();
                     else if (case_ == 'P') new PasswordChangeUI().passwordChangeUI();
                     else if (case_ == 'S') new SwitchAccounts().switchAccountsUI();
@@ -429,56 +431,65 @@ public class EazyFinderGUI {
         usernameLabel.setFont(timesNewRoman);
         usernameLabel.setOpaque(true);
 
+        // frame size is 700
         final int MENU_BUTTON_WIDTH = 300, MENU_BUTTON_HEIGHT = 30;
-        final int MENU_BUTTON_X = 200, FIRST_Y = 130;
+        final int MENU_BUTTON_X = 200, DIFF_IN_Ys = 70;
+        int Y = 130;
 
         final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64;
-        int x = (frameSize - IMAGE_WIDTH) / 2, y = (FIRST_Y - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
+        int x = (frameSize - IMAGE_WIDTH) / 2, y = (Y - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
         finderImage.setBounds(x, y, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-        menuBookingButton.setBounds(MENU_BUTTON_X, 130, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuBookingButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
         menuBookingButton.setBackground(Color.DARK_GRAY);
         menuBookingButton.setForeground(Color.WHITE);
         menuBookingButton.setFont(timesNewRoman);
         menuBookingButton.addActionListener(new Verification('B'));
+        Y += DIFF_IN_Ys;
 
-        menuTHButton.setBounds(MENU_BUTTON_X, 200, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuTHButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
         menuTHButton.setBackground(Color.DARK_GRAY);
         menuTHButton.setForeground(Color.WHITE);
         menuTHButton.setFont(timesNewRoman);
         menuTHButton.addActionListener(new Verification('T'));
+        Y += DIFF_IN_Ys;
 
-        menuEnquiryButton.setBounds(MENU_BUTTON_X, 270, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuEnquiryButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
         menuEnquiryButton.setBackground(Color.DARK_GRAY);
         menuEnquiryButton.setForeground(Color.WHITE);
         menuEnquiryButton.setFont(timesNewRoman);
-        menuEnquiryButton.addActionListener(new EnquireUI());
+        menuEnquiryButton.addActionListener(new Verification('E'));
+        Y += DIFF_IN_Ys;
 
-        menuUpdateUsernameButton.setBounds(MENU_BUTTON_X, 340, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuUpdateUsernameButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
         menuUpdateUsernameButton.setBackground(Color.DARK_GRAY);
         menuUpdateUsernameButton.setForeground(Color.WHITE);
         menuUpdateUsernameButton.setFont(timesNewRoman);
         menuUpdateUsernameButton.addActionListener(new Verification('U'));
+        Y += DIFF_IN_Ys;
 
-        menuPasswordChangeButton.setBounds(MENU_BUTTON_X, 410, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuPasswordChangeButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
         menuPasswordChangeButton.setBackground(Color.DARK_GRAY);
         menuPasswordChangeButton.setForeground(Color.WHITE);
         menuPasswordChangeButton.setFont(timesNewRoman);
         menuPasswordChangeButton.addActionListener(new Verification('P'));
+        Y += DIFF_IN_Ys;
 
-        menuAccountDeleteButton.setBounds(MENU_BUTTON_X, 480, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuAccountDeleteButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
         menuAccountDeleteButton.setBackground(Color.DARK_GRAY);
         menuAccountDeleteButton.setForeground(Color.WHITE);
         menuAccountDeleteButton.setFont(timesNewRoman);
         menuAccountDeleteButton.addActionListener(new Verification('A'));
+        Y += DIFF_IN_Ys;
 
-        menuSwitchAccountsButton.setBounds(MENU_BUTTON_X, 550, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuSwitchAccountsButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
         menuSwitchAccountsButton.setBackground(Color.DARK_GRAY);
         menuSwitchAccountsButton.setForeground(Color.WHITE);
         menuSwitchAccountsButton.setFont(timesNewRoman);
         menuSwitchAccountsButton.addActionListener(new Verification('S'));
+        Y += DIFF_IN_Ys;
 
-        logoutButton.setBounds(300, 620, 100, MENU_BUTTON_HEIGHT);
+        logoutButton.setBounds(300, Y, 100, MENU_BUTTON_HEIGHT);
         logoutButton.setBackground(Color.RED);
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setFont(timesNewRoman);
@@ -941,9 +952,8 @@ public class EazyFinderGUI {
     }
 
 
-    class EnquireUI implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+    class EnquireUI {
+        void enquireUI() {
             frame.getContentPane().removeAll();
             frame.repaint();
 
