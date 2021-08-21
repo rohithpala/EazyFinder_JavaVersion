@@ -232,9 +232,8 @@ public class EazyFinderGUI {
         msg.setText("");
 
         if (!inRange) {
-            JOptionPane.showConfirmDialog(frame, "Password isn't in the Range of 8-16\nPlease try with another Password",
+            JOptionPane.showMessageDialog(frame, "Password isn't in the Range of 8-16\nPlease try with another Password",
                     "Password Not Accepted",
-                    JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.ERROR_MESSAGE);
         } else {
             for (i = 0; i < len; i++) {
@@ -256,8 +255,7 @@ public class EazyFinderGUI {
                 if (!hasSpecialCharacter) message.append("Password Must Contain at least one Special Character").append("\n");
                 if (hasWhiteSpace) message.append("Password Shouldn't Contain a White space Character");
 
-                JOptionPane.showConfirmDialog(frame, message, "Password Not Accepted",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, message, "Password Not Accepted", JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -501,8 +499,8 @@ public class EazyFinderGUI {
     JLabel cityLabel, sourceLabel, destinationLabel;
     JTextField nameText, phoneText;
     JComboBox<String> cityField, sourceField, destinationField, adultField, childrenField;
-    String[] childArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
-    String[] adultArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+    final String[] childArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+    final String[] adultArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
     String[] citiesArray = {"--Select--", "Hyderabad", "Bengaluru", "Chennai"};
     String[] places, temp = {"--Select--"};
     String city, source, destination, name, phone;
@@ -1170,14 +1168,12 @@ public class EazyFinderGUI {
 
                                     usernameLabel.setText("Username: " + username);
 
-                                    JOptionPane.showConfirmDialog(frame, "Username Changed Successfully", "Successful",
-                                            JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.showMessageDialog(frame, "Username Changed Successfully", "Successful",
                                             JOptionPane.INFORMATION_MESSAGE);
 
                                     displayMenu();
                                 } else {
-                                    JOptionPane.showConfirmDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
-                                            JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.showMessageDialog(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error",
                                             JOptionPane.ERROR_MESSAGE);
                                 }
                             }
@@ -1264,15 +1260,12 @@ public class EazyFinderGUI {
                         if (new PasswordChangeMainCode().passwordChange(username, password, newPassword)) {
                             password = newPassword;
                             passwordChangeFrame.dispose();
-                            JOptionPane.showConfirmDialog(frame, "Password Changed Successfully",
+                            JOptionPane.showMessageDialog(frame, "Password Changed Successfully",
                                     "Password Change Successful",
-                                    JOptionPane.OK_CANCEL_OPTION,
                                     JOptionPane.INFORMATION_MESSAGE);
                         } else {
-                            JOptionPane.showConfirmDialog(passwordChangeFrame, "Some Error Occurred. Couldn't Change Password\nTry After Some time",
-                                    "Error Occurred",
-                                    JOptionPane.OK_CANCEL_OPTION,
-                                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(passwordChangeFrame, "Some Error Occurred. Couldn't Change Password\nTry After Some time",
+                                    "Error Occurred", JOptionPane.ERROR_MESSAGE);
                         }
                     } else if (result == JOptionPane.NO_OPTION) {
                         passwordChangeFrame.dispose();
@@ -1295,20 +1288,11 @@ public class EazyFinderGUI {
             boolean deleted = new AccountDeletionMainCode().accountDeletion(username, password);
             if (deleted) {
                 Homepage();
-
-                msg = new JLabel();
-                frame.add(msg);
-
-                msg.setForeground(Color.RED);
-                msg.setFont(timesNewRoman);
-                msg.setOpaque(true);
-
-                msg.setText("Account Deleted Successfully");
-
-                msg.setBounds(25, 200, 300, 25);
-                msg.setHorizontalAlignment(0);
+                JOptionPane.showMessageDialog(frame, "Account Deleted Successfully\nWe are Sorry to see you go", "Account Deleted",
+                        JOptionPane.INFORMATION_MESSAGE);
             } else {
-                msg.setText("<html>Some Error Occurred<br>Account not Deleted</html>");
+                JOptionPane.showMessageDialog(frame, "Some Error Occurred, Account not Deleted", "Account Deleted",
+                        JOptionPane.ERROR_MESSAGE);
             }
         } else {
             displayMenu();
@@ -1407,8 +1391,7 @@ public class EazyFinderGUI {
                             password = localPassword;
                             switchAccountsFrame.dispose();
                             usernameLabel.setText("Username: " + username);
-                            JOptionPane.showConfirmDialog(frame, "Switched Accounts Successfully", "Successful",
-                                    JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.showMessageDialog(frame, "Switched Accounts Successfully", "Successful",
                                     JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             displayMenu();
