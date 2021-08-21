@@ -9,6 +9,8 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+// Using sudo mode as in GitHub TODO
+
 public class EazyFinderGUI {
     JFrame frame = new JFrame();
     //    JPanel panel = new JPanel();
