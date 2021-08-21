@@ -705,12 +705,11 @@ public class EazyFinderGUI {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
-        String[] motOptions = {"Choose Mode Of Transportation Option", "One Transport for Whole Journey",
-                "Mode Of Transportation Place to Place"};
-        JComboBox<String> modeOfTransportationCB = new JComboBox<>(motOptions);
-
         class ContinueToModeOfTransportation implements ActionListener {
             BookingMainCode bookingObj;
+            String[] motOptions = {"Choose Mode Of Transportation Option", "One Transport for Whole Journey",
+                    "Mode Of Transportation Place to Place"};
+            JComboBox<String> modeOfTransportationCB = new JComboBox<>(motOptions);
 
             @Override
             public void actionPerformed(ActionEvent e) {
