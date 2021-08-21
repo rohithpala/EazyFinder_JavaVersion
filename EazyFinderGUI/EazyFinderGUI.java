@@ -430,7 +430,7 @@ public class EazyFinderGUI {
     JButton menuBookingButton, menuTHButton, menuUpdateUsernameButton,
             menuEnquiryButton, menuPasswordChangeButton, menuAccountDeleteButton, menuSwitchAccountsButton;
     JLabel usernameLabel;
-    JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\finder.png"));
+    final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\finder.png"));
 
     void displayMenu() {
         frame.getContentPane().removeAll();
@@ -540,7 +540,7 @@ public class EazyFinderGUI {
     JComboBox<String> cityField, sourceField, destinationField, adultField, childrenField;
     final String[] childArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
     final String[] adultArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
-    String[] citiesArray = {"--Select--", "Hyderabad", "Bengaluru", "Chennai"};
+    final String[] citiesArray = {"--Select--", "Hyderabad", "Bengaluru", "Chennai"};
     String[] places, temp = {"--Select--"};
     String city, source, destination, name, phone;
     short noOfAdults, noOfChildren;
@@ -1360,12 +1360,14 @@ public class EazyFinderGUI {
             JLabel switchingPasswordLabel = new JLabel("Password:");
             userText = new JTextField();
             passwordField = new JPasswordField();
+            JCheckBox showPasswordCB = new JCheckBox("Show Password");
             JButton switchAccountButton = new JButton("Switch Account");
 
             switchAccountsFrame.add(switchingUserLabel);
             switchAccountsFrame.add(switchingPasswordLabel);
             switchAccountsFrame.add(userText);
             switchAccountsFrame.add(passwordField);
+            switchAccountsFrame.add(showPasswordCB);
             switchAccountsFrame.add(switchAccountButton);
             switchAccountsFrame.add(msg);
 
@@ -1384,14 +1386,18 @@ public class EazyFinderGUI {
             switchingPasswordLabel.setFont(timesNewRoman);
 
             passwordField.setBounds(130, 110, 120, 25);
+            passwordField.setFont(timesNewRoman);
 
-            switchAccountButton.setBounds(75, 150, 150, 25);
+            showPasswordCB.setBounds(90, 140, 150, 25);
+            showPasswordCB.addActionListener(new ShowPasswordsCheckBox(passwordField));
+
+            switchAccountButton.setBounds(75, 180, 150, 25);
             switchAccountButton.setBackground(Color.DARK_GRAY);
             switchAccountButton.setForeground(Color.WHITE);
             switchAccountButton.setFont(timesNewRoman);
             switchAccountButton.addActionListener(new SwitchAccountsMainCode());
 
-            msg.setBounds(0, 200, 300, 25);
+            msg.setBounds(0, 210, 300, 25);
             msg.setFont(timesNewRoman);
             msg.setHorizontalAlignment(0);
         }
