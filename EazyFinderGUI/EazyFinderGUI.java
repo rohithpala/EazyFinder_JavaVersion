@@ -1037,15 +1037,7 @@ public class EazyFinderGUI {
                 } else if (source.equals(destination)) {
                     msg.setText("Source and Destination Cannot be same");
                 } else {
-                    JFrame enquireFrame = new JFrame();
-                    enquireFrame.setSize(500, 500);
-
-                    enquireFrame.setLayout(null);
-                    enquireFrame.setVisible(true);
-                    enquireFrame.setLocationRelativeTo(frame);
-
                     JLabel routeCostMessage = new JLabel();
-                    enquireFrame.add(routeCostMessage);
 
                     BookingMainCode enquiryObj = new BookingMainCode(city, source, destination);
                     enquiryObj.new EnquireAndBookings().bookings();
@@ -1061,15 +1053,15 @@ public class EazyFinderGUI {
                     }
                     routeCost.append("\nCost: ").append(cost).append(" /-").append("</html>");
 
-                    enquireFrame.setTitle(enquiryObj.source.toUpperCase() + " to " + enquiryObj.destination.toUpperCase());
-
                     routeCostMessage.setBounds(0, 0, 500, 500);
                     routeCostMessage.setHorizontalAlignment(0);
                     routeCostMessage.setVerticalAlignment(0);
                     routeCostMessage.setFont(timesNewRoman);
                     routeCostMessage.setText(String.valueOf(routeCost).replaceAll("\n", "<br>"));
 
-                    enquireFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    JOptionPane.showMessageDialog(frame, routeCostMessage,
+                            enquiryObj.source.toUpperCase() + " to " + enquiryObj.destination.toUpperCase(),
+                            JOptionPane.INFORMATION_MESSAGE);
 
                     // store the enquiries
                     File enquiryFile = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
