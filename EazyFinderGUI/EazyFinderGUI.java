@@ -537,9 +537,8 @@ public class EazyFinderGUI {
     JLabel nameLabel, phoneLabel, adultLabel, childrenLabel, phoneMessage;
     JLabel cityLabel, sourceLabel, destinationLabel;
     JTextField nameText, phoneText;
-    JComboBox<String> cityField, sourceField, destinationField, adultField, childrenField;
-    final String[] childArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
-    final String[] adultArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+    JComboBox<String> cityField, sourceField, destinationField;
+    JSpinner adultField, childrenField;
     final String[] citiesArray = {"--Select--", "Hyderabad", "Bengaluru", "Chennai"};
     String[] places, temp = {"--Select--"};
     String city, source, destination, name, phone;
@@ -589,6 +588,12 @@ public class EazyFinderGUI {
         }
     }
 
+    void positioningTextAndDisablingEditingInJSpinner(JSpinner spinner){
+        JFormattedTextField tf = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+        tf.setEditable(false);
+        tf.setHorizontalAlignment(JLabel.LEFT);
+    }
+
 
     class BookingsUI implements ActionListener {
         @Override
@@ -626,13 +631,17 @@ public class EazyFinderGUI {
 
             adultLabel = new JLabel("Adults:");
             adultLabel.setFont(timesNewRoman);
-            adultField = new JComboBox<>(adultArray);
+
+            adultField = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
             adultField.setFont(timesNewRoman);
+            positioningTextAndDisablingEditingInJSpinner(adultField);
 
             childrenLabel = new JLabel("Children:");
             childrenLabel.setFont(timesNewRoman);
-            childrenField = new JComboBox<>(childArray);
+
+            childrenField = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
             childrenField.setFont(timesNewRoman);
+            positioningTextAndDisablingEditingInJSpinner(childrenField);
 
             msg = new JLabel();
             phoneMessage = new JLabel();
@@ -725,8 +734,8 @@ public class EazyFinderGUI {
                 city = String.valueOf(cityField.getSelectedItem());
                 source = String.valueOf(sourceField.getSelectedItem());
                 destination = String.valueOf(destinationField.getSelectedItem());
-                noOfAdults = Short.parseShort(String.valueOf(adultField.getSelectedItem()));
-                noOfChildren = Short.parseShort(String.valueOf(childrenField.getSelectedItem()));
+                noOfAdults = Short.parseShort(String.valueOf(adultField.getValue()));
+                noOfChildren = Short.parseShort(String.valueOf(childrenField.getValue()));
 
                 if (name.equals("") || phone.equals("") || source.equals("--Select--") || destination.equals("--Select--")) {
                     msg.setBounds(225, 470, 250, 25);
@@ -872,8 +881,8 @@ public class EazyFinderGUI {
                 book.addActionListener(book_E -> {
                     short motIndex = (short) vehicleCB.getSelectedIndex();
                     BookingMainCode bookingObj = new BookingMainCode(motIndex,
-                            Short.parseShort(String.valueOf(adultField.getSelectedItem())),
-                            Short.parseShort(String.valueOf(childrenField.getSelectedItem())));
+                            Short.parseShort(String.valueOf(adultField.getValue())),
+                            Short.parseShort(String.valueOf(childrenField.getValue())));
                     float totalCost = bookingObj.calculateTotalCost();
 
                     JLabel costLabel = new JLabel("Total Cost: " + totalCost);
