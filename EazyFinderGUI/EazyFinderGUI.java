@@ -200,9 +200,10 @@ public class EazyFinderGUI {
         return encryptedPassword;
     }
 
-    class ShowPasswordsCheckBox implements ActionListener{
+    class ShowPasswordsCheckBox implements ActionListener {
         JPasswordField pf;
-        ShowPasswordsCheckBox(JPasswordField pf){
+
+        ShowPasswordsCheckBox(JPasswordField pf) {
             this.pf = pf;
         }
 
@@ -221,6 +222,7 @@ public class EazyFinderGUI {
         public void actionPerformed(ActionEvent e) {
             username = userText.getText();
             password = String.valueOf(passwordField.getPassword());
+
             if (username.equals("") || password.equals("")) {
                 msg.setText("Please Fill all the Fields");
             } else {
