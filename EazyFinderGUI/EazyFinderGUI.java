@@ -17,7 +17,7 @@ public class EazyFinderGUI {
     Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
     final short frameSize = 700;
     String dirname = System.getProperty("user.dir"); // While using an IDE "Edit Configurations" by setting the
-                                                     // Working Directory path till src if it is not already there
+    // Working Directory path till src if it is not already there
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
@@ -185,9 +185,8 @@ public class EazyFinderGUI {
         return encryptedPassword;
     }
 
-    String username;
-    String password;
-    File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
+    String username, password;
+    final File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
 
     class LogIn implements ActionListener {
         @Override
@@ -272,6 +271,7 @@ public class EazyFinderGUI {
             password = String.valueOf(passwordField.getPassword());
             String rePassword = String.valueOf(rePasswordField.getPassword());
             boolean found = false;
+
             if (username.equals("") || password.equals("") || rePassword.equals("")) {
                 msg.setText("Please Fill all the fields");
             } else if (!password.equals(rePassword)) { // TODO
@@ -291,22 +291,21 @@ public class EazyFinderGUI {
                 } catch (Exception ex) {
                     msg.setText("Error in reading file");
                 }
-            }
 
-            // TODO
-            if (!found && isPasswordAccepted(password)) {
-                try {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(db, true));
-                    writer.write(username + " " + encryptPassword(password) + "\n");
-                    writer.flush();
-                    writer.close();
-                    File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
-                    File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
-                    if (th.createNewFile() && en.createNewFile()) {
-                        displayMenu();
+                if (!found && isPasswordAccepted(password)) {
+                    try {
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(db, true));
+                        writer.write(username + " " + encryptPassword(password) + "\n");
+                        writer.flush();
+                        writer.close();
+                        File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                        File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                        if (th.createNewFile() && en.createNewFile()) {
+                            displayMenu();
+                        }
+                    } catch (Exception ex) {
+                        msg.setText("Due to some Error we couldn't create your account");
                     }
-                } catch (Exception ex) {
-                    msg.setText("Due to some Error we couldn't create your account");
                 }
             }
 
@@ -382,7 +381,7 @@ public class EazyFinderGUI {
                     else AccountDeletion(verificationFrame);
 
                     if (case_ == 'T') TransactionHistory();
-                    else if(case_ == 'E') new EnquireUI().enquireUI();
+                    else if (case_ == 'E') new EnquireUI().enquireUI();
                     else if (case_ == 'U') new UpdateUsernameUI().updateUsernameUI();
                     else if (case_ == 'P') new PasswordChangeUI().passwordChangeUI();
                     else if (case_ == 'S') new SwitchAccounts().switchAccountsUI();
