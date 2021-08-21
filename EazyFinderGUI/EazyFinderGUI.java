@@ -13,7 +13,6 @@ import java.util.Date;
 
 public class EazyFinderGUI {
     JFrame frame = new JFrame();
-    //    JPanel panel = new JPanel();
     JButton backButton, logoutButton = new JButton("Logout");
     JLabel msg; // Used to print corresponding messages
     Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
@@ -36,9 +35,7 @@ public class EazyFinderGUI {
 
         frame.setSize(350, 300);
         frame.setTitle("Homepage");
-//        frame.add(panel);
         frame.setLayout(null);
-//        panel.setLayout(null);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
 
@@ -112,7 +109,6 @@ public class EazyFinderGUI {
             msg = new JLabel();
 
             frame.setTitle(buttonName);
-//            frame.add(panel);
             frame.add(userLabel);
             frame.add(passwordLabel);
             frame.add(userText);
@@ -429,27 +425,43 @@ public class EazyFinderGUI {
         }
     }
 
-    JButton menuBookingButton, menuTHButton, menuUpdateUsernameButton,
-            menuEnquiryButton, menuPasswordChangeButton, menuAccountDeleteButton, menuSwitchAccountsButton;
-    JLabel usernameLabel;
+//    JButton menuBookingButton, menuTHButton, menuUpdateUsernameButton, menuEnquiryButton,
+//            menuPasswordChangeButton, menuAccountDeleteButton, menuSwitchAccountsButton;
+
+    JButton menuBookingButton = new JButton("Book for a Journey");
+    JButton menuTHButton = new JButton("See Transaction History");
+    JButton menuUpdateUsernameButton = new JButton("Update Username");
+    JButton menuEnquiryButton = new JButton("Enquire");
+    JButton menuPasswordChangeButton = new JButton("Change Password");
+    JButton menuAccountDeleteButton = new JButton("Delete my Account");
+    JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
+    JLabel usernameLabel = new JLabel("Username: " + username);
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\finder.png"));
 
+    // frame size is 700
+    final int MENU_BUTTON_WIDTH = 300, MENU_BUTTON_HEIGHT = 30;
+    final int MENU_BUTTON_X = 200, DIFF_IN_Ys = 70;
+    int Y = 130;
+
+    final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64;
+    int x = (frameSize - IMAGE_WIDTH) / 2, y = (Y - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
+
+    // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
     void displayMenu() {
         frame.getContentPane().removeAll();
         frame.repaint();
         frame.setSize(frameSize, frameSize);
         frame.setTitle("EazyFinder");
         frame.setLocationRelativeTo(null);
-//        frame.add(panel);
 
-        menuBookingButton = new JButton("Book for a Journey");
-        menuTHButton = new JButton("See Transaction History");
-        menuUpdateUsernameButton = new JButton("Update Username");
-        menuEnquiryButton = new JButton("Enquire");
-        menuPasswordChangeButton = new JButton("Change Password");
-        menuAccountDeleteButton = new JButton("Delete my Account");
-        menuSwitchAccountsButton = new JButton("Switch Accounts");
-        usernameLabel = new JLabel("Username: " + username);
+//        menuBookingButton = new JButton("Book for a Journey");
+//        menuTHButton = new JButton("See Transaction History");
+//        menuUpdateUsernameButton = new JButton("Update Username");
+//        menuEnquiryButton = new JButton("Enquire");
+//        menuPasswordChangeButton = new JButton("Change Password");
+//        menuAccountDeleteButton = new JButton("Delete my Account");
+//        menuSwitchAccountsButton = new JButton("Switch Accounts");
+//        usernameLabel = new JLabel("Username: " + username);
 
         frame.add(usernameLabel);
         frame.add(finderImage);
@@ -469,13 +481,6 @@ public class EazyFinderGUI {
         usernameLabel.setFont(timesNewRoman);
         usernameLabel.setOpaque(true);
 
-        // frame size is 700
-        final int MENU_BUTTON_WIDTH = 300, MENU_BUTTON_HEIGHT = 30;
-        final int MENU_BUTTON_X = 200, DIFF_IN_Ys = 70;
-        int Y = 130;
-
-        final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64;
-        int x = (frameSize - IMAGE_WIDTH) / 2, y = (Y - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
         finderImage.setBounds(x, y, IMAGE_WIDTH, IMAGE_HEIGHT);
 
         menuBookingButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
