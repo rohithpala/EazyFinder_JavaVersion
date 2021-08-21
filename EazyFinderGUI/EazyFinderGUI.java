@@ -1025,15 +1025,19 @@ public class EazyFinderGUI {
 
             cityLabel.setBounds(200, 200, 100, 25);
             cityLabel.setFont(timesNewRoman);
+
             sourceLabel.setBounds(200, 250, 100, 25);
             sourceLabel.setFont(timesNewRoman);
+
             destinationLabel.setBounds(200, 300, 100, 25);
             destinationLabel.setFont(timesNewRoman);
 
             cityField.setBounds(300, 200, 200, 25);
             cityField.setFont(timesNewRoman);
+
             sourceField.setBounds(300, 250, 200, 25);
             sourceField.setFont(timesNewRoman);
+
             destinationField.setBounds(300, 300, 200, 25);
             destinationField.setFont(timesNewRoman);
 
@@ -1378,7 +1382,6 @@ public class EazyFinderGUI {
 
             switchingUserLabel.setBounds(50, 80, 80, 25);
             switchingUserLabel.setFont(timesNewRoman);
-
             userText.setBounds(130, 80, 120, 25);
             userText.setFont(timesNewRoman);
 
