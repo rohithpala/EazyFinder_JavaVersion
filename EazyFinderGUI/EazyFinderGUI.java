@@ -91,8 +91,8 @@ public class EazyFinderGUI {
     JTextField userText = new JTextField();
     JPasswordField passwordField = new JPasswordField();
     JPasswordField rePasswordField = new JPasswordField();
-    JCheckBox shoePasswordCB1 = new JCheckBox("Show Password");
-    JCheckBox shoePasswordCB2 = new JCheckBox("Show Password");
+    JCheckBox showPasswordCB1 = new JCheckBox("Show Password");
+    JCheckBox showPasswordCB2 = new JCheckBox("Show Password");
 
     class LoginSignUpCommonCode implements ActionListener {
         String buttonName;
@@ -115,8 +115,8 @@ public class EazyFinderGUI {
             frame.add(passwordLabel);
             frame.add(userText);
             frame.add(passwordField);
-            frame.add(shoePasswordCB1);
-            frame.add(shoePasswordCB2);
+            frame.add(showPasswordCB1);
+            frame.add(showPasswordCB2);
             frame.add(msg);
             frame.add(backButton);
 
@@ -132,8 +132,8 @@ public class EazyFinderGUI {
             passwordField.setBounds(130, 80, 120, 25);
             passwordField.setFont(timesNewRoman);
 
-            shoePasswordCB1.setBounds(90, 110, 120, 25);
-            shoePasswordCB1.addActionListener(new ShowPasswordsCheckBox(passwordField));
+            showPasswordCB1.setBounds(90, 110, 120, 25);
+            showPasswordCB1.addActionListener(new ShowPasswordsCheckBox(passwordField));
 
             userText.setText("");
             passwordField.setText("");
@@ -172,8 +172,8 @@ public class EazyFinderGUI {
                 rePasswordField.setBounds(130, 140, 120, 25);
                 rePasswordField.setFont(timesNewRoman);
 
-                shoePasswordCB2.setBounds(90, 170, 120, 25);
-                shoePasswordCB2.addActionListener(new ShowPasswordsCheckBox(rePasswordField));
+                showPasswordCB2.setBounds(90, 170, 120, 25);
+                showPasswordCB2.addActionListener(new ShowPasswordsCheckBox(rePasswordField));
 
                 signupButton.setBounds(125, 200, 100, 25);
                 signupButton.setBackground(Color.DARK_GRAY);
@@ -1230,19 +1230,29 @@ public class EazyFinderGUI {
             passwordChangeFrame.add(rePasswordLabel);
             passwordChangeFrame.add(newPasswordField);
             passwordChangeFrame.add(rePasswordField);
+            passwordChangeFrame.add(showPasswordCB1);
+            passwordChangeFrame.add(showPasswordCB2);
             passwordChangeFrame.add(passwordChangeButton);
 
             newPasswordLabel.setBounds(90, 100, 120, 25);
             newPasswordLabel.setFont(timesNewRoman);
 
             newPasswordField.setBounds(210, 100, 100, 25);
+            newPasswordField.setFont(timesNewRoman);
 
-            rePasswordLabel.setBounds(40, 150, 180, 25);
+            showPasswordCB1.setBounds(140, 130, 120, 25);
+            showPasswordCB1.addActionListener(new ShowPasswordsCheckBox(newPasswordField));
+
+            rePasswordLabel.setBounds(40, 160, 180, 25);
             rePasswordLabel.setFont(timesNewRoman);
 
-            rePasswordField.setBounds(210, 150, 100, 25);
+            rePasswordField.setBounds(210, 160, 100, 25);
+            rePasswordField.setFont(timesNewRoman);
 
-            passwordChangeButton.setBounds(100, 200, 180, 25);
+            showPasswordCB2.setBounds(140, 190, 120, 25);
+            showPasswordCB1.addActionListener(new ShowPasswordsCheckBox(rePasswordField));
+
+            passwordChangeButton.setBounds(100, 225, 180, 25);
             passwordChangeButton.setBackground(Color.RED);
             passwordChangeButton.setForeground(Color.WHITE);
             passwordChangeButton.setFont(timesNewRoman);
