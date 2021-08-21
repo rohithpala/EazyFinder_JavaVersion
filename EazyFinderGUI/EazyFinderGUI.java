@@ -16,8 +16,10 @@ public class EazyFinderGUI {
     JLabel msg; // Used to print corresponding messages
     Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
     final short frameSize = 700;
-    String dirname = System.getProperty("user.dir"); // While using an IDE "Edit Configurations" by setting the
+
+    // While using an IDE "Edit Configurations" by setting the
     // Working Directory path till src if it is not already there
+    String dirname = System.getProperty("user.dir");
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
