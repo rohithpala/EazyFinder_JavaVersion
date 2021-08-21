@@ -1291,6 +1291,7 @@ public class EazyFinderGUI {
                 "Are You Sure?\nAll Your Transactions, Enquiries will be lost\nThis is un-reversible",
                 "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (result == JOptionPane.YES_OPTION) {
+            frame1.dispose();
             boolean deleted = new AccountDeletionMainCode().accountDeletion(username, password);
             if (deleted) {
                 Homepage();
