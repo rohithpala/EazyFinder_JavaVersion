@@ -435,10 +435,9 @@ public class EazyFinderGUI {
     JButton menuPasswordChangeButton = new JButton("Change Password");
     JButton menuAccountDeleteButton = new JButton("Delete my Account");
     JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
-    JLabel usernameLabel = new JLabel("Username: " + username);
+    JLabel usernameLabel = new JLabel();
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\finder.png"));
 
-    // frame size is 700
     final int MENU_BUTTON_WIDTH = 300, MENU_BUTTON_HEIGHT = 30;
     final int MENU_BUTTON_X = 200, DIFF_IN_Ys = 70;
     int Y = 130;
@@ -454,15 +453,6 @@ public class EazyFinderGUI {
         frame.setTitle("EazyFinder");
         frame.setLocationRelativeTo(null);
 
-//        menuBookingButton = new JButton("Book for a Journey");
-//        menuTHButton = new JButton("See Transaction History");
-//        menuUpdateUsernameButton = new JButton("Update Username");
-//        menuEnquiryButton = new JButton("Enquire");
-//        menuPasswordChangeButton = new JButton("Change Password");
-//        menuAccountDeleteButton = new JButton("Delete my Account");
-//        menuSwitchAccountsButton = new JButton("Switch Accounts");
-//        usernameLabel = new JLabel("Username: " + username);
-
         frame.add(usernameLabel);
         frame.add(finderImage);
         frame.add(menuBookingButton);
@@ -474,6 +464,7 @@ public class EazyFinderGUI {
         frame.add(menuSwitchAccountsButton);
         frame.add(logoutButton);
 
+        usernameLabel.setText("Username: " + username);
         usernameLabel.setBounds(0, 0, frameSize, 25);
         usernameLabel.setBackground(Color.cyan);
         usernameLabel.setForeground(Color.DARK_GRAY);
