@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 // Using sudo mode as in GitHub TODO
+// use local labels and all TODO
 
 public class EazyFinderGUI {
     JFrame frame = new JFrame();
@@ -329,6 +330,8 @@ public class EazyFinderGUI {
                         File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
                         File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
                         if (th.createNewFile() && en.createNewFile()) {
+                            JOptionPane.showMessageDialog(frame, "Account Created Successfully",
+                                    "SignUp Successful", JOptionPane.INFORMATION_MESSAGE);
                             displayMenu();
                         }
                     } catch (Exception ex) {
