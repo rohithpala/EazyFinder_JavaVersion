@@ -341,7 +341,7 @@ public class EazyFinderGUI {
 
                 if (username.equals("") || password.equals("") || rePassword.equals("")) {
                     msg.setText("Please Fill all the fields");
-                } else if (!password.equals(rePassword)) { // TODO
+                } else if (!password.equals(rePassword)) {
                     msg.setText("Passwords doesn't match");
                 } else { // Checking if username is already present
                     String str;
