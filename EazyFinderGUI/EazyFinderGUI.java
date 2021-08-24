@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 // use sudo mode as in GitHub TODO
+// caps lock warning TODO
 
 public class EazyFinderGUI {
 
@@ -577,7 +578,7 @@ public class EazyFinderGUI {
 
     String[] places, temp = {"--Select--"};
     String city, source, destination;
-    final String[] citiesArray = {"--Select--", "Hyderabad", "Bengaluru", "Chennai"};
+    final String[] citiesArray = {"--Select--", "HYDERABAD", "BENGALURU", "CHENNAI"};
     float cost;
 
     void getPlaces() {
