@@ -132,6 +132,7 @@ public class EazyFinderGUI {
             showPasswordCB1 = new JCheckBox("Show Password");
             msg = new JLabel();
 
+            frame.add(backButton);
             frame.add(userLabel);
             frame.add(passwordLabel);
             frame.add(userText);
@@ -139,7 +140,6 @@ public class EazyFinderGUI {
             frame.add(showPasswordCB1);
             frame.add(loginButton);
             frame.add(msg);
-            frame.add(backButton);
 
             backButton.setBounds(0, 0, 80, 30);
             backButton.setBackground(Color.BLACK);
