@@ -13,7 +13,6 @@ import java.util.Date;
 // caps lock warning TODO
 
 public class EazyFinderGUI {
-
     // While using an IDE "Edit Configurations" by setting the Working Directory path till src if it is not already present
     String dirname = System.getProperty("user.dir");
 
@@ -68,9 +67,7 @@ public class EazyFinderGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (num == 0) {
-                Homepage();
-            } else if (num == 1) {
+            if (num == 1) {
                 int result = JOptionPane.showConfirmDialog(frame, "Are You Sure?", "Confirmation",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE);
@@ -108,7 +105,7 @@ public class EazyFinderGUI {
         }
     }
 
-    // variables used in Login and SignUp
+    // Variables used in Login and SignUp
     JLabel userLabel = new JLabel("Username:");
     JLabel passwordLabel = new JLabel("Password:");
     JLabel rePasswordLabel = new JLabel("Re-Type Password:");
@@ -212,7 +209,7 @@ public class EazyFinderGUI {
         }
     }
 
-    boolean isPasswordAccepted(String password) {
+    boolean isPasswordAccepted(String password, JFrame frame1) {
         boolean inRange = false, hasWhiteSpace = false, hasLowerCaseLetter = false, hasUpperCaseLetter = false, hasDigit = false,
                 hasSpecialCharacter = false;
         byte i, len = (byte) password.length();
@@ -222,7 +219,7 @@ public class EazyFinderGUI {
         msg.setText("");
 
         if (!inRange) {
-            JOptionPane.showMessageDialog(frame, "Password isn't in the Range of 8-16\nPlease try with another Password",
+            JOptionPane.showMessageDialog(frame1, "Password isn't in the Range of 8-16\nPlease try with another Password",
                     "Password Not Accepted",
                     JOptionPane.ERROR_MESSAGE);
         } else {
@@ -245,7 +242,7 @@ public class EazyFinderGUI {
                 if (!hasSpecialCharacter) message.append("Password Must Contain at least one Special Character").append("\n");
                 if (hasWhiteSpace) message.append("Password Shouldn't Contain a White space Character");
 
-                JOptionPane.showMessageDialog(frame, message, "Password Not Accepted", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame1, message, "Password Not Accepted", JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -355,7 +352,7 @@ public class EazyFinderGUI {
                         msg.setText("Error in reading file");
                     }
 
-                    if (!found && isPasswordAccepted(password)) {
+                    if (!found && isPasswordAccepted(password, frame)) {
                         try {
                             BufferedWriter writer = new BufferedWriter(new FileWriter(db, true));
                             writer.write(username + " " + encryptPassword(password) + "\n");
@@ -1367,7 +1364,7 @@ public class EazyFinderGUI {
                     msg.setText("New Password cannot be same as Old one");
                 } else if (!newPassword.equals(rePassword)) {
                     msg.setText("Passwords doesn't match");
-                } else if (isPasswordAccepted(newPassword)) {
+                } else if (isPasswordAccepted(newPassword, passwordChangeFrame)) {
                     int result = JOptionPane.showConfirmDialog(passwordChangeFrame, "Are You Sure?", "Confirm",
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.WARNING_MESSAGE);
