@@ -1069,8 +1069,6 @@ public class EazyFinderGUI {
             JLabel enquireSourceLabel = new JLabel("Source:");
             JLabel enquireDestinationLabel = new JLabel("Destination:");
 
-            msg = new JLabel();
-
             JButton enquireButton = new JButton("Enquire");
 
             frame.add(backButton);
@@ -1124,19 +1122,21 @@ public class EazyFinderGUI {
         }
 
         class EnquireMainCode implements ActionListener { // Save Enquiries for recommendations
+            String city, source, destination;
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                msg.setBounds(0, 400, frameSize, frameSize);
+                msg = new JLabel();
+                msg.setBounds(0, 400, frameSize, 25);
                 msg.setFont(timesNewRoman);
                 msg.setForeground(Color.RED);
                 msg.setHorizontalAlignment(0);
-                msg.setOpaque(true);
 
                 frame.add(msg);
 
-                String city = String.valueOf(enquireCityField.getSelectedItem());
-                String source = String.valueOf(enquireSourceField.getSelectedItem());
-                String destination = String.valueOf(enquireDestinationField.getSelectedItem());
+                city = String.valueOf(enquireCityField.getSelectedItem());
+                source = String.valueOf(enquireSourceField.getSelectedItem());
+                destination = String.valueOf(enquireDestinationField.getSelectedItem());
 
                 if (city.equals("--Select--") || source.equals("--Select--") || destination.equals("--Select--")) {
                     msg.setText("Please Complete all the Fields");
