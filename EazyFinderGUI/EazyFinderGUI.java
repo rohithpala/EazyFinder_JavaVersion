@@ -470,9 +470,9 @@ public class EazyFinderGUI {
 
     JLabel usernameLabel = new JLabel();
 
-    int MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, MENU_BUTTON_X, DIFF_IN_Ys, Y;
+    int menuButtonWidth, menuButtonHeight, menuButtonX, diffInYs, buttonsY;
     final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64;
-    int x, y;
+    int imageX, imageY;
 
     JButton menuBookingButton = new JButton("Book for a Journey");
     JButton menuTHButton = new JButton("See Transaction History");
@@ -491,13 +491,10 @@ public class EazyFinderGUI {
         frame.setTitle("EazyFinder");
         frame.setLocationRelativeTo(null);
 
-        MENU_BUTTON_WIDTH = 300;
-        MENU_BUTTON_HEIGHT = 30;
-        MENU_BUTTON_X = 200;
-        DIFF_IN_Ys = 70;
-        Y = 130;
-        x = (frameSize - IMAGE_WIDTH) / 2;
-        y = (Y - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
+        menuButtonWidth = 300; menuButtonHeight = 30; menuButtonX = 200; diffInYs = 70;
+        buttonsY = 130;
+        imageX = (frameSize - IMAGE_WIDTH) / 2;
+        imageY = (buttonsY - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
 
         frame.add(usernameLabel);
         frame.add(finderImage);
@@ -518,58 +515,58 @@ public class EazyFinderGUI {
         usernameLabel.setFont(timesNewRoman);
         usernameLabel.setOpaque(true);
 
-        finderImage.setBounds(x, y, IMAGE_WIDTH, IMAGE_HEIGHT);
+        finderImage.setBounds(imageX, imageY, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-        menuBookingButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuBookingButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuBookingButton.setBackground(Color.DARK_GRAY);
         menuBookingButton.setForeground(Color.WHITE);
         menuBookingButton.setFont(timesNewRoman);
         menuBookingButton.addActionListener(new Verification('B'));
-        Y += DIFF_IN_Ys;
+        buttonsY += diffInYs;
 
-        menuTHButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuTHButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuTHButton.setBackground(Color.DARK_GRAY);
         menuTHButton.setForeground(Color.WHITE);
         menuTHButton.setFont(timesNewRoman);
         menuTHButton.addActionListener(new Verification('T'));
-        Y += DIFF_IN_Ys;
+        buttonsY += diffInYs;
 
-        menuEnquiryButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuEnquiryButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuEnquiryButton.setBackground(Color.DARK_GRAY);
         menuEnquiryButton.setForeground(Color.WHITE);
         menuEnquiryButton.setFont(timesNewRoman);
         menuEnquiryButton.addActionListener(new Verification('E'));
-        Y += DIFF_IN_Ys;
+        buttonsY += diffInYs;
 
-        menuUpdateUsernameButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuUpdateUsernameButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuUpdateUsernameButton.setBackground(Color.DARK_GRAY);
         menuUpdateUsernameButton.setForeground(Color.WHITE);
         menuUpdateUsernameButton.setFont(timesNewRoman);
         menuUpdateUsernameButton.addActionListener(new Verification('U'));
-        Y += DIFF_IN_Ys;
+        buttonsY += diffInYs;
 
-        menuPasswordChangeButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuPasswordChangeButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuPasswordChangeButton.setBackground(Color.DARK_GRAY);
         menuPasswordChangeButton.setForeground(Color.WHITE);
         menuPasswordChangeButton.setFont(timesNewRoman);
         menuPasswordChangeButton.addActionListener(new Verification('P'));
-        Y += DIFF_IN_Ys;
+        buttonsY += diffInYs;
 
-        menuAccountDeleteButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuAccountDeleteButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuAccountDeleteButton.setBackground(Color.DARK_GRAY);
         menuAccountDeleteButton.setForeground(Color.WHITE);
         menuAccountDeleteButton.setFont(timesNewRoman);
         menuAccountDeleteButton.addActionListener(new Verification('A'));
-        Y += DIFF_IN_Ys;
+        buttonsY += diffInYs;
 
-        menuSwitchAccountsButton.setBounds(MENU_BUTTON_X, Y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        menuSwitchAccountsButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuSwitchAccountsButton.setBackground(Color.DARK_GRAY);
         menuSwitchAccountsButton.setForeground(Color.WHITE);
         menuSwitchAccountsButton.setFont(timesNewRoman);
         menuSwitchAccountsButton.addActionListener(new Verification('S'));
-        Y += DIFF_IN_Ys;
+        buttonsY += diffInYs;
 
-        logoutButton.setBounds(300, Y, 100, MENU_BUTTON_HEIGHT);
+        logoutButton.setBounds(300, buttonsY, 100, menuButtonHeight);
         logoutButton.setBackground(Color.RED);
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setFont(timesNewRoman);
