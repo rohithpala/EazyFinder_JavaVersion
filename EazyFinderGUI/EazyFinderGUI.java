@@ -660,26 +660,31 @@ public class EazyFinderGUI {
 
             nameLabel = new JLabel("Name:");
             nameLabel.setFont(timesNewRoman);
+
             nameText = new JTextField();
             nameText.setFont(timesNewRoman);
 
             phoneLabel = new JLabel("Mobile Number:");
             phoneLabel.setFont(timesNewRoman);
+
             phoneText = new JTextField();
             phoneText.setFont(timesNewRoman);
 
             cityLabel = new JLabel("City");
             cityLabel.setFont(timesNewRoman);
+
             cityField = new JComboBox<>(citiesArray);
             cityField.setFont(timesNewRoman);
 
             sourceLabel = new JLabel("Source:");
             sourceLabel.setFont(timesNewRoman);
+
             sourceField = new JComboBox<>(temp);
             sourceField.setFont(timesNewRoman);
 
             destinationLabel = new JLabel("Destination:");
             destinationLabel.setFont(timesNewRoman);
+
             destinationField = new JComboBox<>(temp);
             destinationField.setFont(timesNewRoman);
 
@@ -1205,6 +1210,7 @@ public class EazyFinderGUI {
             newUsernameLabel.setFont(timesNewRoman);
 
             newUsernameText.setBounds(210, 160, 100, 25);
+            newUsernameText.setText("");
             newUsernameText.setFont(timesNewRoman);
 
             changeUsernameButton.setBounds(100, 230, 200, 25);
@@ -1413,8 +1419,12 @@ public class EazyFinderGUI {
 
     class SwitchAccountsUI {
         JFrame switchAccountsFrame;
-        JTextField switchingUserText;
-        JPasswordField switchingPassword;
+        JLabel switchingUserLabel = new JLabel("Username:");
+        JLabel switchingPasswordLabel = new JLabel("Password:");
+        JTextField switchingUserText = new JTextField();
+        JPasswordField switchingPassword = new JPasswordField();
+        JCheckBox switchingCB;
+        JButton switchAccountButton = new JButton("Switch Account");
 
         void switchAccountsUI() {
             switchAccountsFrame = new JFrame();
@@ -1425,12 +1435,7 @@ public class EazyFinderGUI {
             switchAccountsFrame.setTitle("Switching Accounts");
 
             msg = new JLabel();
-            JLabel switchingUserLabel = new JLabel("Username:");
-            JLabel switchingPasswordLabel = new JLabel("Password:");
-            switchingUserText = new JTextField();
-            switchingPassword = new JPasswordField();
-            JCheckBox switchingCB = new JCheckBox("Show Password");
-            JButton switchAccountButton = new JButton("Switch Account");
+            switchingCB = new JCheckBox("Show Password");
 
             switchAccountsFrame.add(switchingUserLabel);
             switchAccountsFrame.add(switchingPasswordLabel);
@@ -1444,12 +1449,14 @@ public class EazyFinderGUI {
             switchingUserLabel.setFont(timesNewRoman);
 
             switchingUserText.setBounds(130, 80, 120, 25);
+            switchingUserText.setText("");
             switchingUserText.setFont(timesNewRoman);
 
             switchingPasswordLabel.setBounds(50, 110, 80, 25);
             switchingPasswordLabel.setFont(timesNewRoman);
 
             switchingPassword.setBounds(130, 110, 120, 25);
+            switchingPassword.setText("");
             switchingPassword.setFont(timesNewRoman);
 
             switchingCB.setBounds(90, 140, 150, 25);
