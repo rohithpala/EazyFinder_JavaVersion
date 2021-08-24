@@ -12,13 +12,16 @@ import java.util.Date;
 // use sudo mode as in GitHub TODO
 
 public class EazyFinderGUI {
+
+    // While using an IDE "Edit Configurations" by setting the Working Directory path till src if it is not already present
+    String dirname = System.getProperty("user.dir");
+
     JFrame frame = new JFrame();
     JButton backButton, logoutButton = new JButton("Logout");
     JLabel msg; // Used to print corresponding messages
     final Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
     final short frameSize = 700;
-    // While using an IDE "Edit Configurations" by setting the Working Directory path till src if it is not already present
-    String dirname = System.getProperty("user.dir");
+    Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\EazyFinderGUI\\finder.png");
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
@@ -26,10 +29,10 @@ public class EazyFinderGUI {
 
     JButton homepageLoginButton = new JButton("LogIn");
     JButton homepageSignupButton = new JButton("SignUp");
-
     void Homepage() {
         frame.getContentPane().removeAll();
         frame.repaint();
+        frame.setIconImage(icon);
 
         frame.setSize(350, 300);
         frame.setTitle("Homepage");
@@ -104,6 +107,7 @@ public class EazyFinderGUI {
         }
     }
 
+    // variables used in Login and SignUp
     JLabel userLabel = new JLabel("Username:");
     JLabel passwordLabel = new JLabel("Password:");
     JLabel rePasswordLabel = new JLabel("Re-Type Password:");
@@ -127,10 +131,6 @@ public class EazyFinderGUI {
             passwordField = new JPasswordField();
             showPasswordCB1 = new JCheckBox("Show Password");
             msg = new JLabel();
-
-            userText.setText("");
-            passwordField.setText("");
-            msg.setText("");
 
             frame.add(userLabel);
             frame.add(passwordLabel);
@@ -177,8 +177,8 @@ public class EazyFinderGUI {
         class LoginMainCode implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                username = userText.getText();
-                password = String.valueOf(passwordField.getPassword());
+                username = userText.getText().trim();
+                password = String.valueOf(passwordField.getPassword()).trim();
 
                 if (username.equals("") || password.equals("")) {
                     msg.setText("Please Fill all the Fields");
@@ -215,7 +215,8 @@ public class EazyFinderGUI {
         boolean inRange = false, hasWhiteSpace = false, hasLowerCaseLetter = false, hasUpperCaseLetter = false, hasDigit = false,
                 hasSpecialCharacter = false;
         byte i, len = (byte) password.length();
-        if (len >= 8 && len <= 16) inRange = true;
+        if (len >= 8 && len <= 16)
+            inRange = true;
 
         msg.setText("");
 
@@ -254,13 +255,13 @@ public class EazyFinderGUI {
         JTextField userText;
         JPasswordField passwordField, rePasswordField;
         JButton signupButton = new JButton("SignUp");
-        JCheckBox showPasswordCB1;
-        JCheckBox showPasswordCB2;
+        JCheckBox showPasswordCB1, showPasswordCB2;
 
         @Override
         public void actionPerformed(ActionEvent e) {
             frame.getContentPane().removeAll();
             frame.repaint();
+            frame.setTitle("SignUp");
 
             backButton = new JButton("Back");
             userText = new JTextField();
@@ -270,12 +271,6 @@ public class EazyFinderGUI {
             showPasswordCB2 = new JCheckBox("Show Password");
             msg = new JLabel();
 
-            userText.setText("");
-            passwordField.setText("");
-            rePasswordField.setText("");
-            msg.setText("");
-
-            frame.setTitle("SignUp");
             frame.add(userLabel);
             frame.add(passwordLabel);
             frame.add(userText);
@@ -334,7 +329,7 @@ public class EazyFinderGUI {
         class SignUpMainCode implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                username = userText.getText();
+                username = userText.getText().trim();
                 password = String.valueOf(passwordField.getPassword());
                 String rePassword = String.valueOf(rePasswordField.getPassword());
                 boolean found = false;
@@ -392,6 +387,10 @@ public class EazyFinderGUI {
 
         JFrame verificationFrame;
         JPasswordField verificationPasswordField;
+        EnquireUI enqObj = new EnquireUI();
+        UpdateUsernameUI updateUsernameObj = new UpdateUsernameUI();
+        PasswordChangeUI passwordChangeObj = new PasswordChangeUI();
+        SwitchAccountsUI switchAccountsObj = new SwitchAccountsUI();
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -459,10 +458,10 @@ public class EazyFinderGUI {
                     else AccountDeletion(verificationFrame);
 
                     if (case_ == 'T') TransactionHistory();
-                    else if (case_ == 'E') new EnquireUI().enquireUI();
-                    else if (case_ == 'U') new UpdateUsernameUI().updateUsernameUI();
-                    else if (case_ == 'P') new PasswordChangeUI().passwordChangeUI();
-                    else if (case_ == 'S') new SwitchAccounts().switchAccountsUI();
+                    else if (case_ == 'E') enqObj.enquireUI();
+                    else if (case_ == 'U') updateUsernameObj.updateUsernameUI();
+                    else if (case_ == 'P') passwordChangeObj.passwordChangeUI();
+                    else if (case_ == 'S') switchAccountsObj.switchAccountsUI();
                 }
             }
         }
@@ -470,7 +469,8 @@ public class EazyFinderGUI {
 
     JLabel usernameLabel = new JLabel();
 
-    int menuButtonWidth, menuButtonHeight, menuButtonX, diffInYs, buttonsY;
+    int menuButtonWidth = 300, menuButtonHeight = 30;
+    int menuButtonX, diffInYs, buttonsY;
     final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64;
     int imageX, imageY;
 
@@ -491,7 +491,7 @@ public class EazyFinderGUI {
         frame.setTitle("EazyFinder");
         frame.setLocationRelativeTo(null);
 
-        menuButtonWidth = 300; menuButtonHeight = 30; menuButtonX = 200; diffInYs = 70;
+        menuButtonX = 200; diffInYs = 70;
         buttonsY = 130;
         imageX = (frameSize - IMAGE_WIDTH) / 2;
         imageY = (buttonsY - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
@@ -1413,7 +1413,7 @@ public class EazyFinderGUI {
     }
 
 
-    class SwitchAccounts {
+    class SwitchAccountsUI {
         JFrame switchAccountsFrame;
         JTextField switchingUserText;
         JPasswordField switchingPassword;
@@ -1441,10 +1441,6 @@ public class EazyFinderGUI {
             switchAccountsFrame.add(switchingCB);
             switchAccountsFrame.add(switchAccountButton);
             switchAccountsFrame.add(msg);
-
-            switchingUserText.setText("");
-            switchingPassword.setText("");
-            msg.setText("");
 
             switchingUserLabel.setBounds(50, 80, 80, 25);
             switchingUserLabel.setFont(timesNewRoman);
