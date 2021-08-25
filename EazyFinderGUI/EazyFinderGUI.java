@@ -34,12 +34,13 @@ public class EazyFinderGUI {
 
     JButton homepageLoginButton = new JButton("LogIn");
     JButton homepageSignupButton = new JButton("SignUp");
+    JLabel infoLabel = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\information.png"));
 
     void Homepage() {
         frame.getContentPane().removeAll();
         frame.repaint();
         frame.setIconImage(icon);
-        frame.setResizable(false);
+//        frame.setResizable(false);
 
         frame.setSize(350, 300);
         frame.setTitle("Homepage");
@@ -49,18 +50,24 @@ public class EazyFinderGUI {
 
         frame.add(homepageLoginButton);
         frame.add(homepageSignupButton);
+        frame.add(infoLabel);
 
         homepageLoginButton.setBounds(50, 103, 100, 30);
         homepageLoginButton.setForeground(Color.BLACK);
         homepageLoginButton.setBackground(Color.ORANGE);
         homepageLoginButton.setFont(timesNewRoman);
+        homepageLoginButton.setToolTipText("Click this button to Login");
         homepageLoginButton.addActionListener(new LoginUI());
 
         homepageSignupButton.setBounds(180, 103, 100, 30);
         homepageSignupButton.setForeground(Color.BLACK);
         homepageSignupButton.setBackground(Color.ORANGE);
         homepageSignupButton.setFont(timesNewRoman);
+        homepageSignupButton.setToolTipText("Click this button to Create a new Account for yourself");
         homepageSignupButton.addActionListener(new SignUpUI());
+
+        infoLabel.setBounds(320, 0, 16, 16);
+        infoLabel.setToolTipText("Email: programmerrohith@gmail.com");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -483,7 +490,16 @@ public class EazyFinderGUI {
     JButton menuPasswordChangeButton = new JButton("Change Password");
     JButton menuAccountDeleteButton = new JButton("Delete my Account");
     JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
-    final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\finder.png"));
+    final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\finder.png"));
+
+    // verification object creations
+//    Verification bookingObj = new Verification('B');
+//    Verification transactionObj = new Verification('T');
+//    Verification enquireObj = new Verification('E');
+//    Verification updateUsernameObj = new Verification('U');
+//    Verification passwordChangeObj = new Verification('P');
+//    Verification accountDeletionObj = new Verification('A');
+//    Verification switchAccountsObj = new Verification('S');
 
     // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
     void displayMenu() {
@@ -495,7 +511,7 @@ public class EazyFinderGUI {
 
         menuButtonX = 200;
         diffInYs = 70;
-        buttonsY = 130;
+        buttonsY = 130; // starting button is at 130 from top
         imageX = (frameSize - IMAGE_WIDTH) / 2;
         imageY = (buttonsY - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
 
