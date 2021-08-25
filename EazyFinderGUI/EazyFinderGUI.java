@@ -9,8 +9,13 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-// use sudo mode as in GitHub TODO
-// caps lock warning TODO
+/*
+TODO:
+use sudo mode as in GitHub
+caps lock warning
+go from enquiry to booking by a book option in enquire
+Menu buttons are bringing n verification frames for nth clicking
+*/
 
 public class EazyFinderGUI {
     // While using an IDE "Edit Configurations" by setting the Working Directory path till src if it is not already present
@@ -29,10 +34,12 @@ public class EazyFinderGUI {
 
     JButton homepageLoginButton = new JButton("LogIn");
     JButton homepageSignupButton = new JButton("SignUp");
+
     void Homepage() {
         frame.getContentPane().removeAll();
         frame.repaint();
         frame.setIconImage(icon);
+        frame.setResizable(false);
 
         frame.setSize(350, 300);
         frame.setTitle("Homepage");
@@ -67,16 +74,13 @@ public class EazyFinderGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (num == 1) {
-                int result = JOptionPane.showConfirmDialog(frame, "Are You Sure?", "Confirmation",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
+            int result = JOptionPane.showConfirmDialog(frame, "Are You Sure?", "Confirmation",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
 
-                if (result == JOptionPane.YES_OPTION) {
-                    Homepage();
-                }
-            } else if (num == 2) {
-                displayMenu();
+            if (result == JOptionPane.YES_OPTION) {
+                if (num == 1) Homepage();
+                else if (num == 2) displayMenu();
             }
         }
     }
@@ -489,7 +493,8 @@ public class EazyFinderGUI {
         frame.setTitle("EazyFinder");
         frame.setLocationRelativeTo(null);
 
-        menuButtonX = 200; diffInYs = 70;
+        menuButtonX = 200;
+        diffInYs = 70;
         buttonsY = 130;
         imageX = (frameSize - IMAGE_WIDTH) / 2;
         imageY = (buttonsY - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
@@ -1155,9 +1160,9 @@ public class EazyFinderGUI {
                     StringBuilder routeCost = new StringBuilder("<html>\nRoute: ");
                     for (i = routeLen; i >= 0; i--) {
                         routeCost.append(route[i].toUpperCase());
-                        if (i != 0) routeCost.append(" -> ");
+                        if (i != 0) routeCost.append(" => ");
                     }
-                    routeCost.append("\nCost: ").append(cost).append(" /-").append("</html>");
+                    routeCost.append("\nCost: ").append(cost).append(" /- per Adult").append("</html>");
 
                     routeCostMessage.setBounds(0, 0, 500, 500);
                     routeCostMessage.setHorizontalAlignment(0);
