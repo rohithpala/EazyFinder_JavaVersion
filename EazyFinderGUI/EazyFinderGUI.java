@@ -12,9 +12,9 @@ import java.util.Date;
 /*
 TODO:
 use sudo mode as in GitHub
-caps lock warning
-go from enquiry to booking by a book option in enquire
-Menu buttons are bringing n verification frames for nth clicking
+caps lock warning while typing passwords
+add a "break fare" option in enquiry and add back to enquiry button in booking
+menu buttons are bringing n verification frames for nth clicking
 */
 
 public class EazyFinderGUI {
@@ -396,6 +396,8 @@ public class EazyFinderGUI {
 
         JFrame verificationFrame;
         JPasswordField verificationPasswordField;
+
+        BookingsUI bookingsObj = new BookingsUI();
         EnquireUI enqObj = new EnquireUI();
         UpdateUsernameUI updateUsernameObj = new UpdateUsernameUI();
         PasswordChangeUI passwordChangeObj = new PasswordChangeUI();
@@ -431,9 +433,7 @@ public class EazyFinderGUI {
             verifyButton.setBounds(75, 170, 150, 25);
             verifyButton.setBackground(Color.BLUE);
             verifyButton.setForeground(Color.WHITE);
-            if (case_ == 'B') {
-                verifyButton.addActionListener(new BookingsUI());
-            } else if (case_ == 'A') {
+            if (case_ == 'A') {
                 verifyButton.setText("Delete Account");
                 verifyButton.setBackground(Color.RED);
             }
@@ -466,7 +466,8 @@ public class EazyFinderGUI {
                     if (case_ != 'A') verificationFrame.dispose();
                     else AccountDeletion(verificationFrame);
 
-                    if (case_ == 'T') TransactionHistory();
+                    if (case_ == 'B') bookingsObj.bookingsUI(0);
+                    else if (case_ == 'T') TransactionHistory();
                     else if (case_ == 'E') enqObj.enquireUI();
                     else if (case_ == 'U') updateUsernameObj.updateUsernameUI();
                     else if (case_ == 'P') passwordChangeObj.passwordChangeUI();
@@ -491,15 +492,6 @@ public class EazyFinderGUI {
     JButton menuAccountDeleteButton = new JButton("Delete my Account");
     JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\finder.png"));
-
-    // verification object creations
-//    Verification bookingObj = new Verification('B');
-//    Verification transactionObj = new Verification('T');
-//    Verification enquireObj = new Verification('E');
-//    Verification updateUsernameObj = new Verification('U');
-//    Verification passwordChangeObj = new Verification('P');
-//    Verification accountDeletionObj = new Verification('A');
-//    Verification switchAccountsObj = new Verification('S');
 
     // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
     void displayMenu() {
@@ -661,16 +653,18 @@ public class EazyFinderGUI {
     }
 
 
-    class BookingsUI implements ActionListener {
+    class BookingsUI {
         JLabel nameLabel, phoneLabel, adultLabel, childrenLabel, cityLabel, sourceLabel, destinationLabel, phoneMessage;
         JTextField nameText, phoneText;
         JComboBox<String> cityField, sourceField, destinationField;
         JSpinner adultField, childrenField;
+
         short noOfAdults, noOfChildren;
         String name, phone;
+        String enqCity, enqSource, enqDestination;
+        int enqAdults, enqChildren;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+        void bookingsUI(int case_) {
             frame.getContentPane().removeAll();
             frame.repaint();
 
@@ -694,20 +688,28 @@ public class EazyFinderGUI {
             cityLabel = new JLabel("City");
             cityLabel.setFont(timesNewRoman);
 
-            cityField = new JComboBox<>(citiesArray);
-            cityField.setFont(timesNewRoman);
-
             sourceLabel = new JLabel("Source:");
             sourceLabel.setFont(timesNewRoman);
-
-            sourceField = new JComboBox<>(temp);
-            sourceField.setFont(timesNewRoman);
 
             destinationLabel = new JLabel("Destination:");
             destinationLabel.setFont(timesNewRoman);
 
-            destinationField = new JComboBox<>(temp);
-            destinationField.setFont(timesNewRoman);
+            if (case_ == 1) {
+                cityField.setSelectedItem(enqCity);
+                sourceField.setSelectedItem(enqSource);
+                destinationField.setSelectedItem(enqDestination);
+                adultField.setValue(enqAdults);
+                childrenField.setValue(enqChildren);
+            } else {
+                cityField = new JComboBox<>(citiesArray);
+                cityField.setFont(timesNewRoman);
+
+                sourceField = new JComboBox<>(temp);
+                sourceField.setFont(timesNewRoman);
+
+                destinationField = new JComboBox<>(temp);
+                destinationField.setFont(timesNewRoman);
+            }
 
             adultLabel = new JLabel("Adults:");
             adultLabel.setFont(timesNewRoman);
@@ -834,8 +836,8 @@ public class EazyFinderGUI {
 
                     StringBuilder routeCost = new StringBuilder("<html>\nRoute: ");
                     for (i = len; i >= 0; i--) {
-                        routeCost.append(route[i]);
-                        if (i != 0) routeCost.append(" -> ");
+                        routeCost.append(route[i].toUpperCase());
+                        if (i != 0) routeCost.append(" => ");
                     }
                     routeCost.append("\nCost: ").append(cost).append("</html>");
 
@@ -1076,9 +1078,15 @@ public class EazyFinderGUI {
 
 
     class EnquireUI {
-        JComboBox<String> enquireCityField = new JComboBox<>(citiesArray);
-        JComboBox<String> enquireSourceField = new JComboBox<>(temp);
-        JComboBox<String> enquireDestinationField = new JComboBox<>(temp);
+        JLabel enquireCityLabel = new JLabel("City:");
+        JLabel enquireSourceLabel = new JLabel("Source:");
+        JLabel enquireDestinationLabel = new JLabel("Destination:");
+        JLabel enquireAdultLabel = new JLabel("No. of Adults");
+        JLabel enquireChildrenLabel = new JLabel("No. of Children");
+
+        JComboBox<String> enquireCityField, enquireSourceField, enquireDestinationField;
+        JSpinner enquireAdultField, enquireChildrenField;
+        String[] optionPaneButtonNames = {"Ok", "Book a Ticket", "Break the Fare"};
 
         void enquireUI() {
             frame.getContentPane().removeAll();
@@ -1086,11 +1094,12 @@ public class EazyFinderGUI {
 
             backButton = new JButton("Back");
 
-            JLabel enquireCityLabel = new JLabel("City:");
-            JLabel enquireSourceLabel = new JLabel("Source:");
-            JLabel enquireDestinationLabel = new JLabel("Destination:");
-
             JButton enquireButton = new JButton("Enquire");
+            enquireCityField = new JComboBox<>(citiesArray);
+            enquireSourceField = new JComboBox<>(temp);
+            enquireDestinationField = new JComboBox<>(temp);
+            enquireAdultField = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+            enquireChildrenField = new JSpinner(new SpinnerNumberModel(0, 1, 10, 1));
 
             frame.add(backButton);
             frame.add(enquireCityLabel);
@@ -1099,6 +1108,10 @@ public class EazyFinderGUI {
             frame.add(enquireSourceField);
             frame.add(enquireDestinationLabel);
             frame.add(enquireDestinationField);
+            frame.add(enquireAdultLabel);
+            frame.add(enquireAdultField);
+            frame.add(enquireChildrenLabel);
+            frame.add(enquireChildrenField);
             frame.add(enquireButton);
             frame.add(logoutButton);
 
@@ -1110,24 +1123,38 @@ public class EazyFinderGUI {
             enquireCityLabel.setBounds(200, 200, 100, 25);
             enquireCityLabel.setFont(timesNewRoman);
 
-            enquireSourceLabel.setBounds(200, 250, 100, 25);
-            enquireSourceLabel.setFont(timesNewRoman);
-
-            enquireDestinationLabel.setBounds(200, 300, 100, 25);
-            enquireDestinationLabel.setFont(timesNewRoman);
-
             enquireCityField.setBounds(300, 200, 200, 25);
             enquireCityField.setFont(timesNewRoman);
+
+            enquireSourceLabel.setBounds(200, 250, 100, 25);
+            enquireSourceLabel.setFont(timesNewRoman);
 
             enquireSourceField.setBounds(300, 250, 200, 25);
             enquireSourceField.setFont(timesNewRoman);
 
+            enquireDestinationLabel.setBounds(200, 300, 100, 25);
+            enquireDestinationLabel.setFont(timesNewRoman);
+
             enquireDestinationField.setBounds(300, 300, 200, 25);
             enquireDestinationField.setFont(timesNewRoman);
 
+            enquireAdultLabel.setBounds(200, 350, 100, 25);
+            enquireAdultLabel.setFont(timesNewRoman);
+
+            enquireAdultField.setBounds(300, 350, 200, 25);
+            enquireAdultField.setFont(timesNewRoman);
+            positioningTextAndDisablingEditingInJSpinner(enquireAdultField);
+
+            enquireChildrenLabel.setBounds(300, 400, 100, 25);
+            enquireChildrenLabel.setFont(timesNewRoman);
+
+            enquireChildrenField.setBounds(300, 400, 200, 25);
+            enquireChildrenField.setFont(timesNewRoman);
+            positioningTextAndDisablingEditingInJSpinner(enquireChildrenField);
+
             enquireCityField.addActionListener(new ChangingCombos(enquireCityField, enquireSourceField, enquireDestinationField));
 
-            enquireButton.setBounds(300, 350, 100, 25);
+            enquireButton.setBounds(300, 450, 100, 25);
             enquireButton.setBackground(Color.DARK_GRAY);
             enquireButton.setForeground(Color.WHITE);
             enquireButton.setFont(timesNewRoman);
@@ -1143,42 +1170,46 @@ public class EazyFinderGUI {
         }
 
         class EnquireMainCode implements ActionListener { // Save Enquiries for recommendations
-            String city, source, destination;
+            String enquireCity, enquireSource, enquireDestination;
+            int enquireAdults, enquireChildren;
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 msg = new JLabel();
-                msg.setBounds(0, 400, frameSize, 25);
+                msg.setBounds(0, 500, frameSize, 25);
                 msg.setFont(timesNewRoman);
                 msg.setForeground(Color.RED);
                 msg.setHorizontalAlignment(0);
 
                 frame.add(msg);
 
-                city = String.valueOf(enquireCityField.getSelectedItem());
-                source = String.valueOf(enquireSourceField.getSelectedItem());
-                destination = String.valueOf(enquireDestinationField.getSelectedItem());
+                enquireCity = String.valueOf(enquireCityField.getSelectedItem());
+                enquireSource = String.valueOf(enquireSourceField.getSelectedItem());
+                enquireDestination = String.valueOf(enquireDestinationField.getSelectedItem());
+                enquireAdults = (int) enquireAdultField.getValue();
+                enquireChildren = (int) enquireChildrenField.getValue();
 
-                if (city.equals("--Select--") || source.equals("--Select--") || destination.equals("--Select--")) {
+                if (enquireCity.equals("--Select--") || enquireSource.equals("--Select--") || enquireDestination.equals("--Select--")) {
                     msg.setText("Please Complete all the Fields");
-                } else if (source.equals(destination)) {
+                } else if (enquireSource.equals(enquireDestination)) {
                     msg.setText("Source and Destination Cannot be same");
                 } else {
                     JLabel routeCostMessage = new JLabel();
 
-                    BookingMainCode enquiryObj = new BookingMainCode(city, source, destination);
+                    BookingMainCode enquiryObj = new BookingMainCode(enquireCity, enquireSource, enquireDestination);
                     enquiryObj.new EnquireAndBookings().bookings();
 
                     String[] route = enquiryObj.route;
                     short i, routeLen = enquiryObj.routeLen;
                     cost = enquiryObj.cost;
+                    float totalCost = (cost) * enquireAdults + (cost / 2) * enquireChildren;
 
                     StringBuilder routeCost = new StringBuilder("<html>\nRoute: ");
                     for (i = routeLen; i >= 0; i--) {
                         routeCost.append(route[i].toUpperCase());
                         if (i != 0) routeCost.append(" => ");
                     }
-                    routeCost.append("\nCost: ").append(cost).append(" /- per Adult").append("</html>");
+                    routeCost.append("\nTotal Fare: ").append(totalCost).append(" /- per Adult").append("</html>");
 
                     routeCostMessage.setBounds(0, 0, 500, 500);
                     routeCostMessage.setHorizontalAlignment(0);
@@ -1187,19 +1218,50 @@ public class EazyFinderGUI {
                     routeCostMessage.setText(String.valueOf(routeCost).replaceAll("\n", "<br>"));
                     routeCostMessage.setText(routeCostMessage.getText().toUpperCase());
 
-                    JOptionPane.showMessageDialog(frame, routeCostMessage,
+                    int result = JOptionPane.showOptionDialog(frame, routeCostMessage,
                             enquiryObj.source.toUpperCase() + " to " + enquiryObj.destination.toUpperCase(),
-                            JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                            null, optionPaneButtonNames, null);
 
-                    // store the enquiries
-                    File enquiryFile = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
-                    try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile, true));
-                        writer.write(city.toUpperCase() + "," + source.toUpperCase() + "," + destination.toUpperCase() + "," + cost + "\n");
-                        writer.flush();
-                        writer.close();
-                    } catch (Exception ex) {
-                        msg.setText("Error Occurred");
+                    if (result == JOptionPane.NO_OPTION) {
+                        BookingsUI bookingObj = new BookingsUI();
+
+                        bookingObj.cityField = enquireCityField;
+                        bookingObj.sourceField = enquireSourceField;
+                        bookingObj.destinationField = enquireDestinationField;
+
+                        bookingObj.enqCity = enquireCity;
+                        bookingObj.enqSource = enquireSource;
+                        bookingObj.enqDestination = enquireDestination;
+
+                        bookingObj.enqAdults = enquireAdults;
+                        bookingObj.enqChildren = enquireChildren;
+
+                        enquireCityField.addActionListener(new ChangingCombos(enquireCityField, bookingObj.sourceField, bookingObj.destinationField));
+                        bookingObj.bookingsUI(1);
+                    } else if (result == JOptionPane.CANCEL_OPTION) {
+                        JLabel fareDivision = new JLabel();
+
+                        fareDivision.setText(
+                                ("<html>No. of Adults: " + enquireAdults + "     Fare: " + cost * enquireAdults + "<br>" +
+                                        "No. of Children: " + enquireChildren + "     Fare: " + (cost / 2) * enquireChildren + "<br>" +
+                                        "Total Cost: " + totalCost + "</html>").replaceAll("<br>", "\n"));
+                        fareDivision.setHorizontalAlignment(0);
+                        fareDivision.setVerticalAlignment(0);
+                        fareDivision.setFont(timesNewRoman);
+
+                        JOptionPane.showMessageDialog(frame, fareDivision, "Fare Division", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        // store the enquiries
+                        File enquiryFile = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                        try {
+                            BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile, true));
+                            writer.write(enquireCity.toUpperCase() + "," + enquireSource.toUpperCase() + "," + enquireDestination.toUpperCase() + "," + cost + "\n");
+                            writer.flush();
+                            writer.close();
+                        } catch (Exception ex) {
+                            msg.setText("Error Occurred");
+                        }
                     }
                 }
 
