@@ -1093,13 +1093,12 @@ public class EazyFinderGUI {
             frame.repaint();
 
             backButton = new JButton("Back");
-
             JButton enquireButton = new JButton("Enquire");
             enquireCityField = new JComboBox<>(citiesArray);
             enquireSourceField = new JComboBox<>(temp);
             enquireDestinationField = new JComboBox<>(temp);
             enquireAdultField = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
-            enquireChildrenField = new JSpinner(new SpinnerNumberModel(0, 1, 10, 1));
+            enquireChildrenField = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
 
             frame.add(backButton);
             frame.add(enquireCityLabel);
@@ -1145,7 +1144,7 @@ public class EazyFinderGUI {
             enquireAdultField.setFont(timesNewRoman);
             positioningTextAndDisablingEditingInJSpinner(enquireAdultField);
 
-            enquireChildrenLabel.setBounds(300, 400, 100, 25);
+            enquireChildrenLabel.setBounds(200, 400, 100, 25);
             enquireChildrenLabel.setFont(timesNewRoman);
 
             enquireChildrenField.setBounds(300, 400, 200, 25);
