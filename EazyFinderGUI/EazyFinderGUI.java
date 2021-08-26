@@ -15,11 +15,14 @@ use sudo mode as in GitHub
 caps lock warning while typing passwords
 menu buttons are bringing n verification frames for nth clicking
 guest mode option
+add profile and settings option (dark mode (optional))
 */
 
 public class EazyFinderGUI {
     // While using an IDE "Edit Configurations" by setting the Working Directory path till src if it is not already present
     String dirname = System.getProperty("user.dir");
+    String username, password;
+    final File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
 
     JFrame frame = new JFrame();
     JButton backButton, logoutButton = new JButton("Logout");
@@ -70,14 +73,37 @@ public class EazyFinderGUI {
 
         homepageGuestButton.setBounds(50, 150, 230, 30);
         homepageGuestButton.setForeground(Color.WHITE);
-        homepageGuestButton.setBackground(Color.GRAY);
+        homepageGuestButton.setBackground(Color.DARK_GRAY);
         homepageGuestButton.setFont(timesNewRoman);
-        homepageGuestButton.addActionListener(e -> displayMenu());
+        homepageGuestButton.addActionListener(new GuestMode());
 
         infoLabel.setBounds(320, 0, 16, 16);
         infoLabel.setToolTipText("Email: programmerrohith@gmail.com");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    class GuestMode implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            username = "Guest";
+            password = "Guest@123";
+            JOptionPane.showMessageDialog(frame, """
+                            We are giving you the guest credentials so that you can have the same experience as a registered user
+
+                            Username: Guest
+                            Password: Guest@123
+                            
+                            We delete all the date provided by you in the guest mode once you logout
+                            So feel free to be a registered user
+                            
+                            Happy Browsing 😃""",
+                    "Guest Mode Credentials",
+                    JOptionPane.INFORMATION_MESSAGE);
+            displayMenu();
+            // Create files, entry in database
+            // delete all data after logout
+        }
     }
 
     class Back implements ActionListener {
@@ -128,8 +154,6 @@ public class EazyFinderGUI {
     JLabel userLabel = new JLabel("Username:");
     JLabel passwordLabel = new JLabel("Password:");
     JLabel rePasswordLabel = new JLabel("Re-Type Password:");
-    String username, password;
-    final File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
 
     class LoginUI implements ActionListener {
         JTextField userField;
@@ -504,6 +528,9 @@ public class EazyFinderGUI {
     JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\finder.png"));
 
+    String[] settingsMenu = {"Menu", "Profile", "Settings"};
+    JComboBox<String> settings = new JComboBox<>(settingsMenu);
+
     // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
     void displayMenu() {
         frame.getContentPane().removeAll();
@@ -518,6 +545,7 @@ public class EazyFinderGUI {
         imageX = (frameSize - IMAGE_WIDTH) / 2;
         imageY = (buttonsY - IMAGE_HEIGHT) / 2; // 130 - starting button's(booking button) y
 
+        frame.add(settings);
         frame.add(usernameLabel);
         frame.add(finderImage);
         frame.add(menuBookingButton);
@@ -528,6 +556,10 @@ public class EazyFinderGUI {
         frame.add(menuAccountDeleteButton);
         frame.add(menuSwitchAccountsButton);
         frame.add(logoutButton);
+
+        settings.setBounds(550, 30, 100, 25);
+        settings.setFont(timesNewRoman);
+        settings.addActionListener(new Settings());
 
         usernameLabel.setText("Username: " + username);
         usernameLabel.setBounds(0, 0, frameSize, 25);
@@ -597,6 +629,22 @@ public class EazyFinderGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    class Settings implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            frame.getContentPane().removeAll();
+            frame.repaint();
+
+            if(settings.getSelectedIndex() == 0){
+                displayMenu();
+            } else if (settings.getSelectedIndex() == 1){
+                //profile
+            } else {
+                //settings
+            }
+        }
+    }
+
     String[] places, temp = {"--Select--"};
     String city, source, destination;
     final String[] citiesArray = {"--Select--", "HYDERABAD", "BENGALURU", "CHENNAI"};
@@ -628,10 +676,10 @@ public class EazyFinderGUI {
     }
 
     // Changes the Source and Destination Items according to City Selected
-    class ChangingCombos implements ActionListener {
+    class InitializeCombos implements ActionListener {
         JComboBox<String> cityField, sourceField, destinationField;
 
-        ChangingCombos(JComboBox<String> cityField, JComboBox<String> sourceField, JComboBox<String> destinationField) {
+        InitializeCombos(JComboBox<String> cityField, JComboBox<String> sourceField, JComboBox<String> destinationField) {
             this.cityField = cityField;
             this.sourceField = sourceField;
             this.destinationField = destinationField;
@@ -777,7 +825,7 @@ public class EazyFinderGUI {
 
             cityField.setBounds(330, 150, 200, 25);
             cityField.setFont(timesNewRoman);
-            cityField.addActionListener(new ChangingCombos(cityField, sourceField, destinationField));
+            cityField.addActionListener(new InitializeCombos(cityField, sourceField, destinationField));
 
             sourceLabel.setBounds(200, 200, 100, 25);
             sourceLabel.setFont(timesNewRoman);
@@ -1183,7 +1231,7 @@ public class EazyFinderGUI {
             enquireChildrenField.setFont(timesNewRoman);
             positioningTextAndDisablingEditingInJSpinner(enquireChildrenField);
 
-            enquireCityField.addActionListener(new ChangingCombos(enquireCityField, enquireSourceField, enquireDestinationField));
+            enquireCityField.addActionListener(new InitializeCombos(enquireCityField, enquireSourceField, enquireDestinationField));
 
             enquireButton.setBounds(310, 450, 100, 25);
             enquireButton.setBackground(Color.DARK_GRAY);
@@ -1270,7 +1318,7 @@ public class EazyFinderGUI {
                         bookingObj.enqAdults = enquireAdults;
                         bookingObj.enqChildren = enquireChildren;
 
-                        enquireCityField.addActionListener(new ChangingCombos(enquireCityField, bookingObj.sourceField, bookingObj.destinationField));
+                        enquireCityField.addActionListener(new InitializeCombos(enquireCityField, bookingObj.sourceField, bookingObj.destinationField));
                         bookingObj.bookingUI(1);
                     } else if (result == JOptionPane.CANCEL_OPTION) {
                         JLabel fareDivision = new JLabel();
