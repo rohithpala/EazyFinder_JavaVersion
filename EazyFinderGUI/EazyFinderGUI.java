@@ -8,14 +8,17 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 /*
 TODO:
 use sudo mode as in GitHub
 caps lock warning while typing passwords
 menu buttons are bringing n verification frames for nth clicking
-guest mode option
+guest mode option (show option panes like "Guests cannot update their usernames or passwords or cannot switch accounts" after clicking the
+button. Give options like "Look at UI" and show the UI)
 add profile and settings option (dark mode (optional))
+give ref no. while signup and store them in the file for verification
 */
 
 public class EazyFinderGUI {
@@ -83,7 +86,7 @@ public class EazyFinderGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    class GuestMode implements ActionListener{
+    class GuestMode implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             username = "Guest";
@@ -93,10 +96,10 @@ public class EazyFinderGUI {
 
                             Username: Guest
                             Password: Guest@123
-                            
+                                                        
                             We delete all the date provided by you in the guest mode once you logout
                             So feel free to be a registered user
-                            
+                                                        
                             Happy Browsing 😃""",
                     "Guest Mode Credentials",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -423,9 +426,9 @@ public class EazyFinderGUI {
     }
 
     class Verification implements ActionListener {
-        char case_;
+        String case_;
 
-        Verification(char case_) {
+        Verification(String case_) {
             this.case_ = case_;
         }
 
@@ -468,7 +471,7 @@ public class EazyFinderGUI {
             verifyButton.setBounds(75, 170, 150, 25);
             verifyButton.setBackground(Color.BLUE);
             verifyButton.setForeground(Color.WHITE);
-            if (case_ == 'A') {
+            if (case_.equals("AccountDeletion")) {
                 verifyButton.setText("Delete Account");
                 verifyButton.setBackground(Color.RED);
             }
@@ -498,15 +501,17 @@ public class EazyFinderGUI {
                     msg.setForeground(Color.RED);
                     msg.setText("Password Incorrect");
                 } else {
-                    if (case_ != 'A') verificationFrame.dispose();
+                    if (!case_.equals("AccountDeletion")) verificationFrame.dispose();
                     else AccountDeletion(verificationFrame);
 
-                    if (case_ == 'B') bookingsObj.bookingUI(0);
-                    else if (case_ == 'T') TransactionHistory();
-                    else if (case_ == 'E') enqObj.enquireUI();
-                    else if (case_ == 'U') updateUsernameObj.updateUsernameUI();
-                    else if (case_ == 'P') passwordChangeObj.passwordChangeUI();
-                    else if (case_ == 'S') switchAccountsObj.switchAccountsUI();
+                    switch (case_) {
+                        case "Booking" -> bookingsObj.bookingUI(0);
+                        case "TH" -> TransactionHistory();
+                        case "Enquiry" -> enqObj.enquireUI();
+                        case "UpdateUsername" -> updateUsernameObj.updateUsernameUI();
+                        case "PasswordChange" -> passwordChangeObj.passwordChangeUI();
+                        case "SwitchAccounts" -> switchAccountsObj.switchAccountsUI();
+                    }
                 }
             }
         }
@@ -528,7 +533,7 @@ public class EazyFinderGUI {
     JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\finder.png"));
 
-    String[] settingsMenu = {"Menu", "Profile", "Settings"};
+    String[] settingsMenu = {"Menu", "Account", "Settings"};
     JComboBox<String> settings = new JComboBox<>(settingsMenu);
 
     // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
@@ -558,6 +563,7 @@ public class EazyFinderGUI {
         frame.add(logoutButton);
 
         settings.setBounds(550, 30, 100, 25);
+        settings.setSelectedItem("Menu");
         settings.setFont(timesNewRoman);
         settings.addActionListener(new Settings());
 
@@ -575,49 +581,49 @@ public class EazyFinderGUI {
         menuBookingButton.setBackground(Color.DARK_GRAY);
         menuBookingButton.setForeground(Color.WHITE);
         menuBookingButton.setFont(timesNewRoman);
-        menuBookingButton.addActionListener(new Verification('B'));
+        menuBookingButton.addActionListener(new Verification("Booking"));
         buttonsY += diffInYs;
 
         menuTHButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuTHButton.setBackground(Color.DARK_GRAY);
         menuTHButton.setForeground(Color.WHITE);
         menuTHButton.setFont(timesNewRoman);
-        menuTHButton.addActionListener(new Verification('T'));
+        menuTHButton.addActionListener(new Verification("TH"));
         buttonsY += diffInYs;
 
         menuEnquiryButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuEnquiryButton.setBackground(Color.DARK_GRAY);
         menuEnquiryButton.setForeground(Color.WHITE);
         menuEnquiryButton.setFont(timesNewRoman);
-        menuEnquiryButton.addActionListener(new Verification('E'));
+        menuEnquiryButton.addActionListener(new Verification("Enquiry"));
         buttonsY += diffInYs;
 
         menuUpdateUsernameButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuUpdateUsernameButton.setBackground(Color.DARK_GRAY);
         menuUpdateUsernameButton.setForeground(Color.WHITE);
         menuUpdateUsernameButton.setFont(timesNewRoman);
-        menuUpdateUsernameButton.addActionListener(new Verification('U'));
+        menuUpdateUsernameButton.addActionListener(new Verification("UpdateUsername"));
         buttonsY += diffInYs;
 
         menuPasswordChangeButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuPasswordChangeButton.setBackground(Color.DARK_GRAY);
         menuPasswordChangeButton.setForeground(Color.WHITE);
         menuPasswordChangeButton.setFont(timesNewRoman);
-        menuPasswordChangeButton.addActionListener(new Verification('P'));
+        menuPasswordChangeButton.addActionListener(new Verification("PasswordChange"));
         buttonsY += diffInYs;
 
         menuAccountDeleteButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuAccountDeleteButton.setBackground(Color.DARK_GRAY);
         menuAccountDeleteButton.setForeground(Color.WHITE);
         menuAccountDeleteButton.setFont(timesNewRoman);
-        menuAccountDeleteButton.addActionListener(new Verification('A'));
+        menuAccountDeleteButton.addActionListener(new Verification("AccountDeletion"));
         buttonsY += diffInYs;
 
         menuSwitchAccountsButton.setBounds(menuButtonX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuSwitchAccountsButton.setBackground(Color.DARK_GRAY);
         menuSwitchAccountsButton.setForeground(Color.WHITE);
         menuSwitchAccountsButton.setFont(timesNewRoman);
-        menuSwitchAccountsButton.addActionListener(new Verification('S'));
+        menuSwitchAccountsButton.addActionListener(new Verification("SwitchAccounts"));
         buttonsY += diffInYs;
 
         logoutButton.setBounds(300, buttonsY, 100, menuButtonHeight);
@@ -629,16 +635,82 @@ public class EazyFinderGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    class Settings implements ActionListener{
+    class Settings implements ActionListener {
+        // Variables needed for Account Page
+        JLabel accountLabel = new JLabel("Account");
+        JLabel usernameLabel = new JLabel("Username: " + username);
+        JLabel passwordLabel = new JLabel("Password: " + password);
+        JLabel noOfTransactionsLabel = new JLabel();
+        JButton goToTHButton = new JButton("Go to Transactions Page");
+
         @Override
         public void actionPerformed(ActionEvent e) {
             frame.getContentPane().removeAll();
             frame.repaint();
 
-            if(settings.getSelectedIndex() == 0){
+            if (settings.getSelectedIndex() == 0) {
                 displayMenu();
-            } else if (settings.getSelectedIndex() == 1){
-                //profile
+            } else if (settings.getSelectedIndex() == 1) {
+                backButton = new JButton("Back");
+
+                frame.add(backButton);
+                frame.add(accountLabel);
+                frame.add(usernameLabel);
+                frame.add(passwordLabel);
+                frame.add(noOfTransactionsLabel);
+                frame.add(goToTHButton);
+                frame.add(logoutButton);
+
+                backButton.setBounds(0, 0, 80, 30);
+                backButton.setBackground(Color.BLACK);
+                backButton.setForeground(Color.WHITE);
+                backButton.setFont(timesNewRoman);
+                backButton.addActionListener(new Back((byte) 2));
+
+                accountLabel.setBounds(0, 30, frameSize, 25);
+                accountLabel.setHorizontalAlignment(0);
+                accountLabel.setFont(new Font("Times New Roman", Font.BOLD, 25));
+                accountLabel.setToolTipText(username + "'s Account");
+
+                usernameLabel.setBounds(0, 65, frameSize, 25);
+                usernameLabel.setFont(timesNewRoman);
+                usernameLabel.setHorizontalAlignment(0);
+
+                passwordLabel.setBounds(0, 100, frameSize, 25);
+                passwordLabel.setFont(timesNewRoman);
+                passwordLabel.setHorizontalAlignment(0);
+
+                // show password by taking reference no. as input
+
+                // No. of Transactions
+                int noOfTransactions = 0;
+                try {
+                    File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                    Scanner scanner = new Scanner(th);
+                    while(scanner.hasNextLine()) {
+                        scanner.nextLine();
+                        noOfTransactions++;
+                    }
+                } catch (Exception ignored) {
+                }
+
+                noOfTransactionsLabel.setBounds(0, 140, 500, 25);
+                noOfTransactionsLabel.setText("Number of Transactions made: " + noOfTransactions);
+                noOfTransactionsLabel.setFont(timesNewRoman);
+                noOfTransactionsLabel.setHorizontalAlignment(0);
+
+                goToTHButton.setBounds(400, 140, 200, 25);
+                goToTHButton.setForeground(Color.WHITE);
+                goToTHButton.setBackground(Color.BLUE);
+                goToTHButton.setFont(timesNewRoman);
+                goToTHButton.setHorizontalAlignment(0);
+                goToTHButton.addActionListener(new Verification("TH"));
+
+                logoutButton.setBounds(586, 0, 100, 30);
+                logoutButton.setBackground(Color.RED);
+                logoutButton.setForeground(Color.WHITE);
+                logoutButton.setFont(timesNewRoman);
+                logoutButton.addActionListener(new Back((byte) 1));
             } else {
                 //settings
             }
@@ -900,8 +972,8 @@ public class EazyFinderGUI {
                     msg.setBounds(200, 470, 350, 25);
                     msg.setText("Source and Destination Cannot be the same");
                 } else if (!phone.matches("^[6-9]\\d{9}") || !email.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")) {
-                    if(!phone.matches("^[6-9]\\d{9}")) phoneMessage.setText("Invalid Phone Number");
-                    if(!email.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")) emailMessage.setText("Invalid Email Address");
+                    if (!phone.matches("^[6-9]\\d{9}")) phoneMessage.setText("Invalid Phone Number");
+                    if (!email.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")) emailMessage.setText("Invalid Email Address");
                 } else {
                     bookingObj = new BookingMainCode(city, source, destination, noOfAdults, noOfChildren);
 
@@ -1142,7 +1214,7 @@ public class EazyFinderGUI {
         String msgText = String.valueOf(new TransactionHistoryMainCode().transactionHistory(username));
 
         if (msgText.equals("NO")) {
-            JLabel noTransactionsImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\no_transactions.png"));
+            JLabel noTransactionsImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\no_transactions.png"));
             frame.add(noTransactionsImage);
             noTransactionsImage.setBounds(115, 204, 466, 292);
         } else {
