@@ -40,13 +40,14 @@ public class BookingMainCode {
         this.noOfChildren = noOfChildren;
     }
 
-    void loadDetails(String username, String city, String source, String destination, float cost, String name, long phone,
+    void loadDetails(String username, String city, String source, String destination, float cost, String name, String phone, String email,
                      short noOfAdults, short noOfChildren, String date, String time) {
         File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(th, true));
             writer.write("Name: " + name + "," +
                     "Phone Number: " + phone + "," +
+                    "Email ID: " + email + "," +
                     "City: " + city.toUpperCase() + "," +
                     "Source: " + source.toUpperCase() + "," +
                     "Destination: " + destination.toUpperCase() + "," +

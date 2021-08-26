@@ -13,8 +13,8 @@ import java.util.Date;
 TODO:
 use sudo mode as in GitHub
 caps lock warning while typing passwords
-add email field in booking
 menu buttons are bringing n verification frames for nth clicking
+guest mode option
 */
 
 public class EazyFinderGUI {
@@ -34,22 +34,24 @@ public class EazyFinderGUI {
 
     JButton homepageLoginButton = new JButton("LogIn");
     JButton homepageSignupButton = new JButton("SignUp");
+    JButton homepageGuestButton = new JButton("Browse as Guest");
     JLabel infoLabel = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\information.png"));
 
     void Homepage() {
         frame.getContentPane().removeAll();
         frame.repaint();
-        frame.setIconImage(icon);
-//        frame.setResizable(false);
 
         frame.setSize(350, 300);
         frame.setTitle("Homepage");
         frame.setLayout(null);
         frame.setVisible(true);
+        frame.setIconImage(icon);
         frame.setLocationRelativeTo(null);
+//        frame.setResizable(false);
 
         frame.add(homepageLoginButton);
         frame.add(homepageSignupButton);
+        frame.add(homepageGuestButton);
         frame.add(infoLabel);
 
         homepageLoginButton.setBounds(50, 103, 100, 30);
@@ -65,6 +67,12 @@ public class EazyFinderGUI {
         homepageSignupButton.setFont(timesNewRoman);
         homepageSignupButton.setToolTipText("Click this button to Create a new Account for yourself");
         homepageSignupButton.addActionListener(new SignUpUI());
+
+        homepageGuestButton.setBounds(50, 150, 230, 30);
+        homepageGuestButton.setForeground(Color.WHITE);
+        homepageGuestButton.setBackground(Color.GRAY);
+        homepageGuestButton.setFont(timesNewRoman);
+        homepageGuestButton.addActionListener(e -> displayMenu());
 
         infoLabel.setBounds(320, 0, 16, 16);
         infoLabel.setToolTipText("Email: programmerrohith@gmail.com");
@@ -124,7 +132,7 @@ public class EazyFinderGUI {
     final File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
 
     class LoginUI implements ActionListener {
-        JTextField userText;
+        JTextField userField;
         JPasswordField passwordField;
         JButton loginButton = new JButton("LogIn");
         JCheckBox showPasswordCB1;
@@ -136,7 +144,7 @@ public class EazyFinderGUI {
             frame.setTitle("Login");
 
             backButton = new JButton("Back");
-            userText = new JTextField();
+            userField = new JTextField();
             passwordField = new JPasswordField();
             showPasswordCB1 = new JCheckBox("Show Password");
             msg = new JLabel();
@@ -144,7 +152,7 @@ public class EazyFinderGUI {
             frame.add(backButton);
             frame.add(userLabel);
             frame.add(passwordLabel);
-            frame.add(userText);
+            frame.add(userField);
             frame.add(passwordField);
             frame.add(showPasswordCB1);
             frame.add(loginButton);
@@ -159,14 +167,17 @@ public class EazyFinderGUI {
             userLabel.setBounds(50, 50, 80, 25);
             userLabel.setFont(timesNewRoman);
 
-            userText.setBounds(130, 50, 120, 25);
-            userText.setFont(timesNewRoman);
+            userField.setBounds(130, 50, 120, 25);
+            userField.setFont(timesNewRoman);
 
             passwordLabel.setBounds(50, 80, 80, 25);
             passwordLabel.setFont(timesNewRoman);
 
             passwordField.setBounds(130, 80, 120, 25);
             passwordField.setFont(timesNewRoman);
+
+            userField.setText("r");
+            passwordField.setText("Rohith_02");
 
             showPasswordCB1.setBounds(90, 110, 150, 25);
             showPasswordCB1.setFont(timesNewRoman);
@@ -186,7 +197,7 @@ public class EazyFinderGUI {
         class LoginMainCode implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                username = userText.getText().trim();
+                username = userField.getText().trim();
                 password = String.valueOf(passwordField.getPassword()).trim();
 
                 if (username.equals("") || password.equals("")) {
@@ -654,13 +665,14 @@ public class EazyFinderGUI {
 
 
     class BookingUI {
-        JLabel nameLabel, phoneLabel, adultLabel, childrenLabel, cityLabel, sourceLabel, destinationLabel, phoneMessage;
-        JTextField nameText, phoneText;
+        JLabel nameLabel, phoneLabel, emailLabel, adultLabel, childrenLabel, cityLabel, sourceLabel, destinationLabel;
+        JLabel phoneMessage, emailMessage;
+        JTextField nameField, phoneField, emailField;
         JComboBox<String> cityField, sourceField, destinationField;
         JSpinner adultField, childrenField;
 
         short noOfAdults, noOfChildren;
-        String name, phone;
+        String name, phone, email;
         String enqCity, enqSource, enqDestination;
         int enqAdults, enqChildren;
 
@@ -671,10 +683,13 @@ public class EazyFinderGUI {
 
             backButton = new JButton("Back");
             nameLabel = new JLabel("Name:");
-            nameText = new JTextField();
+            nameField = new JTextField();
             phoneLabel = new JLabel("Mobile Number:");
-            phoneText = new JTextField();
+            phoneField = new JTextField();
             phoneMessage = new JLabel();
+            emailLabel = new JLabel("Email ID:");
+            emailField = new JTextField();
+            emailMessage = new JLabel();
             cityLabel = new JLabel("City");
             sourceLabel = new JLabel("Source:");
             destinationLabel = new JLabel("Destination:");
@@ -699,10 +714,13 @@ public class EazyFinderGUI {
 
             frame.add(backButton);
             frame.add(nameLabel);
-            frame.add(nameText);
+            frame.add(nameField);
             frame.add(phoneLabel);
-            frame.add(phoneText);
+            frame.add(phoneField);
             frame.add(phoneMessage);
+            frame.add(emailLabel);
+            frame.add(emailField);
+            frame.add(emailMessage);
             frame.add(cityLabel);
             frame.add(cityField);
             frame.add(sourceLabel);
@@ -726,15 +744,33 @@ public class EazyFinderGUI {
             nameLabel.setBounds(200, 50, 100, 25);
             nameLabel.setFont(timesNewRoman);
 
-            nameText.setBounds(330, 50, 200, 25);
-            nameText.setFont(timesNewRoman);
-            nameText.setText(username);
+            nameField.setBounds(330, 50, 200, 25);
+            nameField.setFont(timesNewRoman);
+            nameField.setText(username);
 
-            phoneLabel.setBounds(200, 100, 130, 25);
+            phoneLabel.setBounds(20, 100, 130, 25); //200, 100, 130, 25
             phoneLabel.setFont(timesNewRoman);
 
-            phoneText.setBounds(330, 100, 200, 25);
-            phoneText.setFont(timesNewRoman);
+            phoneField.setBounds(135, 100, 200, 25); //330, 100, 200, 25
+            phoneField.setFont(timesNewRoman);
+
+            phoneMessage.setBounds(0, 125, 330, 20); //510, 100, 200, 25
+            phoneMessage.setFont(timesNewRoman);
+            phoneMessage.setForeground(Color.RED);
+            phoneMessage.setHorizontalAlignment(0);
+            phoneMessage.setVerticalAlignment(0);
+
+            emailLabel.setBounds(365, 100, 90, 25);
+            emailLabel.setFont(timesNewRoman);
+
+            emailField.setBounds(440, 100, 200, 25);
+            emailField.setFont(timesNewRoman);
+
+            emailMessage.setBounds(350, 125, 330, 20);
+            emailMessage.setFont(timesNewRoman);
+            emailMessage.setForeground(Color.RED);
+            emailMessage.setHorizontalAlignment(0);
+            emailMessage.setVerticalAlignment(0);
 
             cityLabel.setBounds(200, 150, 100, 25);
             cityLabel.setFont(timesNewRoman);
@@ -775,12 +811,6 @@ public class EazyFinderGUI {
             continueButton.setFont(timesNewRoman);
             continueButton.addActionListener(new ContinueToModeOfTransportation());
 
-            phoneMessage.setBounds(510, 100, 200, 25);
-            phoneMessage.setFont(timesNewRoman);
-            phoneMessage.setForeground(Color.RED);
-            phoneMessage.setFont(timesNewRoman);
-            phoneMessage.setHorizontalAlignment(JLabel.CENTER);
-
             logoutButton.setBounds(586, 0, 100, 30);
             logoutButton.setBackground(Color.RED);
             logoutButton.setForeground(Color.WHITE);
@@ -800,13 +830,15 @@ public class EazyFinderGUI {
             public void actionPerformed(ActionEvent e) {
                 msg.setText("");
                 phoneMessage.setText("");
+                emailMessage.setText("");
 
                 msg.setFont(timesNewRoman);
                 msg.setForeground(Color.RED);
                 msg.setHorizontalAlignment(0);
 
-                name = nameText.getText().trim();
-                phone = phoneText.getText().trim();
+                name = nameField.getText().trim();
+                phone = phoneField.getText().trim();
+                email = emailField.getText().trim();
                 city = String.valueOf(cityField.getSelectedItem());
                 source = String.valueOf(sourceField.getSelectedItem());
                 destination = String.valueOf(destinationField.getSelectedItem());
@@ -819,8 +851,9 @@ public class EazyFinderGUI {
                 } else if (source.equals(destination)) {
                     msg.setBounds(200, 470, 350, 25);
                     msg.setText("Source and Destination Cannot be the same");
-                } else if (!phone.matches("^[6-9]\\d{9}")) {
-                    phoneMessage.setText("Invalid Phone Number");
+                } else if (!phone.matches("^[6-9]\\d{9}") || !email.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")) {
+                    if(!phone.matches("^[6-9]\\d{9}")) phoneMessage.setText("Invalid Phone Number");
+                    if(!email.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")) emailMessage.setText("Invalid Email Address");
                 } else {
                     bookingObj = new BookingMainCode(city, source, destination, noOfAdults, noOfChildren);
 
@@ -835,7 +868,7 @@ public class EazyFinderGUI {
                         routeCost.append(route[i].toUpperCase());
                         if (i != 0) routeCost.append(" => ");
                     }
-                    routeCost.append("\nCost: ").append(cost).append("</html>");
+                    routeCost.append("\nCost: ").append(cost).append(" /-").append("</html>");
 
                     JLabel routeCostMessage = new JLabel();
 
@@ -990,8 +1023,8 @@ public class EazyFinderGUI {
 
                     BookingMainCode bookingObj = new BookingMainCode();
 
-                    bookingObj.loadDetails(username, city, source, destination, bookingObj.calculateTotalCost(), nameText.getText(),
-                            Long.parseLong(phoneText.getText()), noOfAdults, noOfChildren,
+                    bookingObj.loadDetails(username, city, source, destination, bookingObj.calculateTotalCost(), name, phone, email,
+                            noOfAdults, noOfChildren,
                             new SimpleDateFormat("dd:MM:yyyy").format(date),
                             new SimpleDateFormat("HH:mm:ss").format(date));
 
