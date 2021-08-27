@@ -1,11 +1,11 @@
-package EazyFinderGUI;
+package EazyFinderGUI.MainCodes;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
 public class TransactionHistoryMainCode {
-    String transactionHistory(String username){
+    public String transactionHistory(String username){
         File th = new File(System.getProperty("user.dir") + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
         if(th.length() == 0)
             return "NO";

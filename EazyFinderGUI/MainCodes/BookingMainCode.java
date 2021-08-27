@@ -1,15 +1,17 @@
-package EazyFinderGUI;
+package EazyFinderGUI.MainCodes;
 
 import java.io.*;
 
 public class BookingMainCode {
-    String city, source, destination;
-    short noOfPlaces, noOfVehicles = 5, noOfAdults, noOfChildren;
+    String city;
+    public String source, destination;
+    short noOfPlaces, noOfAdults, noOfChildren;
+    public short noOfVehicles = 5;
     String[] places, tempArray;
     short[] metro;
     short[][] cityAdjMat;
-    String[] vehicles = {"Bus", "Bike", "Auto", "Metro", "Cab"};
-    short[] costPerKM = {2, 3, 4, 5, 6};
+    public String[] vehicles = {"Bus", "Bike", "Auto", "Metro", "Cab"};
+    public short[] costPerKM = {2, 3, 4, 5, 6};
     short[] adultCost = {20, 30, 15, 15, 35};
     short[] childCost = {10, 15, 7, 7, 15};
     short i, j, k;
@@ -17,22 +19,22 @@ public class BookingMainCode {
     String str, dirname = System.getProperty("user.dir");
     BufferedReader cityReader, cityConnectionsReader;
 
-    BookingMainCode() {}
+    public BookingMainCode() {}
 
     short motIndex;
-    BookingMainCode(short motIndex, short noOfAdults, short noOfChildren) {
+    public BookingMainCode(short motIndex, short noOfAdults, short noOfChildren) {
         this.motIndex = motIndex;
         this.noOfAdults = noOfAdults;
         this.noOfChildren = noOfChildren;
     }
 
-    BookingMainCode(String city, String source, String destination) {
+    public BookingMainCode(String city, String source, String destination) {
         this.city = city;
         this.source = source.toLowerCase();
         this.destination = destination.toLowerCase();
     }
 
-    BookingMainCode(String city, String source, String destination, short noOfAdults, short noOfChildren) {
+    public BookingMainCode(String city, String source, String destination, short noOfAdults, short noOfChildren) {
         this.city = city;
         this.source = source.toLowerCase();
         this.destination = destination.toLowerCase();
@@ -40,7 +42,7 @@ public class BookingMainCode {
         this.noOfChildren = noOfChildren;
     }
 
-    void loadDetails(String username, String city, String source, String destination, float cost, String name, String phone, String email,
+    public void loadDetails(String username, String city, String source, String destination, float cost, String name, String phone, String email,
                      short noOfAdults, short noOfChildren, String date, String time) {
         File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
         try {
@@ -64,15 +66,15 @@ public class BookingMainCode {
         }
     }
 
-    float calculateTotalCost() {
+    public float calculateTotalCost() {
         return ((noOfAdults * adultCost[motIndex]) + (noOfChildren * childCost[motIndex])) * costPerKM[motIndex];
     }
 
-    String[] route;
-    short routeLen;
-    float cost;
+    public String[] route;
+    public short routeLen;
+    public float cost;
 
-    class EnquireAndBookings {
+    public class EnquireAndBookings {
         void getRoute(short sourceIndex, short destinationIndex, short[] shortestPath, short[] path) {
             route = new String[noOfPlaces];
             j = destinationIndex;
@@ -168,7 +170,7 @@ public class BookingMainCode {
             }
         }
 
-        void bookings() {
+        public void bookings() {
             getPlaces();
 
             cityAdjMat = new short[noOfPlaces][noOfPlaces];
