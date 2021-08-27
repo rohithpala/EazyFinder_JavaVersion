@@ -520,9 +520,7 @@ public class EazyFinderGUI {
                             profilePictureExtension = profilePicturePath.substring(i);
                         }
 
-//                    if (fd.getFile() != null) {
                         if (profilePictureExtension.equals(".png") || profilePictureExtension.equals(".jpg") || profilePictureExtension.equals(".jpeg")) {
-//
                             optionPaneLabel = new JLabel(profilePicturePath);
                             optionPaneLabel.setFont(timesNewRoman);
 
@@ -533,8 +531,12 @@ public class EazyFinderGUI {
 
                             if (optionPaneResult == JOptionPane.YES_OPTION) {
                                 try {
+                                    boolean deleted = true;
                                     File destination = new File(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension);
-                                    if (destination.createNewFile())
+                                    if(destination.exists()) {
+                                        deleted = destination.delete();
+                                    }
+                                    if (deleted && destination.createNewFile())
                                         Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destination));
                                 } catch (IOException ignored) {
                                 }
@@ -543,12 +545,12 @@ public class EazyFinderGUI {
                                 selectProfilePictureButton.setBackground(Color.GREEN);
                             }
                         } else {
-                            JOptionPane.showMessageDialog(frame,
-                                    "You have selected a non-supported file\nPlease choose another file\nWe support .png, .jpg, .jpeg files only",
-                                    "File not supported", JOptionPane.ERROR_MESSAGE);
+                            optionPaneLabel.setText("<html>You have selected a non-supported file\n" +
+                                    "Please choose another file\n" +
+                                    "We support .png, .jpg, .jpeg files only</html>".replaceAll("\n", "<br>"));
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "File not supported", JOptionPane.ERROR_MESSAGE);
                         }
                     }
-//                    }
                 }
             });
 
