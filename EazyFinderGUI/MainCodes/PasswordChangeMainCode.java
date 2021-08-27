@@ -1,4 +1,4 @@
-package EazyFinderGUI;
+package EazyFinderGUI.MainCodes;
 
 import java.io.*;
 
@@ -13,7 +13,7 @@ public class PasswordChangeMainCode {
         return encryptedPassword;
     }
 
-    boolean passwordChange(String username, String oldPassword, String newPassword) {
+    public boolean passwordChange(String username, String oldPassword, String newPassword) {
         String str, dirname = System.getProperty("user.dir");
         StringBuilder credentials = new StringBuilder();
         File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");

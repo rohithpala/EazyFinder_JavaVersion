@@ -1,5 +1,7 @@
 package EazyFinderGUI;
 
+import EazyFinderGUI.MainCodes.*;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -42,6 +44,12 @@ public class EazyFinderGUI {
     // label added into JOptionPanes
     JLabel optionPaneLabel = new JLabel();
     String profilePictureExtension;
+    int optionPaneResult; // used for option pane results
+
+    // All Objects
+    LoginUI loginUIObj = new LoginUI();
+    SignUpUI signUpUI = new SignUpUI();
+    GuestMode guestMode = new GuestMode();
 
 
     public static void main(String[] args) {
@@ -77,21 +85,21 @@ public class EazyFinderGUI {
         homepageLoginButton.setBackground(Color.ORANGE);
         homepageLoginButton.setFont(timesNewRoman);
         homepageLoginButton.setToolTipText("Click this button to Login");
-        homepageLoginButton.addActionListener(new LoginUI());
+        homepageLoginButton.addActionListener(loginUIObj);
 
         homepageSignupButton.setBounds(180, 95, 100, 30);
         homepageSignupButton.setForeground(Color.BLACK);
         homepageSignupButton.setBackground(Color.ORANGE);
         homepageSignupButton.setFont(timesNewRoman);
         homepageSignupButton.setToolTipText("Click this button to Create a new Account for yourself");
-        homepageSignupButton.addActionListener(new SignUpUI());
+        homepageSignupButton.addActionListener(signUpUI);
 
         homepageGuestButton.setBounds(50, 142, 230, 30);
         homepageGuestButton.setForeground(Color.WHITE);
         homepageGuestButton.setBackground(Color.DARK_GRAY);
         homepageGuestButton.setFont(timesNewRoman);
         homepageGuestButton.setToolTipText("Have the experience of a registered user without registering");
-        homepageGuestButton.addActionListener(new GuestMode());
+        homepageGuestButton.addActionListener(guestMode);
 
         infoLabel.setBounds(320, 0, 16, 16);
         infoLabel.setToolTipText("Email: programmerrohith@gmail.com");
@@ -136,11 +144,11 @@ public class EazyFinderGUI {
         public void actionPerformed(ActionEvent e) {
             if (num == 1 || num == 2) {
                 optionPaneLabel.setText("Are You Sure?");
-                int result = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
+                optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE);
 
-                if (result == JOptionPane.YES_OPTION) {
+                if (optionPaneResult == JOptionPane.YES_OPTION) {
                     if (num == 1) Homepage();
                     else if (num == 2) displayMenu();
                 }
@@ -223,9 +231,6 @@ public class EazyFinderGUI {
 
             passwordField.setBounds(130, 80, 120, 25);
             passwordField.setFont(timesNewRoman);
-
-            userField.setText("r");
-            passwordField.setText("Rohith_02");
 
             showPasswordCB1.setBounds(90, 110, 150, 25);
             showPasswordCB1.setFont(timesNewRoman);
@@ -489,7 +494,7 @@ public class EazyFinderGUI {
 
                 if (fd.getFile() == null) {
 //                    optionPaneLabel.setText("<html>No Picture Selected\nContinue Without Selecting a Profile Picture</html>".replaceAll("\n", "<br>"));
-//                    int result = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "No Picture Selected",
+//                    result = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "No Picture Selected",
 //                            JOptionPane.YES_NO_OPTION,
 //                            JOptionPane.WARNING_MESSAGE);
 //                    if (result == JOptionPane.YES_OPTION) {
@@ -498,20 +503,22 @@ public class EazyFinderGUI {
 //                    }
                     JOptionPane.showMessageDialog(frame, "No Picture Selected", "No Picture Selected", JOptionPane.WARNING_MESSAGE);
                 } else {
+                    optionPaneResult = JOptionPane.YES_OPTION;
                     if (selectProfilePictureButton.getText().equals("Selected")) {
-                        optionPaneLabel.setText("Want to Select another Image as your Profile Picture?");
-                        JOptionPane.showConfirmDialog(frame, optionPaneLabel,
+                        optionPaneLabel.setText("Want to Select this Image as your Profile Picture?");
+                        optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel,
                                 "Select another image?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
                     }
 
-                    if (fd.getFile() != null)
-                        profilePicturePath = fd.getDirectory() + fd.getFile();
+                    if (optionPaneResult == JOptionPane.YES_OPTION) {
+                        if (fd.getFile() != null)
+                            profilePicturePath = fd.getDirectory() + fd.getFile();
 
-                    profilePictureExtension = "";
-                    int i = profilePicturePath.lastIndexOf('.');
-                    if (i > 0) {
-                        profilePictureExtension = profilePicturePath.substring(i);
-                    }
+                        profilePictureExtension = "";
+                        int i = profilePicturePath.lastIndexOf('.');
+                        if (i > 0) {
+                            profilePictureExtension = profilePicturePath.substring(i);
+                        }
 
 //                    if (fd.getFile() != null) {
                         if (profilePictureExtension.equals(".png") || profilePictureExtension.equals(".jpg") || profilePictureExtension.equals(".jpeg")) {
@@ -520,11 +527,11 @@ public class EazyFinderGUI {
                             optionPaneLabel.setFont(timesNewRoman);
 
                             String[] optionPaneButtonNames = {"Confirm", "No, I want to Select Another"};
-                            int result = JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture",
+                            optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture",
                                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
                                     null, optionPaneButtonNames, null);
 
-                            if (result == JOptionPane.YES_OPTION) {
+                            if (optionPaneResult == JOptionPane.YES_OPTION) {
                                 try {
                                     File destination = new File(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension);
                                     if (destination.createNewFile())
@@ -540,6 +547,7 @@ public class EazyFinderGUI {
                                     "You have selected a non-supported file\nPlease choose another file\nWe support .png, .jpg, .jpeg files only",
                                     "File not supported", JOptionPane.ERROR_MESSAGE);
                         }
+                    }
 //                    }
                 }
             });
@@ -1613,12 +1621,12 @@ public class EazyFinderGUI {
                     routeCostMessage.setText(String.valueOf(routeCost).replaceAll("\n", "<br>"));
                     routeCostMessage.setText(routeCostMessage.getText().toUpperCase());
 
-                    int result = JOptionPane.showOptionDialog(frame, routeCostMessage,
+                    optionPaneResult = JOptionPane.showOptionDialog(frame, routeCostMessage,
                             enquiryObj.source.toUpperCase() + " to " + enquiryObj.destination.toUpperCase(),
                             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
                             null, optionPaneButtonNames, null);
 
-                    if (result == JOptionPane.NO_OPTION) {
+                    if (optionPaneResult == JOptionPane.NO_OPTION) {
                         BookingUI bookingObj = new BookingUI();
 
                         bookingObj.cityField = enquireCityField;
@@ -1633,7 +1641,7 @@ public class EazyFinderGUI {
 
                         enquireCityField.addActionListener(new InitializeCombos(enquireCityField, bookingObj.sourceField, bookingObj.destinationField));
                         bookingObj.bookingUI(1);
-                    } else if (result == JOptionPane.CANCEL_OPTION) {
+                    } else if (optionPaneResult == JOptionPane.CANCEL_OPTION) {
                         JLabel fareDivision = new JLabel();
 
                         fareDivision.setText(
@@ -1734,10 +1742,10 @@ public class EazyFinderGUI {
                         } else {
                             msg.setText("");
                             optionPaneLabel.setText("Are You Sure?");
-                            int result = JOptionPane.showConfirmDialog(updateUsernameFrame, optionPaneLabel, "Confirmation",
+                            optionPaneResult = JOptionPane.showConfirmDialog(updateUsernameFrame, optionPaneLabel, "Confirmation",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.WARNING_MESSAGE);
-                            if (result == JOptionPane.YES_OPTION) {
+                            if (optionPaneResult == JOptionPane.YES_OPTION) {
                                 if (new UpdateUsernameMainCode().updateUsername(username, newUsername, password)) {
                                     updateUsernameFrame.dispose();
 
@@ -1846,10 +1854,10 @@ public class EazyFinderGUI {
                     msg.setText("Passwords doesn't match");
                 } else if (isPasswordAccepted(newPassword, passwordChangeFrame)) {
                     optionPaneLabel.setText("Are You Sure?");
-                    int result = JOptionPane.showConfirmDialog(passwordChangeFrame, optionPaneLabel, "Confirm",
+                    optionPaneResult = JOptionPane.showConfirmDialog(passwordChangeFrame, optionPaneLabel, "Confirm",
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.WARNING_MESSAGE);
-                    if (result == JOptionPane.YES_OPTION) {
+                    if (optionPaneResult == JOptionPane.YES_OPTION) {
                         if (new PasswordChangeMainCode().passwordChange(username, password, newPassword)) {
                             password = newPassword;
                             passwordChangeFrame.dispose();
@@ -1872,10 +1880,10 @@ public class EazyFinderGUI {
 
 
     void AccountDeletion(JFrame frame1) {
-        int result = JOptionPane.showConfirmDialog(frame1,
+        optionPaneResult = JOptionPane.showConfirmDialog(frame1,
                 "Are You Sure?\nAll Your Transactions, Enquiries will be lost\nThis is un-reversible",
                 "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (result == JOptionPane.YES_OPTION) {
+        if (optionPaneResult == JOptionPane.YES_OPTION) {
             frame1.dispose();
             boolean deleted = new AccountDeletionMainCode().accountDeletion(username, password);
             if (deleted) {
@@ -1983,10 +1991,10 @@ public class EazyFinderGUI {
                         msg.setText("No User With Given Credentials");
                     } else {
                         optionPaneLabel.setText("Are You Sure?");
-                        int result = JOptionPane.showConfirmDialog(switchAccountsFrame, optionPaneLabel, "Confirmation",
+                        optionPaneResult = JOptionPane.showConfirmDialog(switchAccountsFrame, optionPaneLabel, "Confirmation",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.WARNING_MESSAGE);
-                        if (result == JOptionPane.YES_OPTION) {
+                        if (optionPaneResult == JOptionPane.YES_OPTION) {
                             username = localUsername;
                             password = localPassword;
                             switchAccountsFrame.dispose();
