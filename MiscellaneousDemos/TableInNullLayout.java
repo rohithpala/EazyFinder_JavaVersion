@@ -1,4 +1,4 @@
-package Miscellaneous;
+package MiscellaneousDemos;
 
 import javax.swing.*;
 

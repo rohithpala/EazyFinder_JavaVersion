@@ -1,14 +1,10 @@
-package EazyFinderGUI;
+package EazyFinderGUI.MainCodes;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 public class BookingAfterMOTCode {
-    BookingAfterMOTCode(){
+    public BookingAfterMOTCode(){
         DefaultTableModel dtm;
         ButtonGroup bg;
         JTable table;

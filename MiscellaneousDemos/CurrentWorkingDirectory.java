@@ -1,4 +1,4 @@
-package Miscellaneous;
+package MiscellaneousDemos;
 
 public class CurrentWorkingDirectory {
     public static void main(String[] args) {
