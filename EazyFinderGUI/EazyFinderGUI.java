@@ -497,8 +497,6 @@ public class EazyFinderGUI {
 
                         if (result == JOptionPane.YES_OPTION) {
                             try {
-//                                Files.move(Paths.get(profilePicturePath),
-//                                        Paths.get(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + "." + extension));
                                 File destination = new File(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + "." + extension);
                                 if(destination.createNewFile())
                                     Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destination));
