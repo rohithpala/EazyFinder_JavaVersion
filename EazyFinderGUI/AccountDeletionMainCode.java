@@ -1,6 +1,7 @@
 package EazyFinderGUI;
 
 import java.io.*;
+import java.util.Objects;
 
 public class AccountDeletionMainCode {
     long encryptPassword(String password) {
@@ -16,9 +17,9 @@ public class AccountDeletionMainCode {
     boolean accountDeletion(String username, String password) {
         String str, dirname = System.getProperty("user.dir");
         StringBuilder credentials = new StringBuilder();
-        File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
-        File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
-        File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+        File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
+        File ud = new File(dirname + "\\EazyFinderGUI\\Databases\\UserDetails.txt");
+
         try {
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
@@ -34,9 +35,40 @@ public class AccountDeletionMainCode {
                 writer.write(s1);
             writer.flush();
             writer.close();
+
+            reader = new BufferedReader(new FileReader(ud));
+            while ((str = reader.readLine()) != null) {
+                if (!username.equals(str.split(",")[0])) {
+                    credentials.append(str).append("\n;");
+                }
+            }
+            reader.close();
+
+            writer = new BufferedWriter(new FileWriter(ud));
+            s = String.valueOf(credentials).split(";");
+            for (String s1 : s)
+                writer.write(s1);
+            writer.flush();
+            writer.close();
+
+            // Deleting profile picture
+            File ppDir = new File(dirname + "\\EazyFinderGUI\\ProfilePictures");
+            String fileName, temp;
+            boolean ppDeleted;
+            int i;
+            for(File file : Objects.requireNonNull(ppDir.listFiles())){
+                fileName = file.getName();
+                i = fileName.lastIndexOf(".");
+                temp = fileName.substring(0, i);
+                if(username.equals(temp)){
+                    ppDeleted = file.delete();
+                    return new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt").delete() &&
+                            new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt").delete() && ppDeleted;
+                }
+            }
+
         } catch (Exception ignored) {
         }
-
-        return th.delete() && en.delete();
+        return false;
     }
 }

@@ -16,7 +16,7 @@ public class PasswordChangeMainCode {
     boolean passwordChange(String username, String oldPassword, String newPassword) {
         String str, dirname = System.getProperty("user.dir");
         StringBuilder credentials = new StringBuilder();
-        File db = new File(dirname + "\\EazyFinderGUI\\LogInSignUpDatabase.txt");
+        File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
         try {
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
