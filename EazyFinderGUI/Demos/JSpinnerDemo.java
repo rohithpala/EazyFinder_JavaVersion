@@ -1,4 +1,4 @@
-package EazyFinderGUI;
+package EazyFinderGUI.Demos;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

@@ -1,3 +1,5 @@
+package EazyFinderGUI.Demos;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -13,11 +15,7 @@ public class JTableRadioButtonTest extends JFrame {
     public JTableRadioButtonTest() {
         setTitle("JTableRadioButton Test");
         dtm = new DefaultTableModel();
-        dtm.setDataVector(new Object[][]{{"Course 1", new JRadioButton("Java")},
-                {"Course 1", new JRadioButton("Python")},
-                {"Course 1", new JRadioButton("Scala")},
-                {"Course 2", new JRadioButton("Selenium")},
-                {"Course 2", new JRadioButton("Java Script")}}, new Object[]{"Course", "Technology"});
+        dtm.setDataVector(new Object[][]{{"Course 1", new JRadioButton("Java")}, {"Course 1", new JRadioButton("Python")}, {"Course 1", new JRadioButton("Scala")}, {"Course 2", new JRadioButton("Selenium")}, {"Course 2", new JRadioButton("Java Script")}}, new Object[]{"Course", "Technology"});
         table = new JTable(dtm) {
             public void tableChanged(TableModelEvent tme) {
                 super.tableChanged(tme);
@@ -30,12 +28,13 @@ public class JTableRadioButtonTest extends JFrame {
         bg.add((JRadioButton) dtm.getValueAt(2, 1));
         bg.add((JRadioButton) dtm.getValueAt(3, 1));
         bg.add((JRadioButton) dtm.getValueAt(4, 1));
-
         table.getColumn("Technology").setCellRenderer(new RadioButtonRenderer());
         table.getColumn("Technology").setCellEditor(new RadioButtonEditor(new JCheckBox()));
-
         jsp = new JScrollPane(table);
         add(jsp, BorderLayout.NORTH);
+
+        System.out.println(bg.getSelection());
+
         setSize(400, 275);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

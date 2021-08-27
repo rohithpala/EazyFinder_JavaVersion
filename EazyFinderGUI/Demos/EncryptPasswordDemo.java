@@ -1,8 +1,8 @@
-package EazyFinderGUI;
+package EazyFinderGUI.Demos;
 
 import java.util.Scanner;
 
-public class EncryptPassword {
+public class EncryptPasswordDemo {
     public static void main(String[] args) {
         System.out.print("Password: ");
         String password = new Scanner(System.in).next();

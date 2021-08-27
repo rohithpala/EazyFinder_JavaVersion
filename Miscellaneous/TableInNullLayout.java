@@ -1,3 +1,5 @@
+package Miscellaneous;
+
 import javax.swing.*;
 
 public class TableInNullLayout {

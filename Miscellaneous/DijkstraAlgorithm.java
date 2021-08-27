@@ -1,3 +1,5 @@
+package Miscellaneous;
+
 import java.util.Scanner;
 
 public class DijkstraAlgorithm {
