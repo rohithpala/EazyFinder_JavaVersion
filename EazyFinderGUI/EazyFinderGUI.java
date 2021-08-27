@@ -14,13 +14,14 @@ import java.util.Scanner;
 
 /*
 TODO:
-use sudo mode as in GitHub
-caps lock warning while typing passwords
-menu buttons are bringing n verification frames for nth clicking
-guest mode option (show option panes like "Guests cannot update their usernames or passwords or cannot switch accounts" after clicking the
+1. use sudo mode as in GitHub
+2. caps lock warning while typing passwords
+3. BUGS: menu buttons are bringing n verification frames for nth clicking, When logout button is pressed it is giving multiple option panes
+4. guest mode option (show option panes like "Guests cannot update their usernames or passwords or cannot switch accounts" after clicking the
 button. Give options like "Look at UI" and show the UI)
-add profile and settings option (dark mode (optional))
-give ref no. while signup and store them in the file for verification
+5. add profile and settings option (dark mode (optional))
+6. give ref no. while signup and store them in the file for verification
+7. add clear form option and also cross symbol in text fields
 */
 
 public class EazyFinderGUI {
@@ -465,11 +466,13 @@ public class EazyFinderGUI {
             backButton.setFont(timesNewRoman);
             backButton.addActionListener(new Back((byte) 1));
 
-            profilePictureLabel.setBounds(100, 85, 150, 25);
+            profilePictureLabel.setBounds(80, 85, 170, 25);
             profilePictureLabel.setFont(timesNewRoman);
 
             selectProfilePictureButton.setBounds(250, 85, 100, 25);
             selectProfilePictureButton.setFont(timesNewRoman);
+            selectProfilePictureButton.setBackground(Color.DARK_GRAY);
+            selectProfilePictureButton.setForeground(Color.WHITE);
             selectProfilePictureButton.addActionListener(e -> {
                 FileDialog fd = new FileDialog(frame, "Open", FileDialog.LOAD);
                 fd.setVisible(true);
@@ -519,7 +522,7 @@ public class EazyFinderGUI {
             nameField.setBounds(220, 135, 150, 25);
             nameField.setFont(timesNewRoman);
 
-            phoneLabel.setBounds(100, 185, 100, 25);
+            phoneLabel.setBounds(80, 185, 120, 25);
             phoneLabel.setFont(timesNewRoman);
 
             phoneField.setBounds(220, 185, 150, 25);
@@ -531,40 +534,46 @@ public class EazyFinderGUI {
             emailField.setBounds(220, 235, 150, 25);
             emailField.setFont(timesNewRoman);
 
-            signupButton.setBounds(150, 285, 100, 25);
+            signupButton.setBounds(175, 285, 100, 25);
             signupButton.setBackground(Color.DARK_GRAY);
             signupButton.setForeground(Color.WHITE);
             signupButton.setFont(timesNewRoman);
-            signupButton.addActionListener(new SignUpMainCodeAndLoadingDetails());
+            signupButton.addActionListener(new SignUpMainCode());
         }
 
-        class SignUpMainCodeAndLoadingDetails implements ActionListener {
+        class SignUpMainCode implements ActionListener {
+            JLabel phoneMessage = new JLabel();
+            JLabel emailErrorMessage = new JLabel();
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 name = nameField.getText().trim();
                 phoneNumber = phoneField.getText().trim();
                 emailID = emailField.getText().trim();
-
-                msg = new JLabel();
-                JLabel emailErrorMessage = new JLabel();
                 
-                frame.add(msg);
+                frame.add(phoneMessage);
                 frame.add(emailErrorMessage);
-                
-                msg.setBounds(0, 320, registrationFrameSize, 25);
-                msg.setForeground(Color.RED);
-                msg.setHorizontalAlignment(0);
 
+                phoneMessage.setText("");
+                phoneMessage.setBounds(0, 320, registrationFrameSize, 25);
+                phoneMessage.setFont(timesNewRoman);
+                phoneMessage.setForeground(Color.RED);
+                phoneMessage.setOpaque(true);
+                phoneMessage.setHorizontalAlignment(0);
+
+                emailErrorMessage.setText("");
                 emailErrorMessage.setBounds(0, 350, registrationFrameSize, 25);
+                emailErrorMessage.setFont(timesNewRoman);
                 emailErrorMessage.setForeground(Color.RED);
+                emailErrorMessage.setOpaque(true);
                 emailErrorMessage.setHorizontalAlignment(0);
 
                 if (selectProfilePictureButton.getText().equals("Select")) {
-                    msg.setText("Please select a Profile Picture");
+                    phoneMessage.setText("Please select a Profile Picture");
                 } else if (name.equals("") || phoneNumber.equals("") || emailID.equals("")) {
-                    msg.setText("Please fill all the Fields");
+                    phoneMessage.setText("Please fill all the Fields");
                 } else if (!phoneNumber.matches(phoneNumberRegex) || !emailID.matches(emailIDRegex)) {
-                    if (!phoneNumber.matches(phoneNumberRegex)) msg.setText("Invalid Phone Number");
+                    if (!phoneNumber.matches(phoneNumberRegex)) phoneMessage.setText("Invalid Phone Number");
                     if (!emailID.matches(emailIDRegex)) emailErrorMessage.setText("Invalid Email Address");
                 } else {
                     try {
@@ -717,8 +726,6 @@ public class EazyFinderGUI {
         frame.setTitle("EazyFinder");
         frame.setLocationRelativeTo(null);
 
-        buttonsY = 130; // starting button is at 130 from top
-
         frame.add(settings);
         frame.add(usernameLabel);
         frame.add(finderImage);
@@ -800,6 +807,8 @@ public class EazyFinderGUI {
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setFont(timesNewRoman);
         logoutButton.addActionListener(new Back((byte) 1));
+
+        buttonsY = 130; // starting button is at 130 from top
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
