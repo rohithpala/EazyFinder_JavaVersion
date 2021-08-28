@@ -31,7 +31,5 @@ public class FlushWholeData {
         // Clearing databases
         new FileWriter(db, false).close();
         new FileWriter(ud, false).close();
-
-        System.out.println("All Data Deleted Successfully");
     }
 }
