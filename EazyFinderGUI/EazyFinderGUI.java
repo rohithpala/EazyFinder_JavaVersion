@@ -25,6 +25,8 @@ button. Give options like "Look at UI" and show the UI)
 6. give ref no. while signup and store them in the file for verification
 7. add clear form option and also cross symbol in text fields
 8. go from login to signup if credentials are not found
+9. sorting th based on filters
+10. add sorting option based on filters wherever possible
 */
 
 public class EazyFinderGUI {
@@ -948,9 +950,17 @@ public class EazyFinderGUI {
                 //settings. put the account deletion, password change, update username options in here
                 backButton = new JButton("Back");
                 JLabel settingsLabel = new JLabel("Settings");
+                JButton deleteTHButton = new JButton("Delete all the Transaction Histories");
+                JButton deleteEnqButton = new JButton("Delete all the Enquiries");
+                JButton deleteAccountData = new JButton("Delete all my account Data");
+                JButton deleteAccount = new JButton("Delete My Account");
 
                 frame.add(backButton);
                 frame.add(settingsLabel);
+                frame.add(deleteTHButton);
+                frame.add(deleteEnqButton);
+                frame.add(deleteAccountData);
+                frame.add(deleteAccount);
                 frame.add(logoutButton);
 
                 backButton.setBounds(0, 0, 80, 30);
@@ -963,6 +973,89 @@ public class EazyFinderGUI {
                 settingsLabel.setForeground(Color.GRAY);
                 settingsLabel.setFont(headingFont);
                 settingsLabel.setHorizontalAlignment(0);
+
+                deleteTHButton.setBounds(0, 60, 100, 25);
+                deleteTHButton.setForeground(Color.BLACK);
+                deleteTHButton.setBackground(Color.orange);
+                deleteTHButton.setHorizontalAlignment(0);
+                deleteTHButton.addActionListener(ae -> {
+                    optionPaneLabel.setText("<html>Are You Sure?\nAll your Transaction History will be lost</html>".replaceAll("\n", "<br>"));
+                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        try {
+                            new FileWriter(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt", false).close();
+                            optionPaneLabel.setText("<html>Transaction History Deleted Successfully</html>");
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                        } catch (Exception ex) {
+                            optionPaneLabel.setText("<html>Some Error Occurred\nTransaction History not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                });
+
+                deleteEnqButton.setBounds(0, 90, 100, 25);
+                deleteEnqButton.setForeground(Color.BLACK);
+                deleteEnqButton.setBackground(Color.orange);
+                deleteEnqButton.setHorizontalAlignment(0);
+                deleteEnqButton.addActionListener(ae -> {
+                    optionPaneLabel.setText("<html>Are You Sure?\nAll your Enquiries will be lost</html>".replaceAll("\n", "<br>"));
+                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        try {
+                            new FileWriter(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt", false).close();
+                            optionPaneLabel.setText("<html>All Enquiries Deleted Successfully</html>");
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                        } catch (Exception ex) {
+                            optionPaneLabel.setText("<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                });
+
+                deleteAccountData.setBounds(0, 120, 100, 25);
+                deleteAccountData.setForeground(Color.BLACK);
+                deleteAccountData.setBackground(Color.red);
+                deleteAccountData.setHorizontalAlignment(0);
+                deleteAccountData.addActionListener(ae -> {
+                    optionPaneLabel.setText(("""
+                            Are You Sure?
+                            All your Account Data will be lost
+                            
+                            Account Data Includes:
+                            1) Transaction History till date
+                            2) Enquiries Made till date"""));
+                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        try {
+                            new FileWriter(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt", false).close();
+                            new FileWriter(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt", false).close();
+                            optionPaneLabel.setText("<html>All the Account Data Deleted Successfully</html>");
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                        } catch (Exception ex) {
+                            optionPaneLabel.setText("<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                });
+
+                deleteAccount.setBounds(0, 150, 100, 25);
+                deleteAccount.setForeground(Color.BLACK);
+                deleteAccount.setBackground(Color.RED);
+                deleteAccount.setHorizontalAlignment(0);
+                deleteAccount.addActionListener(new Verification("AccountDeletion")); //ae -> {
+//                    optionPaneLabel.setText("<html>Are You Sure?\nThis</html>".replaceAll("\n", "<br>"));
+//                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
+//                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+//                        try {
+//                            new FileWriter(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt", false).close();
+//                            optionPaneLabel.setText("<html>All Enquiries Deleted Successfully</html>");
+//                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+//                        } catch (Exception ex) {
+//                            optionPaneLabel.setText("<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
+//                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+//                        }
+//                    }
+//                });
 
                 logoutButton.setBounds(586, 0, 100, 30);
                 logoutButton.setBackground(Color.RED);
