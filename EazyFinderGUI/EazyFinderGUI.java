@@ -43,14 +43,12 @@ public class EazyFinderGUI {
 
     // label added into JOptionPanes
     JLabel optionPaneLabel = new JLabel();
-    String profilePictureExtension;
     int optionPaneResult; // used for option pane results
 
     // All Objects
     LoginUI loginUIObj = new LoginUI();
     SignUpUI signUpUI = new SignUpUI();
     GuestMode guestMode = new GuestMode();
-
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
@@ -327,6 +325,7 @@ public class EazyFinderGUI {
 
     String phoneNumberRegex = "^[6-9]\\d{9}";
     String emailIDRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+    String profilePictureExtension;
 
     class SignUpUI implements ActionListener {
         JTextField userText;
@@ -488,71 +487,7 @@ public class EazyFinderGUI {
             selectProfilePictureButton.setFont(timesNewRoman);
             selectProfilePictureButton.setBackground(Color.DARK_GRAY);
             selectProfilePictureButton.setForeground(Color.WHITE);
-            selectProfilePictureButton.addActionListener(e -> {
-                FileDialog fd = new FileDialog(frame, "Open", FileDialog.LOAD);
-                fd.setVisible(true);
-
-                if (fd.getFile() == null) {
-//                    optionPaneLabel.setText("<html>No Picture Selected\nContinue Without Selecting a Profile Picture</html>".replaceAll("\n", "<br>"));
-//                    result = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "No Picture Selected",
-//                            JOptionPane.YES_NO_OPTION,
-//                            JOptionPane.WARNING_MESSAGE);
-//                    if (result == JOptionPane.YES_OPTION) {
-//                        selectProfilePictureButton.setText("Default");
-//                        selectProfilePictureButton.setBackground(Color.RED);
-//                    }
-                    JOptionPane.showMessageDialog(frame, "No Picture Selected", "No Picture Selected", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    optionPaneResult = JOptionPane.YES_OPTION;
-                    if (selectProfilePictureButton.getText().equals("Selected")) {
-                        optionPaneLabel.setText("Want to Select this Image as your Profile Picture?");
-                        optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel,
-                                "Select another image?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-                    }
-
-                    if (optionPaneResult == JOptionPane.YES_OPTION) {
-                        if (fd.getFile() != null)
-                            profilePicturePath = fd.getDirectory() + fd.getFile();
-
-                        profilePictureExtension = "";
-                        int i = profilePicturePath.lastIndexOf('.');
-                        if (i > 0) {
-                            profilePictureExtension = profilePicturePath.substring(i);
-                        }
-
-                        if (profilePictureExtension.equals(".png") || profilePictureExtension.equals(".jpg") || profilePictureExtension.equals(".jpeg")) {
-                            optionPaneLabel = new JLabel(profilePicturePath);
-                            optionPaneLabel.setFont(timesNewRoman);
-
-                            String[] optionPaneButtonNames = {"Confirm", "No, I want to Select Another"};
-                            optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture",
-                                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                                    null, optionPaneButtonNames, null);
-
-                            if (optionPaneResult == JOptionPane.YES_OPTION) {
-                                try {
-                                    boolean deleted = true;
-                                    File destination = new File(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension);
-                                    if(destination.exists()) {
-                                        deleted = destination.delete();
-                                    }
-                                    if (deleted && destination.createNewFile())
-                                        Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destination));
-                                } catch (IOException ignored) {
-                                }
-
-                                selectProfilePictureButton.setText("Selected");
-                                selectProfilePictureButton.setBackground(Color.GREEN);
-                            }
-                        } else {
-                            optionPaneLabel.setText("<html>You have selected a non-supported file\n" +
-                                    "Please choose another file\n" +
-                                    "We support .png, .jpg, .jpeg files only</html>".replaceAll("\n", "<br>"));
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "File not supported", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                }
-            });
+            selectProfilePictureButton.addActionListener(e -> new ProfilePictureSelection().profilePictureSelection());
 
             nameLabel.setBounds(100, 135, 100, 25);
             nameLabel.setFont(timesNewRoman);
@@ -577,6 +512,63 @@ public class EazyFinderGUI {
             signupButton.setForeground(Color.WHITE);
             signupButton.setFont(timesNewRoman);
             signupButton.addActionListener(new SignUpMainCode());
+        }
+
+        class ProfilePictureSelection {
+            FileDialog fd = new FileDialog(frame, "Open", FileDialog.LOAD);
+            int i;
+            String[] optionPaneButtonNames = {"Confirm", "No, I want to Select Another"};
+
+            void profilePictureSelection() {
+                fd.setVisible(true);
+
+                if (fd.getFile() == null) {
+//                    optionPaneLabel.setText("<html>No Picture Selected\nContinue Without Selecting a Profile Picture</html>".replaceAll("\n", "<br>"));
+//                    result = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "No Picture Selected",
+//                            JOptionPane.YES_NO_OPTION,
+//                            JOptionPane.WARNING_MESSAGE);
+//                    if (result == JOptionPane.YES_OPTION) {
+//                        selectProfilePictureButton.setText("Default");
+//                        selectProfilePictureButton.setBackground(Color.RED);
+//                    }
+                    JOptionPane.showMessageDialog(frame, "No Picture Selected", "No Picture Selected", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    optionPaneResult = JOptionPane.YES_OPTION;
+                    if (selectProfilePictureButton.getText().equals("Selected")) {
+                        optionPaneLabel.setText("Want to Select this Image as your Profile Picture?");
+                        optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel,
+                                "Select this image?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                    }
+
+                    if (optionPaneResult == JOptionPane.YES_OPTION) {
+                        if (fd.getFile() != null)
+                            profilePicturePath = fd.getDirectory() + fd.getFile();
+
+                        profilePictureExtension = "";
+                        i = profilePicturePath.lastIndexOf('.');
+                        if (i > 0) profilePictureExtension = profilePicturePath.substring(i);
+
+                        if (profilePictureExtension.equals(".png") || profilePictureExtension.equals(".jpg") || profilePictureExtension.equals(".jpeg")) {
+                            optionPaneLabel.setText(profilePicturePath);
+                            optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture Path",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                                    null, optionPaneButtonNames, null);
+
+                            if (optionPaneResult == JOptionPane.YES_OPTION) {
+                                selectProfilePictureButton.setText("Selected");
+                                selectProfilePictureButton.setBackground(Color.GREEN);
+                            } else {
+                                profilePictureSelection();
+                            }
+                        } else {
+                            optionPaneLabel.setText("<html>You have selected a non-supported file\n" +
+                                    "Please choose another file\n" +
+                                    "We support .png, .jpg, .jpeg files only</html>".replaceAll("\n", "<br>"));
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "File not supported", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
         }
 
         class SignUpMainCode implements ActionListener {
@@ -627,6 +619,18 @@ public class EazyFinderGUI {
                         writer.write(username + "," + name + "," + phoneNumber + "," + emailID + "\n");
                         writer.flush();
                         writer.close();
+
+                        // save the profile picture
+                        try {
+                            boolean deleted = true;
+                            File destination = new File(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension);
+                            if (destination.exists()) {
+                                deleted = destination.delete();
+                            }
+                            if (deleted && destination.createNewFile())
+                                Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destination));
+                        } catch (IOException ignored) {
+                        }
 
                         // Creating Transaction History and Enquiry Files for the user
                         File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
@@ -893,13 +897,13 @@ public class EazyFinderGUI {
 
                 profilePicture.setBounds(0, 65, 200, 200);
                 profilePicture.setHorizontalAlignment(0);
-                profilePicture.addActionListener(ae -> {
-                    optionPaneLabel = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension));
-
-                    String[] optionPaneButtonName = {"CLOSE"};
-                    JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture", JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.PLAIN_MESSAGE, null, optionPaneButtonName, null);
-                });
+//                profilePicture.addActionListener(ae -> {
+//                    optionPaneLabel.setText(new ImageIcon(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension));
+//
+//                    String[] optionPaneButtonName = {"CLOSE"};
+//                    JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture", JOptionPane.DEFAULT_OPTION,
+//                            JOptionPane.PLAIN_MESSAGE, null, optionPaneButtonName, null);
+//                });
 
                 usernameLabel.setBounds(0, 100, frameSize, 25);
                 usernameLabel.setFont(timesNewRoman);
