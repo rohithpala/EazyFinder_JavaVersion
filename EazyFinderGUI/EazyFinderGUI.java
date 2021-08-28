@@ -31,17 +31,18 @@ button. Give options like "Look at UI" and show the UI)
 
 public class EazyFinderGUI {
     // While using an IDE "Edit Configurations" by setting the Working Directory path till src if it is not already present
-    String dirname = System.getProperty("user.dir");
+    // System.getProperty("user.dir") return path upto src or change the program accordingly
+    String dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
     String username, password, name, phoneNumber, emailID;
-    final File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
-    final File userDetailsFile = new File(dirname + "\\EazyFinderGUI\\Databases\\UserDetails.txt");
+    final File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
+    final File userDetailsFile = new File(dirname + "\\Databases\\UserDetails.txt");
 
     JFrame frame = new JFrame();
     JButton backButton, logoutButton = new JButton("Logout");
     JLabel msg; // Used to print corresponding messages
     final Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
     final short frameSize = 700;
-    final Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\EazyFinderGUI\\finder.png");
+    final Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\finder.png");
 
     // label added into JOptionPanes
     JLabel optionPaneLabel = new JLabel();
@@ -59,7 +60,7 @@ public class EazyFinderGUI {
     final JButton homepageLoginButton = new JButton("LogIn");
     final JButton homepageSignupButton = new JButton("SignUp");
     final JButton homepageGuestButton = new JButton("Browse as Guest");
-    final JLabel infoLabel = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\information.png"));
+    final JLabel infoLabel = new JLabel(new ImageIcon(dirname + "\\Images\\information.png"));
 
     void Homepage() {
         frame.getContentPane().removeAll();
@@ -262,7 +263,7 @@ public class EazyFinderGUI {
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(db));
                         while ((str = reader.readLine()) != null) {
-                            credentials = str.split(" ");
+                            credentials = str.split(",");
                             if (username.equals(credentials[0]) && String.valueOf(encryptPassword(password)).equals(credentials[1])) {
                                 found = true;
                                 break;
@@ -421,7 +422,7 @@ public class EazyFinderGUI {
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(db));
                         while ((str = reader.readLine()) != null) {
-                            if (username.equals(str.split(" ")[0])) {
+                            if (username.equals(str.split(",")[0])) {
                                 msg.setText("Username Already Taken");
                                 found = true;
                                 break;
@@ -449,7 +450,7 @@ public class EazyFinderGUI {
         JButton signupButton = new JButton("SignUp");
 
         final int registrationFrameSize = 450;
-        String profilePicturePath = dirname + "\\EazyFinderGUI\\Images\\finder.png";
+        String profilePicturePath = dirname + "\\Images\\finder.png";
 
         void registrationForm() {
             frame.getContentPane().removeAll();
@@ -612,7 +613,7 @@ public class EazyFinderGUI {
                         // Adding the new User Credentials into the database
                         BufferedWriter writer;
                         writer = new BufferedWriter(new FileWriter(db, true));
-                        writer.write(username + " " + encryptPassword(password) + "\n");
+                        writer.write(username + "," + encryptPassword(password) + "\n");
                         writer.flush();
                         writer.close();
 
@@ -625,7 +626,7 @@ public class EazyFinderGUI {
                         // save the profile picture
                         try {
                             boolean deleted = true;
-                            File destination = new File(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension);
+                            File destination = new File(dirname + "\\ProfilePictures\\" + username + profilePictureExtension);
                             if (destination.exists()) {
                                 deleted = destination.delete();
                             }
@@ -635,8 +636,8 @@ public class EazyFinderGUI {
                         }
 
                         // Creating Transaction History and Enquiry Files for the user
-                        File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
-                        File en = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                        File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
+                        File en = new File(dirname + "\\Enquiries\\" + username + ".txt");
                         if (th.createNewFile() && en.createNewFile()) {
                             optionPaneLabel.setText("Account Created Successfully");
                             JOptionPane.showMessageDialog(frame, optionPaneLabel, "SignUp Successful", JOptionPane.INFORMATION_MESSAGE);
@@ -758,7 +759,7 @@ public class EazyFinderGUI {
     JButton menuPasswordChangeButton = new JButton("Change Password");
     JButton menuAccountDeleteButton = new JButton("Delete my Account");
     JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
-    final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\finder.png"));
+    final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\Images\\finder.png"));
 
     String[] settingsMenu = {"Menu", "Account", "Settings"};
     JComboBox<String> settings = new JComboBox<>(settingsMenu);
@@ -861,7 +862,7 @@ public class EazyFinderGUI {
     class Settings implements ActionListener {
         // Variables needed for Account Page
         JLabel accountLabel = new JLabel("Account");
-        JButton profilePicture = new JButton(new ImageIcon(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension));
+        JButton profilePicture = new JButton(new ImageIcon(dirname + "\\ProfilePictures\\" + username + profilePictureExtension));
         JLabel usernameLabel = new JLabel("Username: " + username);
         JLabel passwordLabel = new JLabel("Password: " + password);
         JLabel noOfTransactionsLabel = new JLabel();
@@ -900,7 +901,7 @@ public class EazyFinderGUI {
                 profilePicture.setBounds(0, 65, 200, 200);
                 profilePicture.setHorizontalAlignment(0);
 //                profilePicture.addActionListener(ae -> {
-//                    optionPaneLabel.setText(new ImageIcon(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + username + profilePictureExtension));
+//                    optionPaneLabel.setText(new ImageIcon(dirname + "\\ProfilePictures\\" + username + profilePictureExtension));
 //
 //                    String[] optionPaneButtonName = {"CLOSE"};
 //                    JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture", JOptionPane.DEFAULT_OPTION,
@@ -920,7 +921,7 @@ public class EazyFinderGUI {
                 // No. of Transactions
                 int noOfTransactions = 0;
                 try {
-                    File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                    File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
                     Scanner scanner = new Scanner(th);
                     while (scanner.hasNextLine()) {
                         scanner.nextLine();
@@ -974,18 +975,17 @@ public class EazyFinderGUI {
                 settingsLabel.setFont(headingFont);
                 settingsLabel.setHorizontalAlignment(0);
 
-                deleteTHButton.setBounds(0, 60, 100, 25);
+                deleteTHButton.setBounds(250, 65, 200, 30);
                 deleteTHButton.setForeground(Color.BLACK);
                 deleteTHButton.setBackground(Color.orange);
-                deleteTHButton.setHorizontalAlignment(0);
                 deleteTHButton.addActionListener(ae -> {
                     optionPaneLabel.setText("<html>Are You Sure?\nAll your Transaction History will be lost</html>".replaceAll("\n", "<br>"));
                     if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                         try {
-                            new FileWriter(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt", false).close();
+                            new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
                             optionPaneLabel.setText("<html>Transaction History Deleted Successfully</html>");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.PLAIN_MESSAGE);
                         } catch (Exception ex) {
                             optionPaneLabel.setText("<html>Some Error Occurred\nTransaction History not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
                             JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
@@ -993,18 +993,17 @@ public class EazyFinderGUI {
                     }
                 });
 
-                deleteEnqButton.setBounds(0, 90, 100, 25);
+                deleteEnqButton.setBounds(250, 110, 200, 30);
                 deleteEnqButton.setForeground(Color.BLACK);
                 deleteEnqButton.setBackground(Color.orange);
-                deleteEnqButton.setHorizontalAlignment(0);
                 deleteEnqButton.addActionListener(ae -> {
                     optionPaneLabel.setText("<html>Are You Sure?\nAll your Enquiries will be lost</html>".replaceAll("\n", "<br>"));
                     if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                         try {
-                            new FileWriter(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt", false).close();
+                            new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
                             optionPaneLabel.setText("<html>All Enquiries Deleted Successfully</html>");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.PLAIN_MESSAGE);
                         } catch (Exception ex) {
                             optionPaneLabel.setText("<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
                             JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1012,25 +1011,22 @@ public class EazyFinderGUI {
                     }
                 });
 
-                deleteAccountData.setBounds(0, 120, 100, 25);
+                deleteAccountData.setBounds(250, 155, 200, 30);
                 deleteAccountData.setForeground(Color.BLACK);
                 deleteAccountData.setBackground(Color.red);
-                deleteAccountData.setHorizontalAlignment(0);
                 deleteAccountData.addActionListener(ae -> {
-                    optionPaneLabel.setText(("""
-                            Are You Sure?
-                            All your Account Data will be lost
-                            
-                            Account Data Includes:
-                            1) Transaction History till date
-                            2) Enquiries Made till date"""));
+                    optionPaneLabel.setText((
+                            "<html>Are You Sure?\n" +
+                            "All your Account Data will be lost\n\nAccount Data Includes:\n" +
+                            "1) Transaction History till date\n" +
+                            "2) Enquiries Made till date</html>".replaceAll("\n","<br>") ));
                     if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                         try {
-                            new FileWriter(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt", false).close();
-                            new FileWriter(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt", false).close();
+                            new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
+                            new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
                             optionPaneLabel.setText("<html>All the Account Data Deleted Successfully</html>");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.PLAIN_MESSAGE);
                         } catch (Exception ex) {
                             optionPaneLabel.setText("<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
                             JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1038,18 +1034,17 @@ public class EazyFinderGUI {
                     }
                 });
 
-                deleteAccount.setBounds(0, 150, 100, 25);
+                deleteAccount.setBounds(250, 200, 200, 30);
                 deleteAccount.setForeground(Color.BLACK);
                 deleteAccount.setBackground(Color.RED);
-                deleteAccount.setHorizontalAlignment(0);
                 deleteAccount.addActionListener(new Verification("AccountDeletion")); //ae -> {
 //                    optionPaneLabel.setText("<html>Are You Sure?\nThis</html>".replaceAll("\n", "<br>"));
 //                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
 //                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
 //                        try {
-//                            new FileWriter(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt", false).close();
+//                            new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
 //                            optionPaneLabel.setText("<html>All Enquiries Deleted Successfully</html>");
-//                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+//                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.PLAIN_MESSAGE);
 //                        } catch (Exception ex) {
 //                            optionPaneLabel.setText("<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
 //                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1073,7 +1068,7 @@ public class EazyFinderGUI {
 
     void getPlaces() {
         short noOfPlaces = 0;
-        File cityFile = new File(dirname + "\\EazyFinderGUI\\CitiesInfo\\" + city + ".txt");
+        File cityFile = new File(dirname + "\\CitiesInfo\\" + city + ".txt");
         try {
             BufferedReader reader = new BufferedReader(new FileReader(cityFile));
             while (reader.readLine() != null) noOfPlaces++;
@@ -1563,7 +1558,7 @@ public class EazyFinderGUI {
         String msgText = String.valueOf(new TransactionHistoryMainCode().transactionHistory(username));
 
         if (msgText.equals("NO")) {
-            JLabel noTransactionsImage = new JLabel(new ImageIcon(dirname + "\\EazyFinderGUI\\Images\\no_transactions.png"));
+            JLabel noTransactionsImage = new JLabel(new ImageIcon(dirname + "\\Images\\no_transactions.png"));
             frame.add(noTransactionsImage);
             noTransactionsImage.setBounds(115, 204, 466, 292);
         } else {
@@ -1754,7 +1749,7 @@ public class EazyFinderGUI {
                         JOptionPane.showMessageDialog(frame, fareDivision, "Fare Division", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         // store the enquiries
-                        File enquiryFile = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
+                        File enquiryFile = new File(dirname + "\\Enquiries\\" + username + ".txt");
                         try {
                             BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile, true));
                             writer.write(enquireCity.toUpperCase() + "," + enquireSource.toUpperCase() + "," + enquireDestination.toUpperCase() + "," + cost + "\n");
@@ -1827,7 +1822,7 @@ public class EazyFinderGUI {
                             BufferedReader reader = new BufferedReader(new FileReader(db));
                             String str;
                             while ((str = reader.readLine()) != null) {
-                                if (str.split(" ")[0].equals(newUsername)) {
+                                if (str.split(",")[0].equals(newUsername)) {
                                     found = true;
                                     break;
                                 }
@@ -2075,7 +2070,7 @@ public class EazyFinderGUI {
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(db));
                         while ((str = reader.readLine()) != null) {
-                            credentials = str.split(" ");
+                            credentials = str.split(",");
                             if (localUsername.equals(credentials[0]) &&
                                     String.valueOf(encryptPassword(localPassword)).equals(credentials[1])) {
                                 found = true;

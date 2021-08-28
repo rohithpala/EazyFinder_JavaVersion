@@ -23,7 +23,7 @@ public class AccountDeletionMainCode {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
-                if (!(username + " " + encryptPassword(password)).equals(str)) {
+                if (!(username + "," + encryptPassword(password)).equals(str)) {
                     credentials.append(str).append("\n,");
                 }
             }

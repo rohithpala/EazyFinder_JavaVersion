@@ -20,10 +20,10 @@ public class PasswordChangeMainCode {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
-                if (!(username + " " + encryptPassword(oldPassword)).equals(str)) {
+                if (!(username + "," + encryptPassword(oldPassword)).equals(str)) {
                     credentials.append(str).append("\n;");
                 } else {
-                    credentials.append(username).append(" ").append(encryptPassword(newPassword)).append("\n;");
+                    credentials.append(username).append(",").append(encryptPassword(newPassword)).append("\n;");
                 }
             }
             reader.close();
