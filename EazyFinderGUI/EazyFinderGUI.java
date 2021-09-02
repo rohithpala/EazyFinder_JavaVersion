@@ -5,20 +5,20 @@ import EazyFinderGUI.MainCodes.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Scanner;
 
 /*
 TODO:
 1. use sudo mode as in GitHub
 2. caps lock warning while typing passwords
-3. BUGS: menu buttons are bringing n verification frames for nth clicking, When logout button is pressed it is giving multiple option panes
+3. BUGS: menu buttons are bringing "n" verification frames for nth clicking, When logout button is pressed it is giving multiple option panes
 4. guest mode option (show option panes like "Guests cannot update their usernames or passwords or cannot switch accounts" after clicking the
 button. Give options like "Look at UI" and show the UI)
 5. add profile and settings option (dark mode (optional))
@@ -276,6 +276,7 @@ public class EazyFinderGUI {
                     if (!found) {
                         msg.setText("No User With Given Credentials");
                     } else {
+                        getPPDetails();
                         displayMenu();
                     }
                 }
@@ -326,9 +327,67 @@ public class EazyFinderGUI {
         return inRange && !hasWhiteSpace && hasLowerCaseLetter && hasUpperCaseLetter && hasDigit && hasSpecialCharacter;
     }
 
-    String phoneNumberRegex = "^[6-9]\\d{9}";
-    String emailIDRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
-    String profilePictureExtension;
+    String phoneNumberRegex = "^[6-9]\\d{9}", emailIDRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+    String profilePicturePath = dirname + "\\Images\\finder.png", profilePictureExtension = ".png";
+    ImageIcon profilePicture = new ImageIcon(dirname + "\\Images\\finder.png");
+    int profilePictureWidth, profilePictureHeight;
+
+    int setPPDetails() {
+        int i;
+        String[] optionPaneButtonNames = {"Confirm", "No, I want to Select Another"};
+
+        FileDialog fd = new FileDialog(frame, "Open", FileDialog.LOAD);
+        fd.setVisible(true);
+        if (fd.getFile() == null) {
+            JOptionPane.showMessageDialog(frame, "No Picture Selected", "No Picture Selected", JOptionPane.WARNING_MESSAGE);
+        } else {
+//            optionPaneResult = JOptionPane.YES_OPTION;
+//            if (selectProfilePictureButton.getText().equals("Selected")) {
+//                optionPaneLabel.setText("Want to Select this Image as your Profile Picture?");
+//                optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel,
+//                        "Select this image?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+//            }
+
+//            if (optionPaneResult == JOptionPane.YES_OPTION) {
+            if (fd.getFile() != null) {
+                profilePicturePath = fd.getDirectory() + fd.getFile();
+                profilePicture = new ImageIcon(profilePicturePath);
+
+                profilePictureExtension = "";
+                i = profilePicturePath.lastIndexOf('.');
+                if (i > 0) profilePictureExtension = profilePicturePath.substring(i);
+            }
+
+            profilePictureWidth = profilePicture.getIconWidth();
+            profilePictureHeight = profilePicture.getIconHeight();
+            if (profilePictureWidth <= 500 && profilePictureHeight <= 500) {
+                if (profilePictureExtension.equals(".png") || profilePictureExtension.equals(".jpg") || profilePictureExtension.equals(".jpeg")) {
+                    optionPaneLabel.setText(profilePicturePath);
+                    optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture Path",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                            null, optionPaneButtonNames, null);
+                }
+            }
+        }
+        return optionPaneResult;
+    }
+
+    void getPPDetails() {
+        File ppDir = new File(dirname + "\\ProfilePictures");
+        int i;
+        String fileName;
+        for (File file : Objects.requireNonNull(ppDir.listFiles())) {
+            fileName = file.getName();
+            i = fileName.lastIndexOf(".");
+            if (username.equals(fileName.substring(0, i))) {
+                profilePicture = new ImageIcon(file.getAbsolutePath());
+                profilePictureExtension = fileName.substring(i);
+                profilePictureWidth = profilePicture.getIconWidth();
+                profilePictureHeight = profilePicture.getIconHeight();
+                break;
+            }
+        }
+    }
 
     class SignUpUI implements ActionListener {
         JTextField userText;
@@ -450,7 +509,6 @@ public class EazyFinderGUI {
         JButton signupButton = new JButton("SignUp");
 
         final int registrationFrameSize = 450;
-        String profilePicturePath = dirname + "\\Images\\finder.png";
 
         void registrationForm() {
             frame.getContentPane().removeAll();
@@ -518,59 +576,26 @@ public class EazyFinderGUI {
         }
 
         class ProfilePictureSelection {
-            FileDialog fd = new FileDialog(frame, "Open", FileDialog.LOAD);
-            int i;
-            String[] optionPaneButtonNames = {"Confirm", "No, I want to Select Another"};
-
             void profilePictureSelection() {
-                fd.setVisible(true);
-
-                if (fd.getFile() == null) {
-//                    optionPaneLabel.setText("<html>No Picture Selected\nContinue Without Selecting a Profile Picture</html>".replaceAll("\n", "<br>"));
-//                    result = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "No Picture Selected",
-//                            JOptionPane.YES_NO_OPTION,
-//                            JOptionPane.WARNING_MESSAGE);
-//                    if (result == JOptionPane.YES_OPTION) {
-//                        selectProfilePictureButton.setText("Default");
-//                        selectProfilePictureButton.setBackground(Color.RED);
-//                    }
-                    JOptionPane.showMessageDialog(frame, "No Picture Selected", "No Picture Selected", JOptionPane.WARNING_MESSAGE);
+                if (setPPDetails() == JOptionPane.YES_OPTION) {
+                    selectProfilePictureButton.setText("Selected");
+                    selectProfilePictureButton.setBackground(Color.GREEN);
                 } else {
-                    optionPaneResult = JOptionPane.YES_OPTION;
-                    if (selectProfilePictureButton.getText().equals("Selected")) {
-                        optionPaneLabel.setText("Want to Select this Image as your Profile Picture?");
-                        optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel,
-                                "Select this image?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-                    }
-
-                    if (optionPaneResult == JOptionPane.YES_OPTION) {
-                        if (fd.getFile() != null)
-                            profilePicturePath = fd.getDirectory() + fd.getFile();
-
-                        profilePictureExtension = "";
-                        i = profilePicturePath.lastIndexOf('.');
-                        if (i > 0) profilePictureExtension = profilePicturePath.substring(i);
-
-                        if (profilePictureExtension.equals(".png") || profilePictureExtension.equals(".jpg") || profilePictureExtension.equals(".jpeg")) {
-                            optionPaneLabel.setText(profilePicturePath);
-                            optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture Path",
-                                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                                    null, optionPaneButtonNames, null);
-
-                            if (optionPaneResult == JOptionPane.YES_OPTION) {
-                                selectProfilePictureButton.setText("Selected");
-                                selectProfilePictureButton.setBackground(Color.GREEN);
-                            } else {
-                                profilePictureSelection();
-                            }
-                        } else {
-                            optionPaneLabel.setText("<html>You have selected a non-supported file\n" +
-                                    "Please choose another file\n" +
-                                    "We support .png, .jpg, .jpeg files only</html>".replaceAll("\n", "<br>"));
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "File not supported", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
+                    profilePictureSelection();
                 }
+//                else {
+//                optionPaneLabel.setText("<html>You have selected a non-supported file\n" +
+//                        "Please choose another file\n" +
+//                        "We support .png, .jpg, .jpeg files only</html>".replaceAll("\n", "<br>"));
+//                JOptionPane.showMessageDialog(frame, optionPaneLabel, "File not supported", JOptionPane.ERROR_MESSAGE);
+//            }
+//        } else {
+//            if (profilePictureWidth > 500 && profilePictureHeight > 500)
+//                optionPaneLabel.setText("The Image you have chosen is larger than dimension 500x500");
+//            else if (profilePictureWidth > 500) optionPaneLabel.setText("The image you have chosen has a width > 500");
+//            else optionPaneLabel.setText("The image you have chosen has a height > 500");
+//            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Dimension Error", JOptionPane.ERROR_MESSAGE);
+//        }
             }
         }
 
@@ -862,7 +887,7 @@ public class EazyFinderGUI {
     class Settings implements ActionListener {
         // Variables needed for Account Page
         JLabel accountLabel = new JLabel("Account");
-        JButton profilePicture = new JButton(new ImageIcon(dirname + "\\ProfilePictures\\" + username + profilePictureExtension));
+        JLabel profilePictureInAccount = new JLabel();
         JLabel usernameLabel = new JLabel("Username: " + username);
         JLabel passwordLabel = new JLabel("Password: " + password);
         JLabel noOfTransactionsLabel = new JLabel();
@@ -881,6 +906,7 @@ public class EazyFinderGUI {
 
                 frame.add(backButton);
                 frame.add(accountLabel);
+                frame.add(profilePictureInAccount);
                 frame.add(usernameLabel);
                 frame.add(passwordLabel);
                 frame.add(noOfTransactionsLabel);
@@ -898,21 +924,24 @@ public class EazyFinderGUI {
                 accountLabel.setFont(headingFont);
                 accountLabel.setToolTipText(username + "'s Account");
 
-                profilePicture.setBounds(0, 65, 200, 200);
-                profilePicture.setHorizontalAlignment(0);
-//                profilePicture.addActionListener(ae -> {
-//                    optionPaneLabel.setText(new ImageIcon(dirname + "\\ProfilePictures\\" + username + profilePictureExtension));
-//
-//                    String[] optionPaneButtonName = {"CLOSE"};
-//                    JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture", JOptionPane.DEFAULT_OPTION,
-//                            JOptionPane.PLAIN_MESSAGE, null, optionPaneButtonName, null);
-//                });
+                int width = profilePictureWidth, height = profilePictureHeight;
+                if (width >= 400) width /= 2;
+                else if (width >= 250) width /= 1.5;
 
-                usernameLabel.setBounds(0, 100, frameSize, 25);
+                if (height >= 400) height /= 2;
+                else if (height >= 250) height /= 1.5;
+
+                profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
+                profilePictureInAccount.setBounds(0, 65, frameSize, profilePictureHeight / 2);
+                profilePictureInAccount.setHorizontalAlignment(0);
+                profilePictureInAccount.setVerticalAlignment(0);
+                profilePictureInAccount.addMouseListener(new ProfilePictureOptions());
+
+                usernameLabel.setBounds(0, 350, frameSize, 25);
                 usernameLabel.setFont(timesNewRoman);
                 usernameLabel.setHorizontalAlignment(0);
 
-                passwordLabel.setBounds(0, 140, frameSize, 25);
+                passwordLabel.setBounds(0, 390, frameSize, 25);
                 passwordLabel.setFont(timesNewRoman);
                 passwordLabel.setHorizontalAlignment(0);
 
@@ -930,12 +959,12 @@ public class EazyFinderGUI {
                 } catch (Exception ignored) {
                 }
 
-                noOfTransactionsLabel.setBounds(0, 180, 500, 25);
+                noOfTransactionsLabel.setBounds(0, 430, 500, 25);
                 noOfTransactionsLabel.setText("Number of Transactions made: " + noOfTransactions);
                 noOfTransactionsLabel.setFont(timesNewRoman);
                 noOfTransactionsLabel.setHorizontalAlignment(0);
 
-                goToTHButton.setBounds(400, 180, 200, 25);
+                goToTHButton.setBounds(400, 430, 200, 25);
                 goToTHButton.setForeground(Color.WHITE);
                 goToTHButton.setBackground(Color.BLUE);
                 goToTHButton.setFont(timesNewRoman);
@@ -975,7 +1004,7 @@ public class EazyFinderGUI {
                 settingsLabel.setFont(headingFont);
                 settingsLabel.setHorizontalAlignment(0);
 
-                deleteTHButton.setBounds(250, 65, 200, 30);
+                deleteTHButton.setBounds(200, 65, 300, 30);
                 deleteTHButton.setForeground(Color.BLACK);
                 deleteTHButton.setBackground(Color.orange);
                 deleteTHButton.addActionListener(ae -> {
@@ -993,7 +1022,7 @@ public class EazyFinderGUI {
                     }
                 });
 
-                deleteEnqButton.setBounds(250, 110, 200, 30);
+                deleteEnqButton.setBounds(200, 110, 300, 30);
                 deleteEnqButton.setForeground(Color.BLACK);
                 deleteEnqButton.setBackground(Color.orange);
                 deleteEnqButton.addActionListener(ae -> {
@@ -1011,15 +1040,15 @@ public class EazyFinderGUI {
                     }
                 });
 
-                deleteAccountData.setBounds(250, 155, 200, 30);
+                deleteAccountData.setBounds(200, 155, 300, 30);
                 deleteAccountData.setForeground(Color.BLACK);
                 deleteAccountData.setBackground(Color.red);
                 deleteAccountData.addActionListener(ae -> {
                     optionPaneLabel.setText((
                             "<html>Are You Sure?\n" +
-                            "All your Account Data will be lost\n\nAccount Data Includes:\n" +
-                            "1) Transaction History till date\n" +
-                            "2) Enquiries Made till date</html>".replaceAll("\n","<br>") ));
+                                    "All your Account Data will be lost\n\nAccount Data Includes:\n" +
+                                    "1) Transaction History till date\n" +
+                                    "2) Enquiries Made till date</html>".replaceAll("\n", "<br>")));
                     if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                         try {
@@ -1034,7 +1063,7 @@ public class EazyFinderGUI {
                     }
                 });
 
-                deleteAccount.setBounds(250, 200, 200, 30);
+                deleteAccount.setBounds(200, 200, 300, 30);
                 deleteAccount.setForeground(Color.BLACK);
                 deleteAccount.setBackground(Color.RED);
                 deleteAccount.addActionListener(new Verification("AccountDeletion")); //ae -> {
@@ -1057,6 +1086,51 @@ public class EazyFinderGUI {
                 logoutButton.setForeground(Color.WHITE);
                 logoutButton.setFont(timesNewRoman);
                 logoutButton.addActionListener(new Back((byte) 1));
+            }
+        }
+
+        class ProfilePictureOptions implements MouseListener {
+            String[] ppOptions = {"View Photo", "Change Photo", "Delete Photo"};
+            JComboBox<String> profilePictureOptions = new JComboBox<>(ppOptions);
+            String[] optionPaneButtonNames = {"Close"};
+            int selectedIndex;
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                frame.add(profilePictureOptions);
+
+                profilePictureOptions.setBounds(frameSize / 2, 65 + profilePictureHeight / 4, 100, 25);
+
+                selectedIndex = profilePictureOptions.getSelectedIndex();
+                if (selectedIndex == 0) {
+                    JLabel label = new JLabel();
+                    label.setIcon(new ImageIcon(profilePicture.getImage()
+                            .getScaledInstance(profilePictureWidth / 2, profilePictureHeight / 2, Image.SCALE_DEFAULT)));
+                    JOptionPane.showOptionDialog(frame, label, "Profile Picture", JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.PLAIN_MESSAGE, null, optionPaneButtonNames, null);
+                } else if (selectedIndex == 1) {
+                    setPPDetails();
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                frame.remove(profilePictureOptions);
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
             }
         }
     }
