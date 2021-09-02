@@ -232,6 +232,9 @@ public class EazyFinderGUI {
             passwordField.setBounds(130, 80, 120, 25);
             passwordField.setFont(timesNewRoman);
 
+            userField.setText("r");
+            passwordField.setText("Rohith_02");
+
             showPasswordCB1.setBounds(90, 110, 150, 25);
             showPasswordCB1.setFont(timesNewRoman);
             showPasswordCB1.addActionListener(new ShowPasswordsCheckBox(passwordField));
@@ -931,7 +934,7 @@ public class EazyFinderGUI {
                 else if (height >= 250) height /= 1.5;
 
                 profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-                profilePictureInAccount.setBounds(0, 65, frameSize, profilePictureHeight / 2);
+                profilePictureInAccount.setBounds(0, 65, width, height);
                 profilePictureInAccount.setHorizontalAlignment(0);
                 profilePictureInAccount.setVerticalAlignment(0);
                 profilePictureInAccount.addMouseListener(new ProfilePictureOptions());
@@ -1093,33 +1096,38 @@ public class EazyFinderGUI {
             JComboBox<String> profilePictureOptions = new JComboBox<>(ppOptions);
             String[] optionPaneButtonNames = {"Close"};
             int selectedIndex;
+            JLayeredPane CBPanel = new JLayeredPane();
 
             @Override
-            public void mouseEntered(MouseEvent e) {
-                frame.add(profilePictureOptions);
+            public void mouseClicked(MouseEvent e) {
+                frame.add(CBPanel);
+                CBPanel.add(profilePictureOptions);
+
+                CBPanel.setLayer(profilePictureOptions, 2);
 
                 profilePictureOptions.setBounds(frameSize / 2, 65 + profilePictureHeight / 4, 100, 25);
-
-                selectedIndex = profilePictureOptions.getSelectedIndex();
-                if (selectedIndex == 0) {
-                    JLabel label = new JLabel();
-                    label.setIcon(new ImageIcon(profilePicture.getImage()
-                            .getScaledInstance(profilePictureWidth / 2, profilePictureHeight / 2, Image.SCALE_DEFAULT)));
-                    JOptionPane.showOptionDialog(frame, label, "Profile Picture", JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.PLAIN_MESSAGE, null, optionPaneButtonNames, null);
-                } else if (selectedIndex == 1) {
-                    setPPDetails();
-                }
+                profilePictureOptions.addActionListener(ae -> {
+                    selectedIndex = profilePictureOptions.getSelectedIndex();
+                    if (selectedIndex == 0) {
+                        JLabel label = new JLabel();
+                        label.setIcon(new ImageIcon(profilePicture.getImage()
+                                .getScaledInstance(profilePictureWidth / 2, profilePictureHeight / 2, Image.SCALE_DEFAULT)));
+                        JOptionPane.showOptionDialog(frame, label, "Profile Picture", JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.PLAIN_MESSAGE, null, optionPaneButtonNames, null);
+                    } else if (selectedIndex == 1) {
+                        setPPDetails();
+                    }
+                });
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                frame.remove(profilePictureOptions);
+                CBPanel.remove(profilePictureOptions);
+                frame.remove(CBPanel);
             }
 
             @Override
-            public void mouseClicked(MouseEvent e) {
-
+            public void mouseEntered(MouseEvent e) {
             }
 
             @Override
