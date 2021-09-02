@@ -44,14 +44,13 @@ public class EazyFinderGUI {
     final short frameSize = 700;
     final Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\finder.png");
 
-    // label added into JOptionPanes
-    JLabel optionPaneLabel = new JLabel();
+    JLabel optionPaneLabel = new JLabel(); // label added into JOptionPanes
     int optionPaneResult; // used for option pane results
 
     // All Objects
     LoginUI loginUIObj = new LoginUI();
-    SignUpUI signUpUI = new SignUpUI();
-    GuestMode guestMode = new GuestMode();
+    SignUpUI signUpUIObj = new SignUpUI();
+    GuestMode guestModeObj = new GuestMode();
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
@@ -93,14 +92,14 @@ public class EazyFinderGUI {
         homepageSignupButton.setBackground(Color.ORANGE);
         homepageSignupButton.setFont(timesNewRoman);
         homepageSignupButton.setToolTipText("Click this button to Create a new Account for yourself");
-        homepageSignupButton.addActionListener(signUpUI);
+        homepageSignupButton.addActionListener(signUpUIObj);
 
         homepageGuestButton.setBounds(50, 142, 230, 30);
         homepageGuestButton.setForeground(Color.WHITE);
         homepageGuestButton.setBackground(Color.DARK_GRAY);
         homepageGuestButton.setFont(timesNewRoman);
         homepageGuestButton.setToolTipText("Have the experience of a registered user without registering");
-        homepageGuestButton.addActionListener(guestMode);
+        homepageGuestButton.addActionListener(guestModeObj);
 
         infoLabel.setBounds(320, 0, 16, 16);
         infoLabel.setToolTipText("Email: programmerrohith@gmail.com");
