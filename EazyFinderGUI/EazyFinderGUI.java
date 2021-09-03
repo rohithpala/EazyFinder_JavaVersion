@@ -133,6 +133,13 @@ public class EazyFinderGUI {
         }
     }
 
+    int areYouSureJOP(JFrame jFrame){
+        optionPaneLabel.setText("Are You Sure?");
+        return JOptionPane.showConfirmDialog(jFrame, optionPaneLabel, "Confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+    }
+
     class Back implements ActionListener {
         byte num;
 
@@ -143,12 +150,7 @@ public class EazyFinderGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (num == 1 || num == 2) {
-                optionPaneLabel.setText("Are You Sure?");
-                optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
-
-                if (optionPaneResult == JOptionPane.YES_OPTION) {
+                if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
                     if (num == 1) Homepage();
                     else if (num == 2) displayMenu();
                 }
@@ -330,7 +332,10 @@ public class EazyFinderGUI {
     }
 
     String phoneNumberRegex = "^[6-9]\\d{9}", emailIDRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
-    String profilePicturePath = dirname + "\\Images\\finder.png", profilePictureExtension = ".png";
+
+    // profile picture attributes
+    String profilePictureExtension = ".png";
+    String profilePicturePath = dirname + "\\Images\\finder.png", profilePictureDestination = dirname + "\\ProfilePictures\\" + username + profilePictureExtension;
     ImageIcon profilePicture = new ImageIcon(dirname + "\\Images\\finder.png");
     int profilePictureWidth, profilePictureHeight;
 
@@ -343,14 +348,6 @@ public class EazyFinderGUI {
         if (fd.getFile() == null) {
             JOptionPane.showMessageDialog(frame, "No Picture Selected", "No Picture Selected", JOptionPane.WARNING_MESSAGE);
         } else {
-//            optionPaneResult = JOptionPane.YES_OPTION;
-//            if (selectProfilePictureButton.getText().equals("Selected")) {
-//                optionPaneLabel.setText("Want to Select this Image as your Profile Picture?");
-//                optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel,
-//                        "Select this image?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-//            }
-
-//            if (optionPaneResult == JOptionPane.YES_OPTION) {
             if (fd.getFile() != null) {
                 profilePicturePath = fd.getDirectory() + fd.getFile();
                 profilePicture = new ImageIcon(profilePicturePath);
@@ -368,9 +365,23 @@ public class EazyFinderGUI {
                     optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture Path",
                             JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
                             null, optionPaneButtonNames, null);
+                } else {
+                    optionPaneLabel.setText("<html>You have selected a non-supported file\n" +
+                            "Please choose another file\n" +
+                            "We support .png, .jpg, .jpeg files only</html>".replaceAll("\n", "<br>"));
+                    JOptionPane.showMessageDialog(frame, optionPaneLabel, "File not supported", JOptionPane.ERROR_MESSAGE);
+                    return JOptionPane.NO_OPTION;
                 }
+            } else {
+                if (profilePictureWidth > 500 && profilePictureHeight > 500)
+                    optionPaneLabel.setText("The Image you have chosen is larger than dimension 500x500");
+                else if (profilePictureWidth > 500) optionPaneLabel.setText("The image you have chosen has a width > 500");
+                else optionPaneLabel.setText("The image you have chosen has a height > 500");
+                JOptionPane.showMessageDialog(frame, optionPaneLabel, "Dimension Error", JOptionPane.ERROR_MESSAGE);
+                return JOptionPane.NO_OPTION;
             }
         }
+
         return optionPaneResult;
     }
 
@@ -388,6 +399,29 @@ public class EazyFinderGUI {
                 profilePictureHeight = profilePicture.getIconHeight();
                 break;
             }
+        }
+    }
+
+    void savePP(){
+        try {
+            boolean deleted = true;
+            File destinationFile = new File(dirname + "\\ProfilePictures\\" + username + profilePictureExtension);
+
+            File ppDir = new File(dirname + "\\ProfilePictures");
+            int i;
+            String fileName;
+            for(File file : Objects.requireNonNull(ppDir.listFiles())){
+                fileName = file.getName();
+                i = fileName.lastIndexOf(".");
+                if(username.equals(fileName.substring(0, i))) {
+                    deleted = file.delete();
+                    break;
+                }
+            }
+
+            if (deleted && destinationFile.createNewFile())
+                Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destinationFile));
+        } catch (IOException ignored) {
         }
     }
 
@@ -585,19 +619,6 @@ public class EazyFinderGUI {
                 } else {
                     profilePictureSelection();
                 }
-//                else {
-//                optionPaneLabel.setText("<html>You have selected a non-supported file\n" +
-//                        "Please choose another file\n" +
-//                        "We support .png, .jpg, .jpeg files only</html>".replaceAll("\n", "<br>"));
-//                JOptionPane.showMessageDialog(frame, optionPaneLabel, "File not supported", JOptionPane.ERROR_MESSAGE);
-//            }
-//        } else {
-//            if (profilePictureWidth > 500 && profilePictureHeight > 500)
-//                optionPaneLabel.setText("The Image you have chosen is larger than dimension 500x500");
-//            else if (profilePictureWidth > 500) optionPaneLabel.setText("The image you have chosen has a width > 500");
-//            else optionPaneLabel.setText("The image you have chosen has a height > 500");
-//            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Dimension Error", JOptionPane.ERROR_MESSAGE);
-//        }
             }
         }
 
@@ -651,16 +672,7 @@ public class EazyFinderGUI {
                         writer.close();
 
                         // save the profile picture
-                        try {
-                            boolean deleted = true;
-                            File destination = new File(dirname + "\\ProfilePictures\\" + username + profilePictureExtension);
-                            if (destination.exists()) {
-                                deleted = destination.delete();
-                            }
-                            if (deleted && destination.createNewFile())
-                                Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destination));
-                        } catch (IOException ignored) {
-                        }
+                        savePP();
 
                         // Creating Transaction History and Enquiry Files for the user
                         File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
@@ -889,11 +901,18 @@ public class EazyFinderGUI {
     class Settings implements ActionListener {
         // Variables needed for Account Page
         JLabel accountLabel = new JLabel("Account");
+
+        // Components related to profile picture
         JLabel profilePictureInAccount = new JLabel();
+        JButton viewPhotoButton = new JButton("View Photo");
+        JButton changePhotoButton = new JButton("Change Photo");
+        JButton deletePhotoButton = new JButton("Delete Photo");
+
         JLabel usernameLabel = new JLabel("Username: " + username);
         JLabel passwordLabel = new JLabel("Password: " + password);
         JLabel noOfTransactionsLabel = new JLabel();
         JButton goToTHButton = new JButton("Go to Transactions Page");
+
         final Font headingFont = new Font("Times New Roman", Font.BOLD, 25);
 
         @Override
@@ -909,6 +928,9 @@ public class EazyFinderGUI {
                 frame.add(backButton);
                 frame.add(accountLabel);
                 frame.add(profilePictureInAccount);
+                frame.add(viewPhotoButton);
+                frame.add(changePhotoButton);
+                frame.add(deletePhotoButton);
                 frame.add(usernameLabel);
                 frame.add(passwordLabel);
                 frame.add(noOfTransactionsLabel);
@@ -927,23 +949,65 @@ public class EazyFinderGUI {
                 accountLabel.setToolTipText(username + "'s Account");
 
                 int width = profilePictureWidth, height = profilePictureHeight;
-                if (width >= 400) width /= 2;
+                if (width >= 375) width /= 2;
                 else if (width >= 250) width /= 1.5;
 
-                if (height >= 400) height /= 2;
+                if (height >= 375) height /= 2;
                 else if (height >= 250) height /= 1.5;
 
                 profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-                profilePictureInAccount.setBounds(0, 65, width, height);
+                profilePictureInAccount.setBounds((frameSize - width) / 2, ((250 - height) / 2) + 55, width, height);
                 profilePictureInAccount.setHorizontalAlignment(0);
                 profilePictureInAccount.setVerticalAlignment(0);
-                profilePictureInAccount.addMouseListener(new ProfilePictureOptions());
 
-                usernameLabel.setBounds(0, 350, frameSize, 25);
+                // profile picture operations
+                viewPhotoButton.setBounds(500, 75, 120, 25);
+                viewPhotoButton.setForeground(Color.WHITE);
+                viewPhotoButton.setBackground(Color.DARK_GRAY);
+                viewPhotoButton.addActionListener(ae -> {
+                    JLabel ppLabel = new JLabel();
+                    ppLabel.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(500, 500, Image.SCALE_DEFAULT)));
+                    JOptionPane.showMessageDialog(frame, ppLabel, "Profile Picture", JOptionPane.PLAIN_MESSAGE);
+                });
+
+                changePhotoButton.setBounds(500, 125, 120, 25);
+                changePhotoButton.setForeground(Color.WHITE);
+                changePhotoButton.setBackground(Color.DARK_GRAY);
+                int finalWidth = width, finalHeight = height;
+                changePhotoButton.addActionListener(ae -> {
+                    if (setPPDetails() == JOptionPane.YES_OPTION) {
+                        profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(finalWidth, finalHeight, Image.SCALE_DEFAULT)));
+                        // save the profile picture
+                        savePP();
+                        deletePhotoButton.setEnabled(true);
+                    }
+                });
+
+                deletePhotoButton.setEnabled(!profilePicturePath.equals(dirname + "\\Images\\finder.png"));
+                deletePhotoButton.setBounds(500, 175, 120, 25);
+                deletePhotoButton.setForeground(Color.WHITE);
+                deletePhotoButton.setBackground(Color.RED);
+                deletePhotoButton.addActionListener(ae -> {
+                    if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
+                        profilePicturePath = dirname + "\\Images\\finder.png";
+                        profilePicture = new ImageIcon(dirname + "\\Images\\finder.png");
+                        profilePictureExtension = ".png";
+                        profilePictureWidth = profilePicture.getIconWidth();
+                        profilePictureHeight = profilePicture.getIconHeight();
+
+                        profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(finalWidth, finalHeight, Image.SCALE_DEFAULT)));
+                        // save the profile picture
+                        savePP();
+                        JOptionPane.showMessageDialog(frame, "Deleted Profile Picture Successfully", "Deletion Successful", JOptionPane.INFORMATION_MESSAGE);
+                        deletePhotoButton.setEnabled(false);
+                    }
+                });
+
+                usernameLabel.setBounds(0, 300, frameSize, 25);
                 usernameLabel.setFont(timesNewRoman);
                 usernameLabel.setHorizontalAlignment(0);
 
-                passwordLabel.setBounds(0, 390, frameSize, 25);
+                passwordLabel.setBounds(0, 340, frameSize, 25);
                 passwordLabel.setFont(timesNewRoman);
                 passwordLabel.setHorizontalAlignment(0);
 
@@ -961,12 +1025,12 @@ public class EazyFinderGUI {
                 } catch (Exception ignored) {
                 }
 
-                noOfTransactionsLabel.setBounds(0, 430, 500, 25);
+                noOfTransactionsLabel.setBounds(0, 390, 500, 25);
                 noOfTransactionsLabel.setText("Number of Transactions made: " + noOfTransactions);
                 noOfTransactionsLabel.setFont(timesNewRoman);
                 noOfTransactionsLabel.setHorizontalAlignment(0);
 
-                goToTHButton.setBounds(400, 430, 200, 25);
+                goToTHButton.setBounds(400, 390, 200, 25);
                 goToTHButton.setForeground(Color.WHITE);
                 goToTHButton.setBackground(Color.BLUE);
                 goToTHButton.setFont(timesNewRoman);
@@ -1068,76 +1132,13 @@ public class EazyFinderGUI {
                 deleteAccount.setBounds(200, 200, 300, 30);
                 deleteAccount.setForeground(Color.BLACK);
                 deleteAccount.setBackground(Color.RED);
-                deleteAccount.addActionListener(new Verification("AccountDeletion")); //ae -> {
-//                    optionPaneLabel.setText("<html>Are You Sure?\nThis</html>".replaceAll("\n", "<br>"));
-//                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
-//                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-//                        try {
-//                            new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
-//                            optionPaneLabel.setText("<html>All Enquiries Deleted Successfully</html>");
-//                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.PLAIN_MESSAGE);
-//                        } catch (Exception ex) {
-//                            optionPaneLabel.setText("<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
-//                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
-//                        }
-//                    }
-//                });
+                deleteAccount.addActionListener(new Verification("AccountDeletion"));
 
                 logoutButton.setBounds(586, 0, 100, 30);
                 logoutButton.setBackground(Color.RED);
                 logoutButton.setForeground(Color.WHITE);
                 logoutButton.setFont(timesNewRoman);
                 logoutButton.addActionListener(new Back((byte) 1));
-            }
-        }
-
-        class ProfilePictureOptions implements MouseListener {
-            String[] ppOptions = {"View Photo", "Change Photo", "Delete Photo"};
-            JComboBox<String> profilePictureOptions = new JComboBox<>(ppOptions);
-            String[] optionPaneButtonNames = {"Close"};
-            int selectedIndex;
-            JLayeredPane CBPanel = new JLayeredPane();
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                frame.add(CBPanel);
-                CBPanel.add(profilePictureOptions);
-
-                CBPanel.setLayer(profilePictureOptions, 2);
-
-                profilePictureOptions.setBounds(frameSize / 2, 65 + profilePictureHeight / 4, 100, 25);
-                profilePictureOptions.addActionListener(ae -> {
-                    selectedIndex = profilePictureOptions.getSelectedIndex();
-                    if (selectedIndex == 0) {
-                        JLabel label = new JLabel();
-                        label.setIcon(new ImageIcon(profilePicture.getImage()
-                                .getScaledInstance(profilePictureWidth / 2, profilePictureHeight / 2, Image.SCALE_DEFAULT)));
-                        JOptionPane.showOptionDialog(frame, label, "Profile Picture", JOptionPane.DEFAULT_OPTION,
-                                JOptionPane.PLAIN_MESSAGE, null, optionPaneButtonNames, null);
-                    } else if (selectedIndex == 1) {
-                        setPPDetails();
-                    }
-                });
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                CBPanel.remove(profilePictureOptions);
-                frame.remove(CBPanel);
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
             }
         }
     }
@@ -1916,11 +1917,7 @@ public class EazyFinderGUI {
                             msg.setText("Username Already taken. Try with Another One");
                         } else {
                             msg.setText("");
-                            optionPaneLabel.setText("Are You Sure?");
-                            optionPaneResult = JOptionPane.showConfirmDialog(updateUsernameFrame, optionPaneLabel, "Confirmation",
-                                    JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.WARNING_MESSAGE);
-                            if (optionPaneResult == JOptionPane.YES_OPTION) {
+                            if (areYouSureJOP(updateUsernameFrame) == JOptionPane.YES_OPTION) {
                                 if (new UpdateUsernameMainCode().updateUsername(username, newUsername, password)) {
                                     updateUsernameFrame.dispose();
 
@@ -2028,11 +2025,7 @@ public class EazyFinderGUI {
                 } else if (!newPassword.equals(rePassword)) {
                     msg.setText("Passwords doesn't match");
                 } else if (isPasswordAccepted(newPassword, passwordChangeFrame)) {
-                    optionPaneLabel.setText("Are You Sure?");
-                    optionPaneResult = JOptionPane.showConfirmDialog(passwordChangeFrame, optionPaneLabel, "Confirm",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.WARNING_MESSAGE);
-                    if (optionPaneResult == JOptionPane.YES_OPTION) {
+                    if (areYouSureJOP(passwordChangeFrame) == JOptionPane.YES_OPTION) {
                         if (new PasswordChangeMainCode().passwordChange(username, password, newPassword)) {
                             password = newPassword;
                             passwordChangeFrame.dispose();
@@ -2165,11 +2158,7 @@ public class EazyFinderGUI {
                     if (!found) {
                         msg.setText("No User With Given Credentials");
                     } else {
-                        optionPaneLabel.setText("Are You Sure?");
-                        optionPaneResult = JOptionPane.showConfirmDialog(switchAccountsFrame, optionPaneLabel, "Confirmation",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.WARNING_MESSAGE);
-                        if (optionPaneResult == JOptionPane.YES_OPTION) {
+                        if (areYouSureJOP(switchAccountsFrame) == JOptionPane.YES_OPTION) {
                             username = localUsername;
                             password = localPassword;
                             switchAccountsFrame.dispose();
