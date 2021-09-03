@@ -408,9 +408,10 @@ public class EazyFinderGUI {
         }
     }
 
+    boolean fileDeleted;
     void savePP() {
         try {
-            boolean deleted = true;
+            fileDeleted = true;
             File destinationFile = new File(dirname + "\\ProfilePictures\\" + username + profilePictureExtension);
 
             File ppDir = new File(dirname + "\\ProfilePictures");
@@ -420,12 +421,12 @@ public class EazyFinderGUI {
                 fileName = file.getName();
                 i = fileName.lastIndexOf(".");
                 if (username.equals(fileName.substring(0, i))) {
-                    deleted = file.delete();
+                    fileDeleted = file.delete();
                     break;
                 }
             }
 
-            if (deleted && destinationFile.createNewFile())
+            if (fileDeleted && destinationFile.createNewFile())
                 Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destinationFile));
         } catch (IOException ignored) {
         }
