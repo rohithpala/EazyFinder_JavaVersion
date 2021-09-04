@@ -290,6 +290,11 @@ public class EazyFinderGUI {
         }
     }
 
+    void showMessageDialogJOP(JFrame jFrame, String msg, String title, int magicConstant){
+        optionPaneLabel.setText(msg);
+        JOptionPane.showMessageDialog(jFrame, optionPaneLabel, title, magicConstant);
+    }
+
     boolean isPasswordAccepted(String password, JFrame frame1) {
         boolean inRange = false, hasWhiteSpace = false, hasLowerCaseLetter = false, hasUpperCaseLetter = false, hasDigit = false,
                 hasSpecialCharacter = false;
@@ -300,10 +305,8 @@ public class EazyFinderGUI {
         msg.setText("");
 
         if (!inRange) {
-            optionPaneLabel.setText("Password isn't in the Range of 8-16\nPlease try with another Password");
-            JOptionPane.showMessageDialog(frame1, optionPaneLabel,
-                    "Password Not Accepted",
-                    JOptionPane.ERROR_MESSAGE);
+            showMessageDialogJOP(frame1, "Password isn't in the Range of 8-16\nPlease try with another Password",
+                    "Password Not Accepted", JOptionPane.ERROR_MESSAGE);
         } else {
             for (i = 0; i < len; i++) {
                 if (Character.isAlphabetic(password.charAt(i))) {
@@ -347,8 +350,7 @@ public class EazyFinderGUI {
     int setPPDetails() {
         fd.setVisible(true);
         if (fd.getFile() == null) {
-            optionPaneLabel.setText("No Picture Selected");
-            JOptionPane.showMessageDialog(frame, optionPaneLabel, "No Picture Selected", JOptionPane.WARNING_MESSAGE);
+            showMessageDialogJOP(frame, "No Picture Selected", "No Picture Selected", JOptionPane.WARNING_MESSAGE);
             return JOptionPane.NO_OPTION;
         } else {
             if (fd.getFile() != null) {
@@ -373,10 +375,9 @@ public class EazyFinderGUI {
                             JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
                             null, optionPaneButtonNames, null);
                 } else {
-                    optionPaneLabel.setText("<html>You have selected a non-supported file\n" +
-                            "Please choose another file\n" +
-                            "We support .png, .jpg, .jpeg files only</html>".replaceAll("\n", "<br>"));
-                    JOptionPane.showMessageDialog(frame, optionPaneLabel, "File not supported", JOptionPane.ERROR_MESSAGE);
+                    showMessageDialogJOP(frame, "<html>You have selected a non-supported file\nPlease choose another file\n" +
+                            "Supported Files: .png, .jpg, .jpeg</html>".replaceAll("\n", "<br>"),
+                            "File Not Supported", JOptionPane.ERROR_MESSAGE);
                     return JOptionPane.NO_OPTION;
                 }
             } else {
@@ -679,14 +680,12 @@ public class EazyFinderGUI {
                         File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
                         File en = new File(dirname + "\\Enquiries\\" + username + ".txt");
                         if (th.createNewFile() && en.createNewFile()) {
-                            optionPaneLabel.setText("Account Created Successfully");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "SignUp Successful", JOptionPane.INFORMATION_MESSAGE);
+                            showMessageDialogJOP(frame, "Account Created Successfully", "SignUp Successful", JOptionPane.INFORMATION_MESSAGE);
                             displayMenu();
                         }
                     } catch (Exception ex) {
                         if (new File(profilePicturePath).delete()) {
-                            optionPaneLabel.setText("Due to some Error we couldn't create your account");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Account Not Created", JOptionPane.ERROR_MESSAGE);
+                            showMessageDialogJOP(frame, "Due to some Error we couldn't create your account", "Account Not Created", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -994,8 +993,7 @@ public class EazyFinderGUI {
                 deletePhotoButton.setBackground(Color.RED);
                 deletePhotoButton.addActionListener(ae -> {
                     /*if (profilePicturePath.equals(dirname + "\\Images\\finder.png")) {
-                        optionPaneLabel.setText("Profile Picture Already Deleted");
-                        JOptionPane.showMessageDialog(frame, optionPaneLabel, "Already Deleted", JOptionPane.ERROR_MESSAGE);
+                        showMessageDialogJOP(frame, "Profile Picture Already Deleted", "Profile Picture Already Deleted", JOptionPane.ERROR_MESSAGE);
                     } else */if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
                         profilePicturePath = dirname + "\\Images\\finder.png";
                         profilePicture = new ImageIcon(dirname + "\\Images\\finder.png");
@@ -1089,11 +1087,10 @@ public class EazyFinderGUI {
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                         try {
                             new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
-                            optionPaneLabel.setText("<html>Transaction History Deleted Successfully</html>");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.PLAIN_MESSAGE);
+                            showMessageDialogJOP(frame, "Transaction History Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
                         } catch (Exception ex) {
-                            optionPaneLabel.setText("<html>Some Error Occurred\nTransaction History not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                            showMessageDialogJOP(frame, "<html>Some Error Occurred\nTransaction History not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                    "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 });
@@ -1107,11 +1104,10 @@ public class EazyFinderGUI {
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                         try {
                             new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
-                            optionPaneLabel.setText("<html>All Enquiries Deleted Successfully</html>");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.PLAIN_MESSAGE);
+                            showMessageDialogJOP(frame, "All Enquiries Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
                         } catch (Exception ex) {
-                            optionPaneLabel.setText("<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                            showMessageDialogJOP(frame, "<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                    "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 });
@@ -1130,11 +1126,10 @@ public class EazyFinderGUI {
                         try {
                             new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
                             new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
-                            optionPaneLabel.setText("<html>All the Account Data Deleted Successfully</html>");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.PLAIN_MESSAGE);
+                            showMessageDialogJOP(frame, "All the Account Data Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
                         } catch (Exception ex) {
-                            optionPaneLabel.setText("<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"));
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Error", JOptionPane.ERROR_MESSAGE);
+                            showMessageDialogJOP(frame, "<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                    "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 });
@@ -1943,15 +1938,11 @@ public class EazyFinderGUI {
 
                                     usernameLabel.setText("Username: " + username);
 
-                                    optionPaneLabel.setText("Username Changed Successfully");
-                                    JOptionPane.showMessageDialog(frame, optionPaneLabel, "Successful",
-                                            JOptionPane.INFORMATION_MESSAGE);
+                                    showMessageDialogJOP(frame, "Username Changed Successfully", "Successful", JOptionPane.INFORMATION_MESSAGE);
 
                                     displayMenu();
                                 } else {
-                                    optionPaneLabel.setText("Error Occurred. Username Didn't Change");
-                                    JOptionPane.showMessageDialog(updateUsernameFrame, optionPaneLabel, "Error",
-                                            JOptionPane.ERROR_MESSAGE);
+                                    showMessageDialogJOP(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error", JOptionPane.ERROR_MESSAGE);
                                 }
                             }
                         }
@@ -2047,14 +2038,10 @@ public class EazyFinderGUI {
                         if (new PasswordChangeMainCode().passwordChange(username, password, newPassword)) {
                             password = newPassword;
                             passwordChangeFrame.dispose();
-                            optionPaneLabel.setText("Password Changed Successfully");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel,
-                                    "Password Change Successful",
-                                    JOptionPane.INFORMATION_MESSAGE);
+                            showMessageDialogJOP(frame, "Password Changed Successfully", "Password Changed Successfully", JOptionPane.INFORMATION_MESSAGE);
                         } else {
-                            optionPaneLabel.setText("Some Error Occurred. Couldn't Change Password. Try After Some time");
-                            JOptionPane.showMessageDialog(passwordChangeFrame, optionPaneLabel,
-                                    "Error Occurred", JOptionPane.ERROR_MESSAGE);
+                            showMessageDialogJOP(passwordChangeFrame, "Some Error Occurred. Couldn't Change Password. Try After Some time",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -2077,9 +2064,7 @@ public class EazyFinderGUI {
                 JOptionPane.showMessageDialog(frame, "Account Deleted Successfully\nWe are Sorry to see you go",
                         "Account Deleted", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                optionPaneLabel.setText("Some Error Occurred, Account not Deleted");
-                JOptionPane.showMessageDialog(frame, optionPaneLabel,
-                        "Account Deleted", JOptionPane.ERROR_MESSAGE);
+                showMessageDialogJOP(frame1, "Some Error Occurred, Account not Deleted", "Account Not Deleted", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             displayMenu();
@@ -2181,9 +2166,7 @@ public class EazyFinderGUI {
                             password = localPassword;
                             switchAccountsFrame.dispose();
                             usernameLabel.setText("Username: " + username);
-                            optionPaneLabel.setText("Switched Accounts Successfully");
-                            JOptionPane.showMessageDialog(frame, optionPaneLabel, "Successful",
-                                    JOptionPane.INFORMATION_MESSAGE);
+                            showMessageDialogJOP(frame, "Switched Accounts Successfully", "Successful", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
