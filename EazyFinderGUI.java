@@ -18,39 +18,36 @@ import java.util.Scanner;
 TODO:
 1. use sudo mode as in GitHub
 2. caps lock warning while typing passwords
-3. BUGS: menu buttons are bringing "n" verification frames for nth clicking, When logout button is pressed it is giving multiple option panes
+3. look at problems with guest mode like account ...
 4. guest mode option (show option panes like "Guests cannot update their usernames or passwords or cannot switch accounts" after clicking the
 button. Give options like "Look at UI" and show the UI)
 5. add profile and settings option (dark mode (optional))
 6. give ref no. while signup and store them in the file for verification
 7. add clear form option and also cross symbol in text fields
 8. go from login to signup if credentials are not found
-9. sorting th based on filters
-10. add sorting option based on filters wherever possible
+9. add sorting option based on filters wherever possible
 */
 
 public class EazyFinderGUI {
-    // While using an IDE "Edit Configurations" by setting the Working Directory path till src if it is not already present
-    // System.getProperty("user.dir") return path upto src or change the program accordingly
+    /**
+     * @implSpec While using an IDE "Edit Configurations" by setting the Working Directory path
+     * till src if it is not already present.
+     * System.getProperty("user.dir") returns path upto src, or change the program accordingly
+     */
     String dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
     String username, password, name, phoneNumber, emailID;
     final File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
     final File userDetailsFile = new File(dirname + "\\Databases\\UserDetails.txt");
 
     JFrame frame = new JFrame();
-    JButton backButton, logoutButton = new JButton("Logout");
+    JButton backButton;
     JLabel msg; // Used to print corresponding messages
+
     final Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
     final short frameSize = 700;
-    final Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\finder.png");
 
     JLabel optionPaneLabel = new JLabel(); // label added into JOptionPanes
-    int optionPaneResult; // used for option pane results
-
-    // All Objects
-    LoginUI loginUIObj = new LoginUI();
-    SignUpUI signUpUIObj = new SignUpUI();
-    GuestMode guestModeObj = new GuestMode();
+    int optionPaneResult; // used for storing option pane results
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
@@ -58,18 +55,23 @@ public class EazyFinderGUI {
 
     final JButton homepageLoginButton = new JButton("LogIn");
     final JButton homepageSignupButton = new JButton("SignUp");
-    final JButton homepageGuestButton = new JButton("Browse as Guest");
     final JLabel infoLabel = new JLabel(new ImageIcon(dirname + "\\Images\\information.png"));
+
+    // All Objects
+    LoginUI loginUIObj = new LoginUI();
+    SignUpUI signUpUIObj = new SignUpUI();
+    GuestMode guestModeObj = new GuestMode();
 
     void Homepage() {
         frame.getContentPane().removeAll();
         frame.repaint();
 
+        JButton homepageGuestButton = new JButton("Browse as Guest");
+
         frame.setSize(350, 300);
         frame.setTitle("Homepage");
         frame.setLayout(null);
         frame.setVisible(true);
-        frame.setIconImage(icon);
         frame.setLocationRelativeTo(null);
 //        frame.setResizable(false);
 
@@ -107,25 +109,27 @@ public class EazyFinderGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Guest Mode enables the users to have the experience of a registered user
+     * without creating their own account.
+     * <p>
+     * Guest Mode can also be used by the users to know about our services and the
+     * UI too
+     */
     class GuestMode implements ActionListener {
         String[] guestPaneOptions = {"Browse as Guest", "Go Back"};
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            username = "Guest";
-            password = "Guest@123";
-
-            if (JOptionPane.showOptionDialog(frame, """
-                            We are giving you the guest credentials so that you can have the same experience as a registered user
-
-                            Username: Guest
-                            Password: Guest@123
-                                                        
-                            We delete all the date provided by you in the guest mode once you logout
-                            So feel free to be a registered user
-                                                        
-                            Happy Browsing 😃""", "Guest Mode", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+            optionPaneLabel.setText("<html>We are giving you the guest credentials so that you can have the same experience as a registered user\n\n" +
+                    "Username: Guest\nPassword: Guest@123\n\n" +
+                    "We delete all the date provided by you in the guest mode once you logout\n" +
+                    "So feel free to be a registered user\n\n" +
+                    "Happy Browsing 😃</html>".replaceAll("\n", "<br>"));
+            if (JOptionPane.showOptionDialog(frame, optionPaneLabel, "Guest Mode", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, guestPaneOptions, null) == JOptionPane.YES_OPTION) {
+                username = "Guest";
+                password = "Guest@123";
                 displayMenu();
             }
             // Create files, entry in database
@@ -133,6 +137,10 @@ public class EazyFinderGUI {
         }
     }
 
+    /**
+     * This method shows an option pane for confirmation from the user about a
+     * particular action
+     */
     int areYouSureJOP(JFrame jFrame) {
         optionPaneLabel.setText("Are You Sure?");
         return JOptionPane.showConfirmDialog(jFrame, optionPaneLabel, "Confirmation",
@@ -151,8 +159,10 @@ public class EazyFinderGUI {
         public void actionPerformed(ActionEvent e) {
             if (num == 1 || num == 2) {
                 if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
-                    if (num == 1) Homepage();
-                    else if (num == 2) displayMenu();
+                    if (num == 1) {
+                        username = password = "";
+                        Homepage();
+                    } else if (num == 2) displayMenu();
                 }
             } else if (num == 3) {
                 displayMenu();
@@ -343,11 +353,11 @@ public class EazyFinderGUI {
     String phoneNumberRegex = "^[6-9]\\d{9}", emailIDRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
 
     // profile picture attributes;
-    String profilePicturePath = dirname + "\\Images\\finder.png", profilePictureExtension = ".png";
-    ImageIcon profilePicture = new ImageIcon(dirname + "\\Images\\finder.png");
+    String profilePicturePath = dirname + "\\Images\\defaultPP.png", profilePictureExtension = ".png";
+    ImageIcon profilePicture = new ImageIcon(dirname + "\\Images\\defaultPP.png");
     int profilePictureWidth, profilePictureHeight;
-    String tempProfilePicturePath = dirname + "\\Images\\finder.png";
-    ImageIcon tempProfilePicture = new ImageIcon(dirname + "\\Images\\finder.png");
+    String tempProfilePicturePath = dirname + "\\Images\\defaultPP.png";
+    ImageIcon tempProfilePicture = new ImageIcon(dirname + "\\Images\\defaultPP.png");
     int tempProfilePictureWidth, tempProfilePictureHeight;
 
     int i;
@@ -382,8 +392,9 @@ public class EazyFinderGUI {
                             JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
                             null, optionPaneButtonNames, null);
                 } else {
-                    showMessageDialogJOP(frame, "<html>You have selected a non-supported file\nPlease choose another file\n" +
-                                    "Supported Files: .png, .jpg, .jpeg</html>".replaceAll("\n", "<br>"),
+                    showMessageDialogJOP(frame,
+                            "<html>You have selected a unsupported file\nPlease choose another file\nSupported Files: .png, .jpg, .jpeg</html>"
+                                    .replaceAll("\n", "<br>"),
                             "File Not Supported", JOptionPane.ERROR_MESSAGE);
                     return JOptionPane.NO_OPTION;
                 }
@@ -573,6 +584,7 @@ public class EazyFinderGUI {
             nameField = new JTextField();
             phoneField = new JTextField();
             emailField = new JTextField();
+            JButton logoutButton = new JButton("Logout");
 
             frame.add(backButton);
             frame.add(chooseProfilePictureLabel);
@@ -798,14 +810,6 @@ public class EazyFinderGUI {
     final int menuButtonWidth = 300, menuButtonHeight = 30, buttonsX = 200, diffInYs = 70;
     int buttonsY = 130;
     final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64, imageX = (frameSize - IMAGE_WIDTH) / 2, imageY = (buttonsY - IMAGE_HEIGHT) / 2;
-
-    JButton menuBookingButton = new JButton("Book for a Journey");
-    JButton menuTHButton = new JButton("See Transaction History");
-    JButton menuUpdateUsernameButton = new JButton("Update Username");
-    JButton menuEnquiryButton = new JButton("Enquire");
-    JButton menuPasswordChangeButton = new JButton("Change Password");
-    JButton menuAccountDeleteButton = new JButton("Delete my Account");
-    JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\Images\\finder.png"));
 
     String[] settingsMenu = {"Menu", "Account", "Settings"};
@@ -818,6 +822,15 @@ public class EazyFinderGUI {
         frame.setSize(frameSize, frameSize);
         frame.setTitle("EazyFinder");
         frame.setLocationRelativeTo(null);
+
+        JButton menuBookingButton = new JButton("Book for a Journey");
+        JButton menuTHButton = new JButton("See Transaction History");
+        JButton menuUpdateUsernameButton = new JButton("Update Username");
+        JButton menuEnquiryButton = new JButton("Enquire");
+        JButton menuPasswordChangeButton = new JButton("Change Password");
+        JButton menuAccountDeleteButton = new JButton("Delete my Account");
+        JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
+        JButton logoutButton = new JButton("Logout");
 
         frame.add(settings);
         frame.add(usernameLabel);
@@ -912,9 +925,6 @@ public class EazyFinderGUI {
 
         // Components related to profile picture
         JLabel profilePictureInAccount = new JLabel();
-        JButton viewPhotoButton = new JButton("View Photo");
-        JButton changePhotoButton = new JButton("Change Photo");
-        JButton deletePhotoButton = new JButton("Delete Photo");
 
         JLabel usernameLabel = new JLabel("Username: " + username);
         JLabel passwordLabel = new JLabel("Password: " + password);
@@ -932,6 +942,10 @@ public class EazyFinderGUI {
                 displayMenu();
             } else if (settings.getSelectedIndex() == 1) {
                 backButton = new JButton("Back");
+                JButton viewPhotoButton = new JButton("View Photo");
+                JButton changePhotoButton = new JButton("Change Photo");
+                JButton deletePhotoButton = new JButton("Delete Photo");
+                JButton logoutButton = new JButton("Logout");
 
                 frame.add(backButton);
                 frame.add(accountLabel);
@@ -965,12 +979,12 @@ public class EazyFinderGUI {
                 int[] wh = {width, height};
 
                 profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-                profilePictureInAccount.setBounds((frameSize - width) / 2, ((250 - height) / 2) + 55, width, height);
+                profilePictureInAccount.setBounds((frameSize - width) / 2, ((250 - height) / 2) + 70, width, height);
                 profilePictureInAccount.setHorizontalAlignment(0);
                 profilePictureInAccount.setVerticalAlignment(0);
 
                 // profile picture operations
-                viewPhotoButton.setBounds(500, 75, 120, 25);
+                viewPhotoButton.setBounds(500, 150, 120, 25);
                 viewPhotoButton.setForeground(Color.WHITE);
                 viewPhotoButton.setBackground(Color.DARK_GRAY);
                 viewPhotoButton.addActionListener(ae -> {
@@ -979,7 +993,7 @@ public class EazyFinderGUI {
                     JOptionPane.showMessageDialog(frame, ppLabel, "Profile Picture", JOptionPane.PLAIN_MESSAGE);
                 });
 
-                changePhotoButton.setBounds(500, 125, 120, 25);
+                changePhotoButton.setBounds(500, 200, 120, 25);
                 changePhotoButton.setForeground(Color.WHITE);
                 changePhotoButton.setBackground(Color.DARK_GRAY);
                 changePhotoButton.addActionListener(ae -> {
@@ -989,23 +1003,23 @@ public class EazyFinderGUI {
                         changeWH(wh);
 
                         profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
-                        profilePictureInAccount.setBounds((frameSize - wh[0]) / 2, ((250 - wh[1]) / 2) + 55, wh[0], wh[1]);
+                        profilePictureInAccount.setBounds((frameSize - wh[0]) / 2, ((250 - wh[1]) / 2) + 70, wh[0], wh[1]);
 
                         // save the profile picture
                         savePP();
                     }
                 });
 
-                deletePhotoButton.setBounds(500, 175, 120, 25);
+                deletePhotoButton.setBounds(500, 250, 120, 25);
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
                 deletePhotoButton.addActionListener(ae -> {
-                    /*if (profilePicturePath.equals(dirname + "\\Images\\finder.png")) {
+                    /*if (profilePicturePath.equals(dirname + "\\Images\\defaultPP.png")) {
                         showMessageDialogJOP(frame, "Profile Picture Already Deleted", "Profile Picture Already Deleted", JOptionPane.ERROR_MESSAGE);
                     } else */
                     if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
-                        profilePicturePath = dirname + "\\Images\\finder.png";
-                        profilePicture = new ImageIcon(dirname + "\\Images\\finder.png");
+                        profilePicturePath = dirname + "\\Images\\defaultPP.png";
+                        profilePicture = new ImageIcon(dirname + "\\Images\\defaultPP.png");
                         profilePictureExtension = ".png";
                         profilePictureWidth = wh[0] = profilePicture.getIconWidth();
                         profilePictureHeight = wh[1] = profilePicture.getIconHeight();
@@ -1016,15 +1030,15 @@ public class EazyFinderGUI {
 
                         // save the profile picture
                         savePP();
-                        JOptionPane.showMessageDialog(frame, "Deleted Profile Picture Successfully", "Deletion Successful", JOptionPane.INFORMATION_MESSAGE);
+                        showMessageDialogJOP(frame, "Deleted Profile Picture Successfully", "Profile Picture Deleted", JOptionPane.INFORMATION_MESSAGE);
                     }
                 });
 
-                usernameLabel.setBounds(0, 300, frameSize, 25);
+                usernameLabel.setBounds(0, 350, frameSize, 25);
                 usernameLabel.setFont(timesNewRoman);
                 usernameLabel.setHorizontalAlignment(0);
 
-                passwordLabel.setBounds(0, 340, frameSize, 25);
+                passwordLabel.setBounds(0, 390, frameSize, 25);
                 passwordLabel.setFont(timesNewRoman);
                 passwordLabel.setHorizontalAlignment(0);
 
@@ -1042,12 +1056,12 @@ public class EazyFinderGUI {
                 } catch (Exception ignored) {
                 }
 
-                noOfTransactionsLabel.setBounds(0, 390, 500, 25);
+                noOfTransactionsLabel.setBounds(0, 440, 500, 25);
                 noOfTransactionsLabel.setText("Number of Transactions made: " + noOfTransactions);
                 noOfTransactionsLabel.setFont(timesNewRoman);
                 noOfTransactionsLabel.setHorizontalAlignment(0);
 
-                goToTHButton.setBounds(400, 390, 200, 25);
+                goToTHButton.setBounds(400, 440, 200, 25);
                 goToTHButton.setForeground(Color.WHITE);
                 goToTHButton.setBackground(Color.BLUE);
                 goToTHButton.setFont(timesNewRoman);
@@ -1067,6 +1081,7 @@ public class EazyFinderGUI {
                 JButton deleteEnqButton = new JButton("Delete all the Enquiries");
                 JButton deleteAccountData = new JButton("Delete all my account Data");
                 JButton deleteAccount = new JButton("Delete My Account");
+                JButton logoutButton = new JButton("Logout");
 
                 frame.add(backButton);
                 frame.add(settingsLabel);
@@ -1267,6 +1282,7 @@ public class EazyFinderGUI {
             childrenField = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
             JButton continueButton = new JButton("Continue");
             msg = new JLabel();
+            JButton logoutButton = new JButton("Logout");
 
             if (case_ == 1) {
                 cityField.setSelectedItem(enqCity);
@@ -1500,6 +1516,7 @@ public class EazyFinderGUI {
                 motRB[4] = new JRadioButton("Cab");
 
                 backButton = new JButton("Back to Menu");
+                JButton logoutButton = new JButton("Logout");
 
                 frame.add(backButton);
                 frame.add(logoutButton);
@@ -1600,6 +1617,7 @@ public class EazyFinderGUI {
                     msg = new JLabel(("<html>Successfully Booked a Ticket from " +
                             source.toUpperCase() + " to " + destination.toUpperCase() + "\n" + "Total Cost: " + cost +
                             "\n" + "</html>").replaceAll("\n", "<br>"));
+                    JButton logoutButton = new JButton("Logout");
 
                     frame.add(backButton);
                     frame.add(msg);
@@ -1633,8 +1651,9 @@ public class EazyFinderGUI {
         frame.getContentPane().removeAll();
         frame.repaint();
 
-        msg = new JLabel();
         backButton = new JButton("Back");
+        msg = new JLabel();
+        JButton logoutButton = new JButton("Logout");
 
         frame.add(msg);
         frame.add(backButton);
@@ -1699,6 +1718,7 @@ public class EazyFinderGUI {
             enquireDestinationField = new JComboBox<>(temp);
             enquireAdultField = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
             enquireChildrenField = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
+            JButton logoutButton = new JButton("Logout");
 
             frame.add(backButton);
             frame.add(enquireCityLabel);
@@ -1768,6 +1788,8 @@ public class EazyFinderGUI {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
+        /**
+         * @see <a href="https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html#:~:text=the%20user%20entered.-,Stopping%20Automatic%20Dialog%20Closing,-By%20default%2C%20when">How to Stop automatic closing of JOptionPane</a>*/
         class EnquireMainCode implements ActionListener { // Save Enquiries for recommendations
             String enquireCity, enquireSource, enquireDestination;
             int enquireAdults, enquireChildren;
@@ -1843,8 +1865,8 @@ public class EazyFinderGUI {
                         JLabel fareDivision = new JLabel();
 
                         fareDivision.setText(
-                                ("<html>No. of Adults: " + enquireAdults + "     Fare: " + cost * enquireAdults + "\n\n" +
-                                        "No. of Children: " + enquireChildren + "     Fare: " + (cost / 2) * enquireChildren + "\n\n" +
+                                ("<html>No. of Adults: " + enquireAdults + "\nFare: " + cost * enquireAdults + "\n\n\n" +
+                                        "No. of Children: " + enquireChildren + "\nFare: " + (cost / 2) * enquireChildren + "\n\n\n" +
                                         "Total Cost: " + totalCost + "</html>").replaceAll("\n", "<br>"));
                         fareDivision.setHorizontalAlignment(0);
                         fareDivision.setVerticalAlignment(0);
