@@ -409,7 +409,7 @@ public class EazyFinderGUI {
     }
 
     boolean fileDeleted;
-    void savePP() { ;
+    void savePP() {
         try {
             fileDeleted = true;
             File destinationFile = new File(dirname + "\\ProfilePictures\\" + username + profilePictureExtension);
