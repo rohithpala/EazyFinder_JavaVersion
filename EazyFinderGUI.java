@@ -193,7 +193,7 @@ public class EazyFinderGUI {
         JTextField userField;
         JPasswordField passwordField;
         JButton loginButton = new JButton("LogIn");
-        JCheckBox showPasswordCB1;
+        JCheckBox showPasswordCB;
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -204,7 +204,7 @@ public class EazyFinderGUI {
             backButton = new JButton("Back");
             userField = new JTextField();
             passwordField = new JPasswordField();
-            showPasswordCB1 = new JCheckBox("Show Password");
+            showPasswordCB = new JCheckBox("Show Password");
             msg = new JLabel();
 
             frame.add(backButton);
@@ -212,7 +212,7 @@ public class EazyFinderGUI {
             frame.add(passwordLabel);
             frame.add(userField);
             frame.add(passwordField);
-            frame.add(showPasswordCB1);
+            frame.add(showPasswordCB);
             frame.add(loginButton);
             frame.add(msg);
 
@@ -237,9 +237,9 @@ public class EazyFinderGUI {
             userField.setText("r");
             passwordField.setText("Rohith_02");
 
-            showPasswordCB1.setBounds(90, 110, 150, 25);
-            showPasswordCB1.setFont(timesNewRoman);
-            showPasswordCB1.addActionListener(new ShowPasswordsCheckBox(passwordField));
+            showPasswordCB.setBounds(90, 110, 150, 25);
+            showPasswordCB.setFont(timesNewRoman);
+            showPasswordCB.addActionListener(new ShowPasswordsCheckBox(passwordField));
 
             loginButton.setBounds(120, 140, 80, 25);
             loginButton.setBackground(Color.DARK_GRAY);
@@ -290,7 +290,7 @@ public class EazyFinderGUI {
         }
     }
 
-    void showMessageDialogJOP(JFrame jFrame, String msg, String title, int magicConstant){
+    void showMessageDialogJOP(JFrame jFrame, String msg, String title, int magicConstant) {
         optionPaneLabel.setText(msg);
         JOptionPane.showMessageDialog(jFrame, optionPaneLabel, title, magicConstant);
     }
@@ -347,6 +347,7 @@ public class EazyFinderGUI {
     int i;
     String[] optionPaneButtonNames = {"Confirm", "No, I want to Select Another"};
     FileDialog fd = new FileDialog(frame, "Open", FileDialog.LOAD);
+
     int setPPDetails() {
         fd.setVisible(true);
         if (fd.getFile() == null) {
@@ -376,7 +377,7 @@ public class EazyFinderGUI {
                             null, optionPaneButtonNames, null);
                 } else {
                     showMessageDialogJOP(frame, "<html>You have selected a non-supported file\nPlease choose another file\n" +
-                            "Supported Files: .png, .jpg, .jpeg</html>".replaceAll("\n", "<br>"),
+                                    "Supported Files: .png, .jpg, .jpeg</html>".replaceAll("\n", "<br>"),
                             "File Not Supported", JOptionPane.ERROR_MESSAGE);
                     return JOptionPane.NO_OPTION;
                 }
@@ -410,6 +411,7 @@ public class EazyFinderGUI {
     }
 
     boolean fileDeleted;
+
     void savePP() {
         try {
             fileDeleted = true;
@@ -994,7 +996,8 @@ public class EazyFinderGUI {
                 deletePhotoButton.addActionListener(ae -> {
                     /*if (profilePicturePath.equals(dirname + "\\Images\\finder.png")) {
                         showMessageDialogJOP(frame, "Profile Picture Already Deleted", "Profile Picture Already Deleted", JOptionPane.ERROR_MESSAGE);
-                    } else */if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
+                    } else */
+                    if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
                         profilePicturePath = dirname + "\\Images\\finder.png";
                         profilePicture = new ImageIcon(dirname + "\\Images\\finder.png");
                         profilePictureExtension = ".png";
