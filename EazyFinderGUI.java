@@ -39,7 +39,7 @@ public class EazyFinderGUI {
     final File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
     final File userDetailsFile = new File(dirname + "\\Databases\\UserDetails.txt");
 
-    JFrame frame = new JFrame();
+    JFrame frame = new JFrame(); //Main frame
     JButton backButton;
     JLabel msg; // Used to print corresponding messages
 
@@ -53,10 +53,6 @@ public class EazyFinderGUI {
         new EazyFinderGUI().Homepage();
     }
 
-    final JButton homepageLoginButton = new JButton("LogIn");
-    final JButton homepageSignupButton = new JButton("SignUp");
-    final JLabel infoLabel = new JLabel(new ImageIcon(dirname + "\\Images\\information.png"));
-
     // All Objects
     LoginUI loginUIObj = new LoginUI();
     SignUpUI signUpUIObj = new SignUpUI();
@@ -66,6 +62,8 @@ public class EazyFinderGUI {
         frame.getContentPane().removeAll();
         frame.repaint();
 
+        JButton homepageLoginButton = new JButton("LogIn");
+        JButton homepageSignupButton = new JButton("SignUp");
         JButton homepageGuestButton = new JButton("Browse as Guest");
 
         frame.setSize(350, 300);
@@ -80,31 +78,24 @@ public class EazyFinderGUI {
         frame.add(homepageLoginButton);
         frame.add(homepageSignupButton);
         frame.add(homepageGuestButton);
-        frame.add(infoLabel);
 
         homepageLoginButton.setBounds(50, 95, 100, 30);
         homepageLoginButton.setForeground(Color.BLACK);
         homepageLoginButton.setBackground(Color.ORANGE);
         homepageLoginButton.setFont(timesNewRoman);
-        homepageLoginButton.setToolTipText("Click this button to Login");
         homepageLoginButton.addActionListener(loginUIObj);
 
         homepageSignupButton.setBounds(180, 95, 100, 30);
         homepageSignupButton.setForeground(Color.BLACK);
         homepageSignupButton.setBackground(Color.ORANGE);
         homepageSignupButton.setFont(timesNewRoman);
-        homepageSignupButton.setToolTipText("Click this button to Create a new Account for yourself");
         homepageSignupButton.addActionListener(signUpUIObj);
 
         homepageGuestButton.setBounds(50, 142, 230, 30);
         homepageGuestButton.setForeground(Color.WHITE);
         homepageGuestButton.setBackground(Color.DARK_GRAY);
         homepageGuestButton.setFont(timesNewRoman);
-        homepageGuestButton.setToolTipText("Have the experience of a registered user without registering");
         homepageGuestButton.addActionListener(guestModeObj);
-
-        infoLabel.setBounds(320, 0, 16, 16);
-        infoLabel.setToolTipText("Email: programmerrohith@gmail.com");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -130,6 +121,12 @@ public class EazyFinderGUI {
                     null, guestPaneOptions, null) == JOptionPane.YES_OPTION) {
                 username = "Guest";
                 password = "Guest@123";
+                profilePicturePath = dirname + "\\Images\\defaultPP.png";
+                profilePicture = new ImageIcon(profilePicturePath);
+                profilePictureExtension = ".png";
+                profilePictureWidth = profilePicture.getIconWidth();
+                profilePictureHeight = profilePicture.getIconHeight();
+
                 displayMenu();
             }
             // Create files, entry in database
