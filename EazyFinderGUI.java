@@ -290,6 +290,12 @@ public class EazyFinderGUI {
         }
     }
 
+    /**
+     * This Method is used to show a message dialog that contains a JLabel.
+     * The messages are kept in JLabel so that they can be equipped with
+     * "timesNewRoman" font.
+     * optionPaneLabel has been set to have font "timesNewRoman" in Homepage method
+     */
     void showMessageDialogJOP(JFrame jFrame, String msg, String title, int magicConstant) {
         optionPaneLabel.setText(msg);
         JOptionPane.showMessageDialog(jFrame, optionPaneLabel, title, magicConstant);
