@@ -35,28 +35,27 @@ public class EazyFinderGUI {
      * System.getProperty("user.dir") returns path upto src, or change the program accordingly
      */
     String dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
-    String username, password, name, phoneNumber, emailID;
+    String username, password, name, phoneNumber, emailID; // User Details
     final File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
     final File userDetailsFile = new File(dirname + "\\Databases\\UserDetails.txt");
 
+    // frame related
     JFrame frame = new JFrame(); //Main frame
+    final short frameSize = 700;
+
+    // common components in every frame change
     JButton backButton;
     JLabel msg; // Used to print corresponding messages
 
+    // font equipped by every component
     final Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15);
-    final short frameSize = 700;
 
-    JLabel optionPaneLabel = new JLabel(); // label added into JOptionPanes
+    JLabel optionPaneLabel = new JLabel(); // label added into JOptionPanes to show corresponding messages
     int optionPaneResult; // used for storing option pane results
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
     }
-
-    // All Objects
-    LoginUI loginUIObj = new LoginUI();
-    SignUpUI signUpUIObj = new SignUpUI();
-    GuestMode guestModeObj = new GuestMode();
 
     void Homepage() {
         frame.getContentPane().removeAll();
@@ -83,19 +82,19 @@ public class EazyFinderGUI {
         homepageLoginButton.setForeground(Color.BLACK);
         homepageLoginButton.setBackground(Color.ORANGE);
         homepageLoginButton.setFont(timesNewRoman);
-        homepageLoginButton.addActionListener(loginUIObj);
+        homepageLoginButton.addActionListener(new LoginUI());
 
         homepageSignupButton.setBounds(180, 95, 100, 30);
         homepageSignupButton.setForeground(Color.BLACK);
         homepageSignupButton.setBackground(Color.ORANGE);
         homepageSignupButton.setFont(timesNewRoman);
-        homepageSignupButton.addActionListener(signUpUIObj);
+        homepageSignupButton.addActionListener(new SignUpUI());
 
         homepageGuestButton.setBounds(50, 142, 230, 30);
         homepageGuestButton.setForeground(Color.WHITE);
         homepageGuestButton.setBackground(Color.DARK_GRAY);
         homepageGuestButton.setFont(timesNewRoman);
-        homepageGuestButton.addActionListener(guestModeObj);
+        homepageGuestButton.addActionListener(new GuestMode());
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -390,7 +389,7 @@ public class EazyFinderGUI {
                             null, optionPaneButtonNames, null);
                 } else {
                     showMessageDialogJOP(frame,
-                            "<html>You have selected a unsupported file\nPlease choose another file\nSupported Files: .png, .jpg, .jpeg</html>"
+                            "<html>You have selected an unsupported file\nPlease choose another file\nSupported Files: .png, .jpg, .jpeg</html>"
                                     .replaceAll("\n", "<br>"),
                             "File Not Supported", JOptionPane.ERROR_MESSAGE);
                     return JOptionPane.NO_OPTION;
@@ -536,7 +535,7 @@ public class EazyFinderGUI {
                     msg.setText("Please Fill all the fields");
                 } else if (!password.equals(rePassword)) {
                     msg.setText("Passwords doesn't match");
-                } else { // Checking if username is already present
+                } else { // CheckingPassword if username is already present
                     String str;
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(db));
@@ -720,6 +719,7 @@ public class EazyFinderGUI {
         JFrame verificationFrame;
         JPasswordField verificationPasswordField;
 
+        // All Objects
         BookingUI bookingsObj = new BookingUI();
         EnquireUI enqObj = new EnquireUI();
         UpdateUsernameUI updateUsernameObj = new UpdateUsernameUI();
@@ -761,13 +761,13 @@ public class EazyFinderGUI {
                 verifyButton.setBackground(Color.RED);
             }
 
-            verifyButton.addActionListener(new Checking());
+            verifyButton.addActionListener(new CheckingPassword());
 
             verificationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
-        class Checking implements ActionListener {
+        class CheckingPassword implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 msg = new JLabel();
@@ -917,17 +917,8 @@ public class EazyFinderGUI {
     }
 
     class Settings implements ActionListener {
-        // Variables needed for Account Page
+        // Components needed for Account Page
         JLabel accountLabel = new JLabel("Account");
-
-        // Components related to profile picture
-        JLabel profilePictureInAccount = new JLabel();
-
-        JLabel usernameLabel = new JLabel("Username: " + username);
-        JLabel passwordLabel = new JLabel("Password: " + password);
-        JLabel noOfTransactionsLabel = new JLabel();
-        JButton goToTHButton = new JButton("Go to Transactions Page");
-
         final Font headingFont = new Font("Times New Roman", Font.BOLD, 25);
 
         @Override
@@ -935,14 +926,19 @@ public class EazyFinderGUI {
             frame.getContentPane().removeAll();
             frame.repaint();
 
-            if (settings.getSelectedIndex() == 0) {
+            if (settings.getSelectedIndex() == 0) { // Menu
                 displayMenu();
-            } else if (settings.getSelectedIndex() == 1) {
+            } else if (settings.getSelectedIndex() == 1) { // Account
                 backButton = new JButton("Back");
                 JButton viewPhotoButton = new JButton("View Photo");
                 JButton changePhotoButton = new JButton("Change Photo");
                 JButton deletePhotoButton = new JButton("Delete Photo");
                 JButton logoutButton = new JButton("Logout");
+                JLabel usernameLabel = new JLabel("Username: " + username);
+                JLabel passwordLabel = new JLabel("Password: " + password);
+                JLabel noOfTransactionsLabel = new JLabel();
+                JButton goToTHButton = new JButton("Go to Transactions Page");
+                JLabel profilePictureInAccount = new JLabel();
 
                 frame.add(backButton);
                 frame.add(accountLabel);
@@ -1070,8 +1066,7 @@ public class EazyFinderGUI {
                 logoutButton.setForeground(Color.WHITE);
                 logoutButton.setFont(timesNewRoman);
                 logoutButton.addActionListener(new Back((byte) 1));
-            } else {
-                //settings. put the account deletion, password change, update username options in here
+            } else { // Settings. put the account deletion, password change, update username options in here
                 backButton = new JButton("Back");
                 JLabel settingsLabel = new JLabel("Settings");
                 JButton deleteTHButton = new JButton("Delete all the Transaction Histories");
@@ -1102,6 +1097,7 @@ public class EazyFinderGUI {
                 deleteTHButton.setBounds(200, 65, 300, 30);
                 deleteTHButton.setForeground(Color.BLACK);
                 deleteTHButton.setBackground(Color.orange);
+                deleteTHButton.setFont(timesNewRoman);
                 deleteTHButton.addActionListener(ae -> {
                     optionPaneLabel.setText("<html>Are You Sure?\nAll your Transaction History will be lost</html>".replaceAll("\n", "<br>"));
                     if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
@@ -1119,6 +1115,7 @@ public class EazyFinderGUI {
                 deleteEnqButton.setBounds(200, 110, 300, 30);
                 deleteEnqButton.setForeground(Color.BLACK);
                 deleteEnqButton.setBackground(Color.orange);
+                deleteEnqButton.setFont(timesNewRoman);
                 deleteEnqButton.addActionListener(ae -> {
                     optionPaneLabel.setText("<html>Are You Sure?\nAll your Enquiries will be lost</html>".replaceAll("\n", "<br>"));
                     if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
@@ -1136,6 +1133,7 @@ public class EazyFinderGUI {
                 deleteAccountData.setBounds(200, 155, 300, 30);
                 deleteAccountData.setForeground(Color.BLACK);
                 deleteAccountData.setBackground(Color.red);
+                deleteAccountData.setFont(timesNewRoman);
                 deleteAccountData.addActionListener(ae -> {
                     optionPaneLabel.setText((
                             "<html>Are You Sure?\n" +
@@ -1158,6 +1156,7 @@ public class EazyFinderGUI {
                 deleteAccount.setBounds(200, 200, 300, 30);
                 deleteAccount.setForeground(Color.BLACK);
                 deleteAccount.setBackground(Color.RED);
+                deleteAccount.setFont(timesNewRoman);
                 deleteAccount.addActionListener(new Verification("AccountDeletion"));
 
                 logoutButton.setBounds(586, 0, 100, 30);
@@ -1235,12 +1234,6 @@ public class EazyFinderGUI {
                 destinationField.addItem(places[i].toUpperCase());
             }
         }
-    }
-
-    void positioningTextAndDisablingEditingInJSpinner(JSpinner spinner) {
-        JFormattedTextField tf = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
-        tf.setEditable(false);
-        tf.setHorizontalAlignment(JLabel.LEFT);
     }
 
 
@@ -1377,14 +1370,12 @@ public class EazyFinderGUI {
 
             adultField.setBounds(330, 300, 200, 25);
             adultField.setFont(timesNewRoman);
-            positioningTextAndDisablingEditingInJSpinner(adultField);
 
             childrenLabel.setBounds(200, 350, 100, 25);
             childrenLabel.setFont(timesNewRoman);
 
             childrenField.setBounds(330, 350, 200, 25);
             childrenField.setFont(timesNewRoman);
-            positioningTextAndDisablingEditingInJSpinner(childrenField);
 
             continueButton.setBounds(275, 400, 150, 25);
             continueButton.setBackground(Color.GREEN);
@@ -1759,14 +1750,12 @@ public class EazyFinderGUI {
 
             enquireAdultField.setBounds(320, 350, 200, 25);
             enquireAdultField.setFont(timesNewRoman);
-            positioningTextAndDisablingEditingInJSpinner(enquireAdultField);
 
             enquireChildrenLabel.setBounds(200, 400, 120, 25);
             enquireChildrenLabel.setFont(timesNewRoman);
 
             enquireChildrenField.setBounds(320, 400, 200, 25);
             enquireChildrenField.setFont(timesNewRoman);
-            positioningTextAndDisablingEditingInJSpinner(enquireChildrenField);
 
             enquireCityField.addActionListener(new InitializeCombos(enquireCityField, enquireSourceField, enquireDestinationField));
 
@@ -1786,7 +1775,8 @@ public class EazyFinderGUI {
         }
 
         /**
-         * @see <a href="https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html#:~:text=the%20user%20entered.-,Stopping%20Automatic%20Dialog%20Closing,-By%20default%2C%20when">How to Stop automatic closing of JOptionPane</a>*/
+         * @see <a href="https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html#:~:text=the%20user%20entered.-,Stopping%20Automatic%20Dialog%20Closing,-By%20default%2C%20when">How to Stop automatic closing of JOptionPane</a>
+         */
         class EnquireMainCode implements ActionListener { // Save Enquiries for recommendations
             String enquireCity, enquireSource, enquireDestination;
             int enquireAdults, enquireChildren;
