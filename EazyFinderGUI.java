@@ -24,7 +24,6 @@ button. Give options like "Look at UI" and show the UI)
 5. add profile and settings option (dark mode (optional))
 6. give ref no. while signup and store them in the file for verification
 7. add clear form option and also cross symbol in text fields
-8. go from login to signup if credentials are not found
 9. add sorting option based on filters wherever possible
 */
 
@@ -88,7 +87,7 @@ public class EazyFinderGUI {
         homepageSignupButton.setForeground(Color.BLACK);
         homepageSignupButton.setBackground(Color.ORANGE);
         homepageSignupButton.setFont(timesNewRoman);
-        homepageSignupButton.addActionListener(new SignUpUI());
+        homepageSignupButton.addActionListener(e -> new SignUpUI().signUpUI("homepage"));
 
         homepageGuestButton.setBounds(50, 142, 230, 30);
         homepageGuestButton.setForeground(Color.WHITE);
@@ -264,18 +263,25 @@ public class EazyFinderGUI {
                 username = userField.getText().trim();
                 password = String.valueOf(passwordField.getPassword()).trim();
 
+                msg.setText("");
+                msg.setForeground(Color.BLACK);
+
                 if (username.equals("") || password.equals("")) {
                     msg.setText("Please Fill all the Fields");
                 } else {
                     String str;
                     String[] credentials;
-                    boolean found = false;
+                    boolean usernameFound = false, passwordFound = false;
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(db));
                         while ((str = reader.readLine()) != null) {
                             credentials = str.split(",");
-                            if (username.equals(credentials[0]) && String.valueOf(encryptPassword(password)).equals(credentials[1])) {
-                                found = true;
+                            if (username.equals(credentials[0])){
+                                usernameFound = true;
+                                if(String.valueOf(encryptPassword(password)).equals(credentials[1])) {
+                                    passwordFound = true;
+                                    break;
+                                }
                                 break;
                             }
                         }
@@ -283,9 +289,20 @@ public class EazyFinderGUI {
                     } catch (Exception ex) {
                         msg.setText("Error in reading file");
                     }
-                    if (!found) {
-                        msg.setText("No User With Given Credentials");
-                    } else {
+
+                    if(!usernameFound && !passwordFound) {
+                        optionPaneLabel.setText("<html>No User With Given Credentials\nDo You Want to SignUp?</html>".replaceAll("\n", "<br>"));
+                        if(JOptionPane.showConfirmDialog(frame, optionPaneLabel,
+                                "Account Not Found", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                            SignUpUI signUpObj = new SignUpUI();
+                            signUpObj.userField = new JTextField(username);
+                            signUpObj.passwordField = new JPasswordField(password);
+                            signUpObj.signUpUI("login");
+                        }
+                    } else if(!passwordFound){
+                        msg.setForeground(Color.RED);
+                        msg.setText("Password Incorrect");
+                    } else if(usernameFound && passwordFound) {
                         getPPDetails();
                         displayMenu();
                     }
@@ -448,29 +465,31 @@ public class EazyFinderGUI {
         }
     }
 
-    class SignUpUI implements ActionListener {
-        JTextField userText;
+    class SignUpUI {
+        JTextField userField;
         JPasswordField passwordField, rePasswordField;
         JButton nextButton = new JButton("Next");
         JCheckBox showPasswordCB1, showPasswordCB2;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+        void signUpUI(String str) {
             frame.getContentPane().removeAll();
             frame.repaint();
             frame.setTitle("SignUp");
 
             backButton = new JButton("Back");
-            userText = new JTextField();
-            passwordField = new JPasswordField();
             showPasswordCB1 = new JCheckBox("Show Password");
             rePasswordField = new JPasswordField();
             showPasswordCB2 = new JCheckBox("Show Password");
             msg = new JLabel();
 
+            if(str.equals("homepage")) {
+                userField = new JTextField();
+                passwordField = new JPasswordField();
+            }
+
             frame.add(userLabel);
             frame.add(passwordLabel);
-            frame.add(userText);
+            frame.add(userField);
             frame.add(passwordField);
             frame.add(showPasswordCB1);
             frame.add(showPasswordCB2);
@@ -489,8 +508,8 @@ public class EazyFinderGUI {
             userLabel.setBounds(50, 50, 80, 25);
             userLabel.setFont(timesNewRoman);
 
-            userText.setBounds(130, 50, 120, 25);
-            userText.setFont(timesNewRoman);
+            userField.setBounds(130, 50, 120, 25);
+            userField.setFont(timesNewRoman);
 
             passwordLabel.setBounds(50, 80, 80, 25);
             passwordLabel.setFont(timesNewRoman);
@@ -526,7 +545,7 @@ public class EazyFinderGUI {
         class CredentialCheck implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                username = userText.getText().trim();
+                username = userField.getText().trim();
                 password = String.valueOf(passwordField.getPassword());
                 String rePassword = String.valueOf(rePasswordField.getPassword());
                 boolean found = false;
@@ -641,7 +660,7 @@ public class EazyFinderGUI {
         }
 
         class SignUpMainCode implements ActionListener {
-            JLabel phoneMessage = new JLabel();
+            JLabel message = new JLabel();
             JLabel emailErrorMessage = new JLabel();
 
             @Override
@@ -650,15 +669,15 @@ public class EazyFinderGUI {
                 phoneNumber = phoneField.getText().trim();
                 emailID = emailField.getText().trim();
 
-                frame.add(phoneMessage);
+                frame.add(message);
                 frame.add(emailErrorMessage);
 
-                phoneMessage.setText("");
-                phoneMessage.setBounds(0, 320, registrationFrameSize, 25);
-                phoneMessage.setFont(timesNewRoman);
-                phoneMessage.setForeground(Color.RED);
-                phoneMessage.setOpaque(true);
-                phoneMessage.setHorizontalAlignment(0);
+                message.setText("");
+                message.setBounds(0, 320, registrationFrameSize, 25);
+                message.setFont(timesNewRoman);
+                message.setForeground(Color.RED);
+                message.setOpaque(true);
+                message.setHorizontalAlignment(0);
 
                 emailErrorMessage.setText("");
                 emailErrorMessage.setBounds(0, 350, registrationFrameSize, 25);
@@ -668,11 +687,11 @@ public class EazyFinderGUI {
                 emailErrorMessage.setHorizontalAlignment(0);
 
                 if (selectProfilePictureButton.getText().equals("Select")) {
-                    phoneMessage.setText("Please select a Profile Picture");
+                    message.setText("Please select a Profile Picture");
                 } else if (name.equals("") || phoneNumber.equals("") || emailID.equals("")) {
-                    phoneMessage.setText("Please fill all the Fields");
+                    message.setText("Please fill all the Fields");
                 } else if (!phoneNumber.matches(phoneNumberRegex) || !emailID.matches(emailIDRegex)) {
-                    if (!phoneNumber.matches(phoneNumberRegex)) phoneMessage.setText("Invalid Phone Number");
+                    if (!phoneNumber.matches(phoneNumberRegex)) message.setText("Invalid Phone Number");
                     if (!emailID.matches(emailIDRegex)) emailErrorMessage.setText("Invalid Email Address");
                 } else {
                     try {
@@ -1003,6 +1022,9 @@ public class EazyFinderGUI {
                     }
                 });
 
+                // https://stackoverflow.com/questions/27379059/determine-if-two-files-store-the-same-content
+//                deletePhotoButton.setBackground(Color.RED);
+//                deletePhotoButton.setEnabled(true);
                 deletePhotoButton.setBounds(500, 250, 120, 25);
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
@@ -1024,6 +1046,8 @@ public class EazyFinderGUI {
                         // save the profile picture
                         savePP();
                         showMessageDialogJOP(frame, "Deleted Profile Picture Successfully", "Profile Picture Deleted", JOptionPane.INFORMATION_MESSAGE);
+//                        deletePhotoButton.setBackground(Color.DARK_GRAY);
+//                        deletePhotoButton.setEnabled(false);
                     }
                 });
 
