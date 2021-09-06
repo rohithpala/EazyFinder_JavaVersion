@@ -308,7 +308,8 @@ public class EazyFinderGUI {
                         if (optionPaneResult == JOptionPane.YES_OPTION) {
                             sudoModeAccepted = true;
                             passwordTypedAt = setCurrentTime();
-                            showMessageDialogJOP(frame, "Sudo Mode is On. Password will be prompted only for every 1 minute", "Sudo Mode On", JOptionPane.INFORMATION_MESSAGE);
+                            showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for every 1 minute</html>".replaceAll("\n", "<br>"),
+                                    "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode Off", JOptionPane.INFORMATION_MESSAGE);
                         }
@@ -1171,20 +1172,28 @@ public class EazyFinderGUI {
                 settingsLabel.setFont(headingFont);
                 settingsLabel.setHorizontalAlignment(0);
 
+
+                File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
+                File enq = new File(dirname + "\\Enquiries\\" + username + ".txt");
+
                 deleteTHButton.setBounds(200, 65, 300, 30);
                 deleteTHButton.setForeground(Color.BLACK);
                 deleteTHButton.setBackground(Color.orange);
                 deleteTHButton.setFont(timesNewRoman);
                 deleteTHButton.addActionListener(ae -> {
-                    optionPaneLabel.setText("<html>Are You Sure?\nAll your Transaction History will be lost</html>".replaceAll("\n", "<br>"));
-                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        try {
-                            new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
-                            showMessageDialogJOP(frame, "Transaction History Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
-                        } catch (Exception ex) {
-                            showMessageDialogJOP(frame, "<html>Some Error Occurred\nTransaction History not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                    if (th.length() == 0) {
+                        showMessageDialogJOP(frame, "No Transaction History", "No Transaction History", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        optionPaneLabel.setText("<html>Are You Sure?\nAll your Transaction History will be lost</html>".replaceAll("\n", "<br>"));
+                        if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                            try {
+                                new FileWriter(th, false).close();
+                                showMessageDialogJOP(frame, "Transaction History Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
+                            } catch (Exception ex) {
+                                showMessageDialogJOP(frame, "<html>Some Error Occurred\nTransaction History not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     }
                 });
@@ -1194,15 +1203,19 @@ public class EazyFinderGUI {
                 deleteEnqButton.setBackground(Color.orange);
                 deleteEnqButton.setFont(timesNewRoman);
                 deleteEnqButton.addActionListener(ae -> {
-                    optionPaneLabel.setText("<html>Are You Sure?\nAll your Enquiries will be lost</html>".replaceAll("\n", "<br>"));
-                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        try {
-                            new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
-                            showMessageDialogJOP(frame, "All Enquiries Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
-                        } catch (Exception ex) {
-                            showMessageDialogJOP(frame, "<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                    if (enq.length() == 0) {
+                        showMessageDialogJOP(frame, "No Enquiries", "No Enquiries", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        optionPaneLabel.setText("<html>Are You Sure?\nAll your Enquiries will be lost</html>".replaceAll("\n", "<br>"));
+                        if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                            try {
+                                new FileWriter(enq, false).close();
+                                showMessageDialogJOP(frame, "All Enquiries Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
+                            } catch (Exception ex) {
+                                showMessageDialogJOP(frame, "<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     }
                 });
@@ -1212,20 +1225,21 @@ public class EazyFinderGUI {
                 deleteAccountData.setBackground(Color.red);
                 deleteAccountData.setFont(timesNewRoman);
                 deleteAccountData.addActionListener(ae -> {
-                    optionPaneLabel.setText((
-                            "<html>Are You Sure?\n" +
-                                    "All your Account Data will be lost\n\nAccount Data Includes:\n" +
-                                    "1) Transaction History till date\n" +
-                                    "2) Enquiries Made till date</html>".replaceAll("\n", "<br>")));
-                    if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        try {
-                            new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
-                            new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
-                            showMessageDialogJOP(frame, "All the Account Data Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
-                        } catch (Exception ex) {
-                            showMessageDialogJOP(frame, "<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                    if (th.length() == 0 && enq.length() == 0) {
+                        showMessageDialogJOP(frame, "Their is no Account Data left", "Their is no Account Data left", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        optionPaneLabel.setText(("<html>Are You Sure?\n" + "All your Account Data will be lost\n\nAccount Data Includes:\n" +
+                                "1) Transaction History till date\n" + "2) Enquiries Made till date</html>".replaceAll("\n", "<br>")));
+                        if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                            try {
+                                new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
+                                new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
+                                showMessageDialogJOP(frame, "All the Account Data Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
+                            } catch (Exception ex) {
+                                showMessageDialogJOP(frame, "<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     }
                 });
@@ -1236,23 +1250,26 @@ public class EazyFinderGUI {
                 deleteAccount.setFont(timesNewRoman);
                 deleteAccount.addActionListener(new Verification("AccountDeletion"));
 
-                sudoModeLabel.setBounds(250, 245, 100, 25);
+                sudoModeLabel.setBounds(265, 245, 100, 25);
                 sudoModeLabel.setFont(timesNewRoman);
 
                 // TODO check this
-                if(sudoMode()) sudoModeTB.setText("OFF");
+                if (sudoMode()) sudoModeTB.setText("OFF");
                 else sudoModeTB.setText("ON");
-                sudoModeTB.setBounds(350, 245, 100, 25);
+                sudoModeTB.setBounds(370, 245, 70, 25);
                 sudoModeTB.setForeground(Color.WHITE);
                 sudoModeTB.setBackground(Color.DARK_GRAY);
                 sudoModeTB.addItemListener(ae -> {
-                    if(sudoMode()) {
+                    if (sudoMode()) {
                         if (sudoModeTB.isSelected()) {
                             sudoModeTB.setText("OFF");
                             sudoModeAccepted = true;
+                            showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for every 1 minute</html>".replaceAll("\n", "<br>"),
+                                    "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             sudoModeTB.setText("ON");
                             sudoModeAccepted = false;
+                            showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode is Off", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } else {
                         if (sudoModeTB.isSelected()) {
@@ -2180,21 +2197,18 @@ public class EazyFinderGUI {
 
 
     void AccountDeletion(JFrame frame1) {
-        optionPaneResult = JOptionPane.showConfirmDialog(frame1,
-                "Are You Sure?\nAll Your Transactions, Enquiries will be lost\nThis is un-reversible",
-                "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        optionPaneLabel.setText("Are You Sure?\nAll Your Transactions, Enquiries will be lost\nThis is un-reversible".replaceAll("\n", "<br>"));
+        optionPaneResult = JOptionPane.showConfirmDialog(frame1, optionPaneLabel, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (optionPaneResult == JOptionPane.YES_OPTION) {
             frame1.dispose();
             boolean deleted = new AccountDeletionMainCode().accountDeletion(username, password);
             if (deleted) {
                 Homepage();
-                JOptionPane.showMessageDialog(frame, "Account Deleted Successfully\nWe are Sorry to see you go",
+                showMessageDialogJOP(frame, "<html>Account Deleted Successfully\nWe are Sorry to see you go</html>".replaceAll("\n", "<br>"),
                         "Account Deleted", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 showMessageDialogJOP(frame1, "Some Error Occurred, Account not Deleted", "Account Not Deleted", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            displayMenu();
         }
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
