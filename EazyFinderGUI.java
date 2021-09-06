@@ -10,13 +10,13 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Scanner;
 
 /*
 TODO:
-1. use sudo mode as in GitHub. TODO complete it
 2. caps lock warning while typing passwords
 3. look at problems with guest mode like account ...
 4. guest mode option (show option panes like "Guests cannot update their usernames or passwords or cannot switch accounts" after clicking the
@@ -50,9 +50,6 @@ public class EazyFinderGUI {
 
     JLabel optionPaneLabel = new JLabel(); // label added into JOptionPanes to show corresponding messages
     int optionPaneResult; // used for storing option pane results
-
-    Date passwordTypedAt = new Date(); // used for sudo mode
-    SimpleDateFormat ct = new SimpleDateFormat("HH:mm:ss");
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
@@ -112,11 +109,8 @@ public class EazyFinderGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            optionPaneLabel.setText("<html>We are giving you the guest credentials so that you can have the same experience as a registered user\n\n" +
-                    "Username: Guest\nPassword: Guest@123\n\n" +
-                    "We delete all the date provided by you in the guest mode once you logout\n" +
-                    "So feel free to be a registered user\n\n" +
-                    "Happy Browsing 😃</html>".replaceAll("\n", "<br>"));
+            optionPaneLabel.setText("<html>We are giving you the guest credentials so that you can have the same experience as a registered user\n\nUsername: Guest\nPassword: Guest@123\n\nWe delete all the date provided by you in the guest mode once you logout\nSo feel free to be a registered user\n\nHappy Browsing 😃</html>"
+                    .replaceAll("\n", "<br>"));
             if (JOptionPane.showOptionDialog(frame, optionPaneLabel, "Guest Mode", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, guestPaneOptions, null) == JOptionPane.YES_OPTION) {
                 username = "Guest";
@@ -191,10 +185,14 @@ public class EazyFinderGUI {
         }
     }
 
-    // Variables used in Login and SignUp
+    // components used in Login and SignUp
     JLabel userLabel = new JLabel("Username:");
     JLabel passwordLabel = new JLabel("Password:");
     JLabel rePasswordLabel = new JLabel("Re-Type Password:");
+
+    // variables needed for sudo mode
+    boolean sudoModeAccepted = false;
+    String passwordTypedAt;
 
     class LoginUI implements ActionListener {
         JTextField userField;
@@ -305,15 +303,18 @@ public class EazyFinderGUI {
                         msg.setForeground(Color.RED);
                         msg.setText("Password Incorrect");
                     } else if (usernameFound && passwordFound) {
-                        if(JOptionPane.showConfirmDialog(frame, "Do you want to enter sudo mode?","Sudo Mode Confirmation",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                            ct.format(passwordTypedAt);
-                            passwordTypedAt.setTime(passwordTypedAt.getTime() + 10000/*1860000*/); // adding 31 min to ensure sudo mode
+                        optionPaneLabel.setText("Do you want to enter sudo mode?");
+                        optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Sudo Mode Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                        if (optionPaneResult == JOptionPane.YES_OPTION) {
+                            sudoModeAccepted = true;
+                            passwordTypedAt = setCurrentTime();
+                            showMessageDialogJOP(frame, "Sudo Mode is On. Password will be prompted only for every 1 minute", "Sudo Mode On", JOptionPane.INFORMATION_MESSAGE);
                         } else {
-                            getPPDetails();
-                            displayMenu();
+                            showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode Off", JOptionPane.INFORMATION_MESSAGE);
                         }
+
+                        getPPDetails();
+                        displayMenu();
                     }
                 }
 
@@ -737,6 +738,36 @@ public class EazyFinderGUI {
         }
     }
 
+    String setCurrentTime() {
+        String timeString = String.valueOf(LocalTime.now());
+        return timeString.substring(0, timeString.lastIndexOf("."));
+    }
+
+    boolean sudoMode() {
+        String currentTime;
+        long diffInMilliSeconds;
+        int diffInHours, diffInMinutes;
+        Date ct = new Date(), pta = new Date(); // ct -> current time, pta -> password typed at
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+        currentTime = setCurrentTime();
+        try {
+            ct = sdf.parse(currentTime);
+            pta = sdf.parse(passwordTypedAt);
+        } catch (Exception ignored) {
+        }
+
+        // sudo mode will be active only for 1 minute, change code accordingly
+        /* calculating differences between times ct and pta */
+        diffInMilliSeconds = ct.getTime() - pta.getTime();
+        diffInHours = (int) (diffInMilliSeconds / (60 * 60 * 1000));
+        if (diffInHours > 1) {
+            return true;
+        }
+        diffInMinutes = (int) (diffInMilliSeconds / (60 * 1000));
+        return diffInMinutes >= 1;
+    }
+
     class Verification implements ActionListener {
         String case_;
 
@@ -747,12 +778,6 @@ public class EazyFinderGUI {
         JFrame verificationFrame;
         JPasswordField verificationPasswordField;
 
-        // time related
-        Date currentTime = new Date();
-        long diffInMilliSeconds;
-        int diffInHours, diffInMinutes, diffInSeconds;
-        boolean sudoMode = false;
-
         // All Objects
         BookingUI bookingsObj = new BookingUI();
         EnquireUI enqObj = new EnquireUI();
@@ -760,67 +785,69 @@ public class EazyFinderGUI {
         PasswordChangeUI passwordChangeObj = new PasswordChangeUI();
         SwitchAccountsUI switchAccountsObj = new SwitchAccountsUI();
 
+        void showVerificationFrame() {
+            verificationFrame.setLayout(null);
+            verificationFrame.setVisible(true);
+            verificationFrame.setSize(300, 300);
+            verificationFrame.setLocationRelativeTo(frame);
+
+            JLabel verificationPasswordLabel = new JLabel("Enter Password:");
+            verificationPasswordField = new JPasswordField();
+            JCheckBox verificationCB = new JCheckBox("Show Password");
+            JButton verifyButton = new JButton("Verify");
+
+            verificationFrame.add(verificationPasswordLabel);
+            verificationFrame.add(verificationPasswordField);
+            verificationFrame.add(verificationCB);
+            verificationFrame.add(verifyButton);
+
+            verificationPasswordLabel.setBounds(40, 100, 120, 25);
+            verificationPasswordLabel.setFont(timesNewRoman);
+
+            verificationPasswordField.setBounds(160, 100, 100, 25);
+            verificationPasswordField.setFont(timesNewRoman);
+
+            verificationCB.setBounds(90, 130, 150, 20);
+            verificationCB.addActionListener(new ShowPasswordsCheckBox(verificationPasswordField));
+
+            verifyButton.setBounds(75, 170, 150, 25);
+            verifyButton.setBackground(Color.BLUE);
+            verifyButton.setForeground(Color.WHITE);
+            if (case_.equals("AccountDeletion")) {
+                verifyButton.setText("Delete Account");
+                verifyButton.setBackground(Color.RED);
+            }
+
+            verifyButton.addActionListener(new CheckingPassword());
+
+            verificationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
+
+        void callingCorrespondingFunction() {
+            if (!case_.equals("AccountDeletion")) verificationFrame.dispose();
+            else AccountDeletion(verificationFrame);
+
+            switch (case_) {
+                case "Booking" -> bookingsObj.bookingUI(0);
+                case "TH" -> TransactionHistory();
+                case "Enquiry" -> enqObj.enquireUI();
+                case "UpdateUsername" -> updateUsernameObj.updateUsernameUI();
+                case "PasswordChange" -> passwordChangeObj.passwordChangeUI();
+                case "SwitchAccounts" -> switchAccountsObj.switchAccountsUI();
+            }
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             verificationFrame = new JFrame("Verification");
-            ct.format(currentTime);
-            /* calculating differences between times passwordTypedAt and currentTime */
-            diffInMilliSeconds = Math.abs(currentTime.getTime() - passwordTypedAt.getTime());
-            diffInHours = (int) (diffInMilliSeconds / (60 * 60 * 1000));
-            if(diffInHours < 1) {
-                diffInMinutes = (int) (diffInMilliSeconds / (60 * 1000));
 
-                if(diffInMinutes < 1) {
-                    diffInSeconds = (int) (diffInMilliSeconds / 1000);
-                    if(diffInSeconds > 10){
-                        sudoMode = true;
-                    }
-                } else {
-                    sudoMode = true;
-                }
+            if (sudoModeAccepted) {
+                if (sudoMode()) showVerificationFrame();
+                else callingCorrespondingFunction();
             } else {
-                sudoMode = true;
+                showVerificationFrame();
             }
 
-            if (sudoMode) {
-                verificationFrame.setLayout(null);
-                verificationFrame.setVisible(true);
-                verificationFrame.setSize(300, 300);
-                verificationFrame.setLocationRelativeTo(frame);
-
-                JLabel verificationPasswordLabel = new JLabel("Enter Password:");
-                verificationPasswordField = new JPasswordField();
-                JCheckBox verificationCB = new JCheckBox("Show Password");
-                JButton verifyButton = new JButton("Verify");
-
-                verificationFrame.add(verificationPasswordLabel);
-                verificationFrame.add(verificationPasswordField);
-                verificationFrame.add(verificationCB);
-                verificationFrame.add(verifyButton);
-
-                verificationPasswordLabel.setBounds(40, 100, 120, 25);
-                verificationPasswordLabel.setFont(timesNewRoman);
-
-                verificationPasswordField.setBounds(160, 100, 100, 25);
-                verificationPasswordField.setFont(timesNewRoman);
-
-                verificationCB.setBounds(90, 130, 150, 20);
-                verificationCB.addActionListener(new ShowPasswordsCheckBox(verificationPasswordField));
-
-                verifyButton.setBounds(75, 170, 150, 25);
-                verifyButton.setBackground(Color.BLUE);
-                verifyButton.setForeground(Color.WHITE);
-                if (case_.equals("AccountDeletion")) {
-                    verifyButton.setText("Delete Account");
-                    verifyButton.setBackground(Color.RED);
-                }
-
-                verifyButton.addActionListener(new CheckingPassword());
-
-                verificationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            } else {
-                callingCorrespondingFunction();
-            }
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
@@ -843,23 +870,9 @@ public class EazyFinderGUI {
                     msg.setForeground(Color.RED);
                     msg.setText("Password Incorrect");
                 } else {
-                    ct.format(passwordTypedAt);
+                    passwordTypedAt = setCurrentTime();
                     callingCorrespondingFunction();
                 }
-            }
-        }
-
-        void callingCorrespondingFunction() {
-            if (!case_.equals("AccountDeletion")) verificationFrame.dispose();
-            else AccountDeletion(verificationFrame);
-
-            switch (case_) {
-                case "Booking" -> bookingsObj.bookingUI(0);
-                case "TH" -> TransactionHistory();
-                case "Enquiry" -> enqObj.enquireUI();
-                case "UpdateUsername" -> updateUsernameObj.updateUsernameUI();
-                case "PasswordChange" -> passwordChangeObj.passwordChangeUI();
-                case "SwitchAccounts" -> switchAccountsObj.switchAccountsUI();
             }
         }
     }
@@ -1948,29 +1961,30 @@ public class EazyFinderGUI {
 
 
     class UpdateUsernameUI {
+        JLabel newUsernameLabel = new JLabel("New Username:");
         JFrame updateUsernameFrame = new JFrame();
-        JTextField newUsernameText = new JTextField();
+        JTextField newUsernameField = new JTextField();
+        JButton changeUsernameButton;
 
         void updateUsernameUI() {
-            updateUsernameFrame.setSize(400, 400);
+            updateUsernameFrame.setSize(300, 300);
             updateUsernameFrame.setTitle("Update Username");
             updateUsernameFrame.setLocationRelativeTo(frame);
             updateUsernameFrame.setVisible(true);
             updateUsernameFrame.setLayout(null);
 
-            JLabel newUsernameLabel = new JLabel("New Username:");
-            JButton changeUsernameButton = new JButton("Change Username");
+            changeUsernameButton = new JButton("Change Username");
 
             updateUsernameFrame.add(newUsernameLabel);
-            updateUsernameFrame.add(newUsernameText);
+            updateUsernameFrame.add(newUsernameField);
             updateUsernameFrame.add(changeUsernameButton);
 
             newUsernameLabel.setBounds(90, 160, 120, 25);
             newUsernameLabel.setFont(timesNewRoman);
 
-            newUsernameText.setBounds(210, 160, 100, 25);
-            newUsernameText.setText("");
-            newUsernameText.setFont(timesNewRoman);
+            newUsernameField.setBounds(210, 160, 100, 25);
+            newUsernameField.setText("");
+            newUsernameField.setFont(timesNewRoman);
 
             changeUsernameButton.setBounds(100, 230, 200, 25);
             changeUsernameButton.setBackground(Color.RED);
@@ -1984,7 +1998,7 @@ public class EazyFinderGUI {
         class UpdateUsername implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newUsername = newUsernameText.getText();
+                String newUsername = newUsernameField.getText();
 
                 updateUsernameFrame.add(msg);
 

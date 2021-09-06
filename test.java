@@ -9,10 +9,23 @@ public class test {
         Date currentTime = new Date();
         SimpleDateFormat ct = new SimpleDateFormat("HH:mm:ss");
 
-        ct.format(passwordTypedAt.getTime());
-        passwordTypedAt.setTime(passwordTypedAt.getTime() + 1801000);
+        ct.format(passwordTypedAt);
         System.out.println(passwordTypedAt.getTime());
-        ct.format(currentTime.getTime());
+        try{
+            Thread.sleep(1000);
+        } catch (Exception ignored) {}
+        ct.format(currentTime);
         System.out.println(currentTime.getTime());
+
+        System.out.println();
+        String currentTime_ = String.valueOf(java.time.LocalTime.now());
+        int i = currentTime_.lastIndexOf(".");
+        System.out.println(currentTime_.substring(0, i));
+        try{
+            Thread.sleep(1000);
+        } catch (Exception ignored) {}
+        currentTime_ = String.valueOf(java.time.LocalTime.now());
+        i = currentTime_.lastIndexOf(".");
+        System.out.println(currentTime_.substring(0, i));
     }
 }
