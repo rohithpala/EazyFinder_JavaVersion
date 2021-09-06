@@ -14,7 +14,7 @@ public class UpdateUsernameMainCode {
         return encryptedPassword;
     }
 
-    public boolean updateUsername(String username, String newUsername, String password) {
+    public boolean updateUsername(String username, String newUsername, String password, long refID) {
         String str, dirname = System.getProperty("user.dir");
         StringBuilder credentials = new StringBuilder();
         File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
@@ -25,16 +25,18 @@ public class UpdateUsernameMainCode {
         File newENQ = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + newUsername + ".txt");
 
         try {
+            // reading db and loading correct details into "credentials"
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
                 if (!(username + "," + encryptPassword(password)).equals(str)) {
                     credentials.append(str).append("\n;");
                 } else {
-                    credentials.append(newUsername).append(",").append(encryptPassword(password)).append("\n;");
+                    credentials.append(newUsername).append(",").append(encryptPassword(password)).append(",").append(refID).append("\n;");
                 }
             }
             reader.close();
 
+            // writing details into db
             BufferedWriter writer = new BufferedWriter(new FileWriter(db));
             String[] s = String.valueOf(credentials).split(";");
             for (String s1 : s)
@@ -42,6 +44,7 @@ public class UpdateUsernameMainCode {
             writer.flush();
             writer.close();
 
+            // reading ud and loading correct details into "credentials"
             String[] details;
             reader = new BufferedReader(new FileReader(ud));
             credentials = new StringBuilder();
@@ -59,6 +62,7 @@ public class UpdateUsernameMainCode {
             }
             reader.close();
 
+            // writing details into ud
             writer = new BufferedWriter(new FileWriter(ud));
             s = String.valueOf(credentials).split(";");
             for (String s1 : s)

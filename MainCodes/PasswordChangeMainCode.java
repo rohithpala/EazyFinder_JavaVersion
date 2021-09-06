@@ -13,21 +13,23 @@ public class PasswordChangeMainCode {
         return encryptedPassword;
     }
 
-    public boolean passwordChange(String username, String oldPassword, String newPassword) {
+    public boolean passwordChange(String username, String oldPassword, String newPassword, long refID) {
         String str, dirname = System.getProperty("user.dir");
         StringBuilder credentials = new StringBuilder();
         File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
         try {
+            // initializing "credentials" with correct details
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
-                if (!(username + "," + encryptPassword(oldPassword)).equals(str)) {
+                if (!(username + "," + encryptPassword(oldPassword) + "," + refID).equals(str)) {
                     credentials.append(str).append("\n;");
                 } else {
-                    credentials.append(username).append(",").append(encryptPassword(newPassword)).append("\n;");
+                    credentials.append(username).append(",").append(encryptPassword(newPassword)).append(",").append(refID).append("\n;");
                 }
             }
             reader.close();
 
+            // adding new details to db
             BufferedWriter writer = new BufferedWriter(new FileWriter(db));
             String[] s = String.valueOf(credentials).split(";");
             for (String s1 : s)

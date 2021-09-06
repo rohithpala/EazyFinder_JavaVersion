@@ -17,6 +17,8 @@ import java.util.Scanner;
 
 /*
 TODO:
+1. add refID related things in MainCodes and wherever needed
+1.1. add forgot password option for every password field and prompt for refID
 2. caps lock warning while typing passwords
 3. look at problems with guest mode like account ...
 4. guest mode option (show option panes like "Guests cannot update their usernames or passwords or cannot switch accounts" after clicking the
@@ -35,6 +37,7 @@ public class EazyFinderGUI {
      */
     String dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
     String username, password, name, phoneNumber, emailID; // User Details
+    long refID;
     final File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
     final File userDetailsFile = new File(dirname + "\\Databases\\UserDetails.txt");
 
@@ -161,9 +164,22 @@ public class EazyFinderGUI {
         }
     }
 
+    long a;
+
+    void generateReferenceID() {
+        refID = 0;
+        a = 1;
+        short i, len = (short) username.length();
+        for (i = 0; i < len; i++) {
+            refID += ((int) username.charAt(i)) * a;
+            a *= 100;
+        }
+    }
+
     long encryptPassword(String password) {
-        long encryptedPassword = 0, a = 1;
+        long encryptedPassword = 0;
         short i, len = (short) password.length();
+        a = 1;
         for (i = 0; i < len; i++) {
             encryptedPassword += ((int) password.charAt(i)) * a;
             a *= 100;
@@ -270,7 +286,7 @@ public class EazyFinderGUI {
                     msg.setText("Please Fill all the Fields");
                 } else {
                     String str;
-                    String[] credentials;
+                    String[] credentials = new String[3];
                     boolean usernameFound = false, passwordFound = false;
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(db));
@@ -303,6 +319,7 @@ public class EazyFinderGUI {
                         msg.setForeground(Color.RED);
                         msg.setText("Password Incorrect");
                     } else if (usernameFound && passwordFound) {
+                        refID = Integer.parseInt(credentials[2]);
                         optionPaneLabel.setText("Do you want to enter sudo mode?");
                         optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Sudo Mode Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                         if (optionPaneResult == JOptionPane.YES_OPTION) {
@@ -706,10 +723,11 @@ public class EazyFinderGUI {
                     if (!emailID.matches(emailIDRegex)) emailErrorMessage.setText("Invalid Email Address");
                 } else {
                     try {
+                        generateReferenceID();
                         // Adding the new User Credentials into the database
                         BufferedWriter writer;
                         writer = new BufferedWriter(new FileWriter(db, true));
-                        writer.write(username + "," + encryptPassword(password) + "\n");
+                        writer.write(username + "," + encryptPassword(password) + "," + refID + "\n");
                         writer.flush();
                         writer.close();
 
@@ -727,6 +745,8 @@ public class EazyFinderGUI {
                         File en = new File(dirname + "\\Enquiries\\" + username + ".txt");
                         if (th.createNewFile() && en.createNewFile()) {
                             showMessageDialogJOP(frame, "Account Created Successfully", "SignUp Successful", JOptionPane.INFORMATION_MESSAGE);
+                            showMessageDialogJOP(frame, "<html>Your Reference ID is " + refID + "\nStore or Remember this as it will be helpful when you forget password</html>".replaceAll("\n", "<br>"),
+                                    "Reference ID", JOptionPane.INFORMATION_MESSAGE);
                             displayMenu();
                         }
                     } catch (Exception ex) {
@@ -777,7 +797,9 @@ public class EazyFinderGUI {
         }
 
         JFrame verificationFrame;
+        JLabel verificationPasswordLabel = new JLabel("Enter Password:");
         JPasswordField verificationPasswordField;
+        JLabel forgotPassword = new JLabel("Forgot Password?");
 
         // All Objects
         BookingUI bookingsObj = new BookingUI();
@@ -786,19 +808,33 @@ public class EazyFinderGUI {
         PasswordChangeUI passwordChangeObj = new PasswordChangeUI();
         SwitchAccountsUI switchAccountsObj = new SwitchAccountsUI();
 
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            verificationFrame = new JFrame("Verification");
+
+            if (sudoModeAccepted) {
+                if (sudoMode()) showVerificationFrame();
+                else callingCorrespondingFunction();
+            } else {
+                showVerificationFrame();
+            }
+
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+
         void showVerificationFrame() {
             verificationFrame.setLayout(null);
             verificationFrame.setVisible(true);
             verificationFrame.setSize(300, 300);
             verificationFrame.setLocationRelativeTo(frame);
 
-            JLabel verificationPasswordLabel = new JLabel("Enter Password:");
             verificationPasswordField = new JPasswordField();
             JCheckBox verificationCB = new JCheckBox("Show Password");
             JButton verifyButton = new JButton("Verify");
 
             verificationFrame.add(verificationPasswordLabel);
             verificationFrame.add(verificationPasswordField);
+            verificationFrame.add(forgotPassword);
             verificationFrame.add(verificationCB);
             verificationFrame.add(verifyButton);
 
@@ -808,10 +844,14 @@ public class EazyFinderGUI {
             verificationPasswordField.setBounds(160, 100, 100, 25);
             verificationPasswordField.setFont(timesNewRoman);
 
-            verificationCB.setBounds(90, 130, 150, 20);
+            forgotPassword.setBounds(75, 130, 150, 15);
+            forgotPassword.setFont(timesNewRoman);
+            forgotPassword.addMouseListener(new ForgotPassword());
+
+            verificationCB.setBounds(90, 150, 150, 20);
             verificationCB.addActionListener(new ShowPasswordsCheckBox(verificationPasswordField));
 
-            verifyButton.setBounds(75, 170, 150, 25);
+            verifyButton.setBounds(75, 190, 150, 25);
             verifyButton.setBackground(Color.BLUE);
             verifyButton.setForeground(Color.WHITE);
             if (case_.equals("AccountDeletion")) {
@@ -838,20 +878,6 @@ public class EazyFinderGUI {
             }
         }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            verificationFrame = new JFrame("Verification");
-
-            if (sudoModeAccepted) {
-                if (sudoMode()) showVerificationFrame();
-                else callingCorrespondingFunction();
-            } else {
-                showVerificationFrame();
-            }
-
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        }
-
         class CheckingPassword implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -860,7 +886,7 @@ public class EazyFinderGUI {
 
                 verificationFrame.add(msg);
 
-                msg.setBounds(0, 200, 300, 50);
+                msg.setBounds(0, 225, 300, 50);
                 msg.setFont(timesNewRoman);
                 msg.setHorizontalAlignment(0);
                 msg.setVerticalAlignment(0);
@@ -874,6 +900,35 @@ public class EazyFinderGUI {
                     passwordTypedAt = setCurrentTime();
                     callingCorrespondingFunction();
                 }
+            }
+        }
+
+        class ForgotPassword implements MouseListener {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String refIDString = JOptionPane.showInputDialog(verificationFrame, "Reference ID:");
+                if (String.valueOf(refID).equals(refIDString)) {
+                    callingCorrespondingFunction();
+                } else {
+                    showMessageDialogJOP(verificationFrame, "Reference ID is wrong", "Reference ID is wrong", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                forgotPassword.setText("<html><u>Forgot Password?</u></html>");
+                forgotPassword.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                forgotPassword.setText("Forgot Password?");
+            }
+
+            public void mousePressed(MouseEvent e) {
+            }
+
+            public void mouseReleased(MouseEvent e) {
             }
         }
     }
@@ -2075,7 +2130,7 @@ public class EazyFinderGUI {
                         } else {
                             msg.setText("");
                             if (areYouSureJOP(updateUsernameFrame) == JOptionPane.YES_OPTION) {
-                                if (new UpdateUsernameMainCode().updateUsername(username, newUsername, password)) {
+                                if (new UpdateUsernameMainCode().updateUsername(username, newUsername, password, refID)) {
                                     updateUsernameFrame.dispose();
 
                                     username = newUsername;
@@ -2179,7 +2234,7 @@ public class EazyFinderGUI {
                     msg.setText("Passwords doesn't match");
                 } else if (isPasswordAccepted(newPassword, passwordChangeFrame)) {
                     if (areYouSureJOP(passwordChangeFrame) == JOptionPane.YES_OPTION) {
-                        if (new PasswordChangeMainCode().passwordChange(username, password, newPassword)) {
+                        if (new PasswordChangeMainCode().passwordChange(username, password, newPassword, refID)) {
                             password = newPassword;
                             passwordChangeFrame.dispose();
                             showMessageDialogJOP(frame, "Password Changed Successfully", "Password Changed Successfully", JOptionPane.INFORMATION_MESSAGE);
@@ -2197,11 +2252,11 @@ public class EazyFinderGUI {
 
 
     void AccountDeletion(JFrame frame1) {
-        optionPaneLabel.setText("Are You Sure?\nAll Your Transactions, Enquiries will be lost\nThis is un-reversible".replaceAll("\n", "<br>"));
+        optionPaneLabel.setText("<html>Are You Sure?\nAll Your Transactions, Enquiries will be lost\nThis is irreversible</html>".replaceAll("\n", "<br>"));
         optionPaneResult = JOptionPane.showConfirmDialog(frame1, optionPaneLabel, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (optionPaneResult == JOptionPane.YES_OPTION) {
             frame1.dispose();
-            boolean deleted = new AccountDeletionMainCode().accountDeletion(username, password);
+            boolean deleted = new AccountDeletionMainCode().accountDeletion(username, password, refID);
             if (deleted) {
                 Homepage();
                 showMessageDialogJOP(frame, "<html>Account Deleted Successfully\nWe are Sorry to see you go</html>".replaceAll("\n", "<br>"),

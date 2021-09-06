@@ -14,28 +14,31 @@ public class AccountDeletionMainCode {
         return encryptedPassword;
     }
 
-    public boolean accountDeletion(String username, String password) {
+    public boolean accountDeletion(String username, String password, long refID) {
         String str, dirname = System.getProperty("user.dir");
         StringBuilder credentials = new StringBuilder();
         File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
         File ud = new File(dirname + "\\EazyFinderGUI\\Databases\\UserDetails.txt");
 
         try {
+            // removing user's data in db
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
-                if (!(username + "," + encryptPassword(password)).equals(str)) {
-                    credentials.append(str).append("\n,");
+                if (!(username + "," + encryptPassword(password) + "," + refID).equals(str)) {
+                    credentials.append(str).append("\n;");
                 }
             }
             reader.close();
 
+            // writing user's data to db
             BufferedWriter writer = new BufferedWriter(new FileWriter(db));
-            String[] s = String.valueOf(credentials).split(",");
+            String[] s = String.valueOf(credentials).split(";");
             for (String s1 : s)
                 writer.write(s1);
             writer.flush();
             writer.close();
 
+            // removing user's data in ud
             reader = new BufferedReader(new FileReader(ud));
             while ((str = reader.readLine()) != null) {
                 if (!username.equals(str.split(",")[0])) {
@@ -44,6 +47,7 @@ public class AccountDeletionMainCode {
             }
             reader.close();
 
+            // writing user's data to ud
             writer = new BufferedWriter(new FileWriter(ud));
             s = String.valueOf(credentials).split(";");
             for (String s1 : s)
