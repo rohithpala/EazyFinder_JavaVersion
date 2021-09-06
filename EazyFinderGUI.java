@@ -1079,15 +1079,11 @@ public class EazyFinderGUI {
                 });
 
                 // https://stackoverflow.com/questions/27379059/determine-if-two-files-store-the-same-content
-//                deletePhotoButton.setBackground(Color.RED);
-//                deletePhotoButton.setEnabled(true);
                 deletePhotoButton.setBounds(500, 250, 120, 25);
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
                 deletePhotoButton.addActionListener(ae -> {
-                    /*if (profilePicturePath.equals(dirname + "\\Images\\defaultPP.png")) {
-                        showMessageDialogJOP(frame, "Profile Picture Already Deleted", "Profile Picture Already Deleted", JOptionPane.ERROR_MESSAGE);
-                    } else */
+                    // TODO Check if the PP is already deleted here
                     if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
                         profilePicturePath = dirname + "\\Images\\defaultPP.png";
                         profilePicture = new ImageIcon(dirname + "\\Images\\defaultPP.png");
@@ -1102,8 +1098,6 @@ public class EazyFinderGUI {
                         // save the profile picture
                         savePP();
                         showMessageDialogJOP(frame, "Deleted Profile Picture Successfully", "Profile Picture Deleted", JOptionPane.INFORMATION_MESSAGE);
-//                        deletePhotoButton.setBackground(Color.DARK_GRAY);
-//                        deletePhotoButton.setEnabled(false);
                     }
                 });
 
@@ -1111,11 +1105,10 @@ public class EazyFinderGUI {
                 usernameLabel.setFont(timesNewRoman);
                 usernameLabel.setHorizontalAlignment(0);
 
+                // show password by taking reference no. as input
                 passwordLabel.setBounds(0, 390, frameSize, 25);
                 passwordLabel.setFont(timesNewRoman);
                 passwordLabel.setHorizontalAlignment(0);
-
-                // show password by taking reference no. as input
 
                 // No. of Transactions
                 int noOfTransactions = 0;
@@ -1153,6 +1146,8 @@ public class EazyFinderGUI {
                 JButton deleteEnqButton = new JButton("Delete all the Enquiries");
                 JButton deleteAccountData = new JButton("Delete all my account Data");
                 JButton deleteAccount = new JButton("Delete My Account");
+                JLabel sudoModeLabel = new JLabel("Sudo Mode");
+                JToggleButton sudoModeTB = new JToggleButton();
                 JButton logoutButton = new JButton("Logout");
 
                 frame.add(backButton);
@@ -1161,6 +1156,8 @@ public class EazyFinderGUI {
                 frame.add(deleteEnqButton);
                 frame.add(deleteAccountData);
                 frame.add(deleteAccount);
+                frame.add(sudoModeLabel);
+                frame.add(sudoModeTB);
                 frame.add(logoutButton);
 
                 backButton.setBounds(0, 0, 80, 30);
@@ -1238,6 +1235,35 @@ public class EazyFinderGUI {
                 deleteAccount.setBackground(Color.RED);
                 deleteAccount.setFont(timesNewRoman);
                 deleteAccount.addActionListener(new Verification("AccountDeletion"));
+
+                sudoModeLabel.setBounds(250, 245, 100, 25);
+                sudoModeLabel.setFont(timesNewRoman);
+
+                // TODO check this
+                if(sudoMode()) sudoModeTB.setText("OFF");
+                else sudoModeTB.setText("ON");
+                sudoModeTB.setBounds(350, 245, 100, 25);
+                sudoModeTB.setForeground(Color.WHITE);
+                sudoModeTB.setBackground(Color.DARK_GRAY);
+                sudoModeTB.addItemListener(ae -> {
+                    if(sudoMode()) {
+                        if (sudoModeTB.isSelected()) {
+                            sudoModeTB.setText("OFF");
+                            sudoModeAccepted = true;
+                        } else {
+                            sudoModeTB.setText("ON");
+                            sudoModeAccepted = false;
+                        }
+                    } else {
+                        if (sudoModeTB.isSelected()) {
+                            sudoModeTB.setText("ON");
+                            sudoModeAccepted = false;
+                        } else {
+                            sudoModeTB.setText("OFF");
+                            sudoModeAccepted = true;
+                        }
+                    }
+                });
 
                 logoutButton.setBounds(586, 0, 100, 30);
                 logoutButton.setBackground(Color.RED);
@@ -1979,14 +2005,14 @@ public class EazyFinderGUI {
             updateUsernameFrame.add(newUsernameField);
             updateUsernameFrame.add(changeUsernameButton);
 
-            newUsernameLabel.setBounds(90, 160, 120, 25);
+            newUsernameLabel.setBounds(40, 90, 120, 25);
             newUsernameLabel.setFont(timesNewRoman);
 
-            newUsernameField.setBounds(210, 160, 100, 25);
+            newUsernameField.setBounds(160, 90, 100, 25);
             newUsernameField.setText("");
             newUsernameField.setFont(timesNewRoman);
 
-            changeUsernameButton.setBounds(100, 230, 200, 25);
+            changeUsernameButton.setBounds(60, 130, 180, 25);
             changeUsernameButton.setBackground(Color.RED);
             changeUsernameButton.setForeground(Color.WHITE);
             changeUsernameButton.setFont(timesNewRoman);
@@ -1999,10 +2025,12 @@ public class EazyFinderGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String newUsername = newUsernameField.getText();
+                msg = new JLabel();
 
                 updateUsernameFrame.add(msg);
 
-                msg.setBounds(0, 300, 400, 25);
+                msg.setBounds(0, 180, 300, 25);
+                msg.setFont(timesNewRoman);
                 msg.setHorizontalAlignment(0);
 
                 if (newUsername.equals("")) {
