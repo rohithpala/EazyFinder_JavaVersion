@@ -27,6 +27,7 @@ button. Give options like "Look at UI" and show the UI)
 6. give ref no. while signup and store them in the file for verification
 7. add clear form option and also cross symbol in text fields
 9. add sorting option based on filters wherever possible
+10. save the previous frame state while redirection
 */
 
 public class EazyFinderGUI {
@@ -476,19 +477,19 @@ public class EazyFinderGUI {
             File destinationFile = new File(dirname + "\\ProfilePictures\\" + username + profilePictureExtension);
 
             File ppDir = new File(dirname + "\\ProfilePictures");
-            int i;
             String fileName;
             for (File file : Objects.requireNonNull(ppDir.listFiles())) {
                 fileName = file.getName();
-                i = fileName.lastIndexOf(".");
-                if (username.equals(fileName.substring(0, i))) {
+                if (username.equals(fileName.substring(0, fileName.lastIndexOf(".")))) {
                     fileDeleted = file.delete();
                     break;
                 }
             }
 
-            if (fileDeleted && destinationFile.createNewFile())
+            if (fileDeleted && destinationFile.createNewFile()) {
+                System.out.println("IN");
                 Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destinationFile));
+            }
         } catch (IOException ignored) {
         }
     }
@@ -759,17 +760,25 @@ public class EazyFinderGUI {
         }
     }
 
+    // sets the current time to a String object
     String setCurrentTime() {
         String timeString = String.valueOf(LocalTime.now());
         return timeString.substring(0, timeString.lastIndexOf("."));
     }
 
+    /**
+     * sudoMode() method checks if the prescribed time of sudo mode is already over or not by
+     * checking the difference b/w hours, minutes, seconds of the current time and the last time
+     * at which the password was typed.
+     *
+     * Return true if the sudo mode is over, false otherwise
+     * */
+    Date ct = new Date(), pta = new Date(); // ct -> current time, pta -> password typed at
+    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     boolean sudoMode() {
         String currentTime;
         long diffInMilliSeconds;
         int diffInHours, diffInMinutes;
-        Date ct = new Date(), pta = new Date(); // ct -> current time, pta -> password typed at
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
         currentTime = setCurrentTime();
         try {
@@ -790,10 +799,10 @@ public class EazyFinderGUI {
     }
 
     class Verification implements ActionListener {
-        String case_;
+        String calledBy;
 
-        Verification(String case_) {
-            this.case_ = case_;
+        Verification(String calledBy) {
+            this.calledBy = calledBy;
         }
 
         JFrame verificationFrame;
@@ -846,7 +855,7 @@ public class EazyFinderGUI {
 
             forgotPassword.setBounds(75, 130, 150, 15);
             forgotPassword.setFont(timesNewRoman);
-            forgotPassword.addMouseListener(new ForgotPassword());
+            forgotPassword.addMouseListener(new ForgotPassword(verificationFrame, forgotPassword, "verification"));
 
             verificationCB.setBounds(90, 150, 150, 20);
             verificationCB.addActionListener(new ShowPasswordsCheckBox(verificationPasswordField));
@@ -854,7 +863,7 @@ public class EazyFinderGUI {
             verifyButton.setBounds(75, 190, 150, 25);
             verifyButton.setBackground(Color.BLUE);
             verifyButton.setForeground(Color.WHITE);
-            if (case_.equals("AccountDeletion")) {
+            if (calledBy.equals("AccountDeletion")) {
                 verifyButton.setText("Delete Account");
                 verifyButton.setBackground(Color.RED);
             }
@@ -864,11 +873,49 @@ public class EazyFinderGUI {
             verificationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
 
+        class ForgotPassword implements MouseListener {
+            JLabel forgotPassword;
+            JFrame jFrame;
+            String calledBy;
+            ForgotPassword(JFrame jFrame, JLabel forgotPassword, String calledBy){
+                this.jFrame = jFrame;
+                this.forgotPassword = forgotPassword;
+                this.calledBy = calledBy;
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String refIDString = JOptionPane.showInputDialog(jFrame, "Reference ID:");
+                if (String.valueOf(refID).equals(refIDString)) {
+                    callingCorrespondingFunction();
+                } else {
+                    showMessageDialogJOP(jFrame, "Reference ID is wrong", "Reference ID is wrong", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                forgotPassword.setText("<html><u>Forgot Password?</u></html>");
+                forgotPassword.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                forgotPassword.setText("Forgot Password?");
+            }
+
+            public void mousePressed(MouseEvent e) {
+            }
+
+            public void mouseReleased(MouseEvent e) {
+            }
+        }
+
         void callingCorrespondingFunction() {
-            if (!case_.equals("AccountDeletion")) verificationFrame.dispose();
+            if (!calledBy.equals("AccountDeletion")) verificationFrame.dispose();
             else AccountDeletion(verificationFrame);
 
-            switch (case_) {
+            switch (calledBy) {
                 case "Booking" -> bookingsObj.bookingUI(0);
                 case "TH" -> TransactionHistory();
                 case "Enquiry" -> enqObj.enquireUI();
@@ -900,35 +947,6 @@ public class EazyFinderGUI {
                     passwordTypedAt = setCurrentTime();
                     callingCorrespondingFunction();
                 }
-            }
-        }
-
-        class ForgotPassword implements MouseListener {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                String refIDString = JOptionPane.showInputDialog(verificationFrame, "Reference ID:");
-                if (String.valueOf(refID).equals(refIDString)) {
-                    callingCorrespondingFunction();
-                } else {
-                    showMessageDialogJOP(verificationFrame, "Reference ID is wrong", "Reference ID is wrong", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                forgotPassword.setText("<html><u>Forgot Password?</u></html>");
-                forgotPassword.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                forgotPassword.setText("Forgot Password?");
-            }
-
-            public void mousePressed(MouseEvent e) {
-            }
-
-            public void mouseReleased(MouseEvent e) {
             }
         }
     }
@@ -1151,6 +1169,7 @@ public class EazyFinderGUI {
                         profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
                         profilePictureInAccount.setBounds((frameSize - wh[0]) / 2, ((250 - wh[1]) / 2) + 55, wh[0], wh[1]);
 
+                        // TODO problem with savePP or something. Second time the save PP is not working
                         // save the profile picture
                         savePP();
                         showMessageDialogJOP(frame, "Deleted Profile Picture Successfully", "Profile Picture Deleted", JOptionPane.INFORMATION_MESSAGE);
