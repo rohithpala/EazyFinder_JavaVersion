@@ -1219,7 +1219,7 @@ public class EazyFinderGUI {
                 passwordButton.setFont(timesNewRoman);
                 passwordButton.setHorizontalAlignment(0);
                 passwordButton.addActionListener(ae -> {
-                    if(passwordButton.getText().equals("Show Password")) {
+                    if (passwordButton.getText().equals("Show Password")) {
                         String refIDString = JOptionPane.showInputDialog(frame, "Enter Reference ID:");
                         if (String.valueOf(refID).equals(refIDString)) {
                             passwordLabel.setText("Password: " + password);
@@ -1243,7 +1243,8 @@ public class EazyFinderGUI {
                         scanner.nextLine();
                         noOfEnquiries++;
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
 
                 noOfEnquiriesLabel.setBounds(75, 430, 350, 25);
                 noOfEnquiriesLabel.setText("Number of Enquiries made: " + noOfEnquiries);
