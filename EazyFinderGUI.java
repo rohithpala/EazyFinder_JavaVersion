@@ -906,20 +906,6 @@ public class EazyFinderGUI {
             }
         }
 
-        void callingCorrespondingFunction() {
-            if (!calledBy.equals("AccountDeletion")) verificationFrame.dispose();
-            else AccountDeletion(verificationFrame);
-
-            switch (calledBy) {
-                case "Booking" -> bookingsObj.bookingUI(0);
-                case "TH" -> TransactionHistory();
-                case "Enquiry" -> enqObj.enquireUI();
-                case "UpdateUsername" -> updateUsernameObj.updateUsernameUI();
-                case "PasswordChange" -> passwordChangeObj.passwordChangeUI();
-                case "SwitchAccounts" -> switchAccountsObj.switchAccountsUI();
-            }
-        }
-
         class CheckingPassword implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -942,6 +928,20 @@ public class EazyFinderGUI {
                     passwordTypedAt = setCurrentTime();
                     callingCorrespondingFunction();
                 }
+            }
+        }
+
+        void callingCorrespondingFunction() {
+            if (!calledBy.equals("AccountDeletion")) verificationFrame.dispose();
+            else AccountDeletion(verificationFrame);
+
+            switch (calledBy) {
+                case "Booking" -> bookingsObj.bookingUI(0);
+                case "TH" -> TransactionHistory();
+                case "Enquiry" -> enqObj.enquireUI();
+                case "UpdateUsername" -> updateUsernameObj.updateUsernameUI();
+                case "PasswordChange" -> passwordChangeObj.passwordChangeUI();
+                case "SwitchAccounts" -> switchAccountsObj.switchAccountsUI();
             }
         }
     }
@@ -1060,12 +1060,14 @@ public class EazyFinderGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    boolean[] alreadyDeleted = {false};
-    boolean same;
     class Settings implements ActionListener {
         // Components needed for Account Page
         JLabel accountLabel = new JLabel("Account");
         final Font headingFont = new Font("Times New Roman", Font.BOLD, 25);
+        boolean[] alreadyDeleted = {false};
+
+        // Settings
+        JToggleButton sudoModeTB = new JToggleButton();
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -1081,9 +1083,13 @@ public class EazyFinderGUI {
                 JButton deletePhotoButton = new JButton("Delete Photo");
                 JButton logoutButton = new JButton("Logout");
                 JLabel usernameLabel = new JLabel("Username: " + username);
-                JLabel passwordLabel = new JLabel("Password: " + password);
+                JButton updateUsernameButton = new JButton("Update Username");
+                JLabel passwordLabel = new JLabel("Password: ********");
+                JButton passwordButton = new JButton("Show Password");
                 JLabel noOfTransactionsLabel = new JLabel();
                 JButton goToTHButton = new JButton("Go to Transactions Page");
+                JLabel noOfEnquiriesLabel = new JLabel();
+                JButton goToENQButton = new JButton("Go to Enquiries Page");
                 JLabel profilePictureInAccount = new JLabel();
 
                 frame.add(backButton);
@@ -1093,9 +1099,13 @@ public class EazyFinderGUI {
                 frame.add(changePhotoButton);
                 frame.add(deletePhotoButton);
                 frame.add(usernameLabel);
+                frame.add(updateUsernameButton);
                 frame.add(passwordLabel);
+                frame.add(passwordButton);
                 frame.add(noOfTransactionsLabel);
                 frame.add(goToTHButton);
+                frame.add(noOfEnquiriesLabel);
+                frame.add(goToENQButton);
                 frame.add(logoutButton);
 
                 backButton.setBounds(0, 0, 80, 30);
@@ -1146,6 +1156,7 @@ public class EazyFinderGUI {
 
                         // save the profile picture
                         savePP();
+                        alreadyDeleted[0] = false;
                     }
                 });
 
@@ -1155,34 +1166,22 @@ public class EazyFinderGUI {
                 deletePhotoButton.setBackground(Color.RED);
                 deletePhotoButton.addActionListener(ae -> {
                     // checking if the PP is already deleted TODO check this a small problem
-                    same = false;
-                    if(!alreadyDeleted[0]) {
-                        File file1 = new File(dirname + "\\Images\\defaultPP.png");
-                        File file2 = new File(profilePicturePath);
-                        if (file1.length() != file2.length()) {
-                            same = false;
-                        } else {
-                            try {
-                                BufferedReader reader1 = new BufferedReader(new FileReader(file1));
-                                BufferedReader reader2 = new BufferedReader(new FileReader(file2));
-                                String str;
-                                StringBuilder buf1 = new StringBuilder();
-                                StringBuilder buf2 = new StringBuilder();
-                                while ((str = reader1.readLine()) != null) buf1.append(str);
-                                while ((str = reader2.readLine()) != null) buf2.append(str);
-                                same = String.valueOf(buf1).equals(String.valueOf(buf2));
-                                reader1.close();
-                                reader2.close();
-                                alreadyDeleted[0] = true;
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
+                    try {
+                        BufferedReader reader1 = new BufferedReader(new FileReader(dirname + "\\Images\\defaultPP.png"));
+                        BufferedReader reader2 = new BufferedReader(new FileReader(dirname + "\\ProfilePictures\\" + username + profilePictureExtension));
+                        String str;
+                        StringBuilder buf1 = new StringBuilder(), buf2 = new StringBuilder();
+                        while ((str = reader1.readLine()) != null) buf1.append(str);
+                        while ((str = reader2.readLine()) != null) buf2.append(str);
+                        alreadyDeleted[0] = String.valueOf(buf1).equals(String.valueOf(buf2));
+                        reader1.close();
+                        reader2.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
-                    if (alreadyDeleted[0] && same) {
+                    if (alreadyDeleted[0]) {
                         showMessageDialogJOP(frame, "The Profile Picture is already Deleted", "Profile Picture Already Deleted", JOptionPane.PLAIN_MESSAGE);
-                        alreadyDeleted[0] = true;
                     } else if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
                         profilePicturePath = dirname + "\\Images\\defaultPP.png";
                         profilePicture = new ImageIcon(dirname + "\\Images\\defaultPP.png");
@@ -1194,28 +1193,73 @@ public class EazyFinderGUI {
                         profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
                         profilePictureInAccount.setBounds((frameSize - wh[0]) / 2, ((250 - wh[1]) / 2) + 55, wh[0], wh[1]);
 
-                        // TODO problem with savePP or something. Second time the save PP is not working
                         // save the profile picture
                         savePP();
                         showMessageDialogJOP(frame, "Deleted Profile Picture Successfully", "Profile Picture Deleted", JOptionPane.INFORMATION_MESSAGE);
-                        alreadyDeleted[0] = false;
+                        alreadyDeleted[0] = true;
                     }
                 });
 
-                usernameLabel.setBounds(0, 350, frameSize, 25);
+                usernameLabel.setBounds(75, 350, 350, 25);
                 usernameLabel.setFont(timesNewRoman);
-                usernameLabel.setHorizontalAlignment(0);
 
-                // show password by taking reference no. as input
-                passwordLabel.setBounds(0, 390, frameSize, 25);
+                updateUsernameButton.setBounds(400, 350, 200, 25);
+                updateUsernameButton.setForeground(Color.WHITE);
+                updateUsernameButton.setBackground(Color.BLUE);
+                updateUsernameButton.setFont(timesNewRoman);
+                updateUsernameButton.setHorizontalAlignment(0);
+                updateUsernameButton.addActionListener(new Verification("UpdateUsername"));
+
+                passwordLabel.setBounds(75, 390, 350, 25);
                 passwordLabel.setFont(timesNewRoman);
-                passwordLabel.setHorizontalAlignment(0);
 
-                // No. of Transactions
+                passwordButton.setBounds(400, 390, 200, 25);
+                passwordButton.setForeground(Color.WHITE);
+                passwordButton.setBackground(Color.RED);
+                passwordButton.setFont(timesNewRoman);
+                passwordButton.setHorizontalAlignment(0);
+                passwordButton.addActionListener(ae -> {
+                    if(passwordButton.getText().equals("Show Password")) {
+                        String refIDString = JOptionPane.showInputDialog(frame, "Enter Reference ID:");
+                        if (String.valueOf(refID).equals(refIDString)) {
+                            passwordLabel.setText("Password: " + password);
+                            passwordButton.setText("Hide Password");
+                            passwordButton.setBackground(Color.BLUE);
+                        } else {
+                            showMessageDialogJOP(frame, "Reference ID is incorrect", "Reference ID is incorrect", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        passwordLabel.setText("Password: ********");
+                        passwordButton.setText("Show Password");
+                        passwordButton.setBackground(Color.RED);
+                    }
+                });
+
+                // Calculating no. of enquiries made
+                int noOfEnquiries = 0;
+                try {
+                    Scanner scanner = new Scanner(new File(dirname + "\\Enquiries\\" + username + ".txt"));
+                    while (scanner.hasNextLine()) {
+                        scanner.nextLine();
+                        noOfEnquiries++;
+                    }
+                } catch (Exception ignored) {}
+
+                noOfEnquiriesLabel.setBounds(75, 430, 350, 25);
+                noOfEnquiriesLabel.setText("Number of Enquiries made: " + noOfEnquiries);
+                noOfEnquiriesLabel.setFont(timesNewRoman);
+
+                goToENQButton.setBounds(400, 430, 200, 25);
+                goToENQButton.setForeground(Color.WHITE);
+                goToENQButton.setBackground(Color.BLUE);
+                goToENQButton.setFont(timesNewRoman);
+                goToENQButton.setHorizontalAlignment(0);
+                goToENQButton.addActionListener(new Verification("Enquiry"));
+
+                // Calculating no. of transactions made
                 int noOfTransactions = 0;
                 try {
-                    File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
-                    Scanner scanner = new Scanner(th);
+                    Scanner scanner = new Scanner(new File(dirname + "\\TransactionHistories\\" + username + ".txt"));
                     while (scanner.hasNextLine()) {
                         scanner.nextLine();
                         noOfTransactions++;
@@ -1223,12 +1267,11 @@ public class EazyFinderGUI {
                 } catch (Exception ignored) {
                 }
 
-                noOfTransactionsLabel.setBounds(0, 440, 500, 25);
+                noOfTransactionsLabel.setBounds(75, 470, 350, 25);
                 noOfTransactionsLabel.setText("Number of Transactions made: " + noOfTransactions);
                 noOfTransactionsLabel.setFont(timesNewRoman);
-                noOfTransactionsLabel.setHorizontalAlignment(0);
 
-                goToTHButton.setBounds(400, 440, 200, 25);
+                goToTHButton.setBounds(400, 470, 200, 25);
                 goToTHButton.setForeground(Color.WHITE);
                 goToTHButton.setBackground(Color.BLUE);
                 goToTHButton.setFont(timesNewRoman);
@@ -1248,7 +1291,6 @@ public class EazyFinderGUI {
                 JButton deleteAccountData = new JButton("Delete all my account Data");
                 JButton deleteAccount = new JButton("Delete My Account");
                 JLabel sudoModeLabel = new JLabel("Sudo Mode");
-                JToggleButton sudoModeTB = new JToggleButton();
                 JButton logoutButton = new JButton("Logout");
 
                 frame.add(backButton);
@@ -2183,8 +2225,6 @@ public class EazyFinderGUI {
                                     usernameLabel.setText("Username: " + username);
 
                                     showMessageDialogJOP(frame, "Username Changed Successfully", "Successful", JOptionPane.INFORMATION_MESSAGE);
-
-                                    displayMenu();
                                 } else {
                                     showMessageDialogJOP(updateUsernameFrame, "Error Occurred. Username Didn't Change", "Error", JOptionPane.ERROR_MESSAGE);
                                 }

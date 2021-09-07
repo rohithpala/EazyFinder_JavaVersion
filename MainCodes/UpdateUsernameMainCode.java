@@ -15,20 +15,20 @@ public class UpdateUsernameMainCode {
     }
 
     public boolean updateUsername(String username, String newUsername, String password, long refID) {
-        String str, dirname = System.getProperty("user.dir");
+        String str, dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
         StringBuilder credentials = new StringBuilder();
-        File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
-        File ud = new File(dirname + "\\EazyFinderGUI\\Databases\\UserDetails.txt");
-        File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
-        File enq = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt");
-        File newTH = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + newUsername + ".txt");
-        File newENQ = new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + newUsername + ".txt");
+        File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
+        File ud = new File(dirname + "\\Databases\\UserDetails.txt");
+        File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
+        File newTH = new File(dirname + "\\TransactionHistories\\" + newUsername + ".txt");
+        File enq = new File(dirname + "\\Enquiries\\" + username + ".txt");
+        File newENQ = new File(dirname + "\\Enquiries\\" + newUsername + ".txt");
 
         try {
             // reading db and loading correct details into "credentials"
             BufferedReader reader = new BufferedReader(new FileReader(db));
             while ((str = reader.readLine()) != null) {
-                if (!(username + "," + encryptPassword(password)).equals(str)) {
+                if (!(username + "," + encryptPassword(password) + "," + refID).equals(str)) {
                     credentials.append(str).append("\n;");
                 } else {
                     credentials.append(newUsername).append(",").append(encryptPassword(password)).append(",").append(refID).append("\n;");
@@ -71,16 +71,15 @@ public class UpdateUsernameMainCode {
             writer.close();
 
             // Updating Profile Picture Name
-            File ppDir = new File(dirname + "\\EazyFinderGUI\\ProfilePictures");
-            String fileName, temp;
+            File ppDir = new File(dirname + "\\ProfilePictures");
+            String fileName;
             boolean ppUpdated;
             int i;
             for(File file : Objects.requireNonNull(ppDir.listFiles())){
                 fileName = file.getName();
                 i = fileName.lastIndexOf(".");
-                temp = fileName.substring(0, i);
-                if(username.equals(temp)){
-                    ppUpdated = file.renameTo(new File(dirname + "\\EazyFinderGUI\\ProfilePictures\\" + newUsername + fileName.substring(i)));
+                if(username.equals(fileName.substring(0, i))){
+                    ppUpdated = file.renameTo(new File(dirname + "\\ProfilePictures\\" + newUsername + fileName.substring(i)));
                     return th.renameTo(newTH) && enq.renameTo(newENQ) && ppUpdated;
                 }
             }
