@@ -50,6 +50,7 @@ public class EazyFinderGUI {
     JLabel msg; // Used to print corresponding messages
 
     final Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15); // font equipped by every component
+    final Font forgotPasswordFont = new Font("Times New Roman", Font.BOLD, 10); // font equipped by forgot password label
 
     JLabel optionPaneLabel = new JLabel(); // label added into JOptionPanes to show corresponding messages
     int optionPaneResult; // used for storing option pane results
@@ -325,7 +326,7 @@ public class EazyFinderGUI {
                         if (optionPaneResult == JOptionPane.YES_OPTION) {
                             sudoModeAccepted = true;
                             passwordTypedAt = setCurrentTime();
-                            showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for every 1 minute</html>".replaceAll("\n", "<br>"),
+                            showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for\n1 minute of Interval</html>".replaceAll("\n", "<br>"),
                                     "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode Off", JOptionPane.INFORMATION_MESSAGE);
@@ -769,7 +770,7 @@ public class EazyFinderGUI {
     Date ct = new Date(), pta = new Date(); // ct -> current time, pta -> password typed at
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-    boolean sudoMode() {
+    boolean isSudoModeTimeOver() {
         String currentTime;
         long diffInMilliSeconds;
         int diffInHours, diffInMinutes;
@@ -802,7 +803,7 @@ public class EazyFinderGUI {
         JFrame verificationFrame;
         JLabel verificationPasswordLabel = new JLabel("Enter Password:");
         JPasswordField verificationPasswordField;
-        JLabel forgotPassword = new JLabel("Forgot Password?");
+        JLabel forgotPassword = new JLabel("<html><u>Forgot Password?</u></html>");
 
         // All Objects
         BookingUI bookingsObj = new BookingUI();
@@ -816,7 +817,7 @@ public class EazyFinderGUI {
             verificationFrame = new JFrame("Verification");
 
             if (sudoModeAccepted) {
-                if (sudoMode()) showVerificationFrame();
+                if (isSudoModeTimeOver()) showVerificationFrame();
                 else callingCorrespondingFunction();
             } else {
                 showVerificationFrame();
@@ -847,11 +848,14 @@ public class EazyFinderGUI {
             verificationPasswordField.setBounds(160, 100, 100, 25);
             verificationPasswordField.setFont(timesNewRoman);
 
-            forgotPassword.setBounds(75, 130, 150, 15);
-            forgotPassword.setFont(timesNewRoman);
+            forgotPassword.setBounds(110, 130, 80, 10);
+            forgotPassword.setFont(forgotPasswordFont);
+            forgotPassword.setForeground(Color.RED);
+            forgotPassword.setHorizontalAlignment(0);
             forgotPassword.addMouseListener(new ForgotPassword(verificationFrame, forgotPassword, "verification"));
 
             verificationCB.setBounds(90, 150, 150, 20);
+            verificationCB.setFont(timesNewRoman);
             verificationCB.addActionListener(new ShowPasswordsCheckBox(verificationPasswordField));
 
             verifyButton.setBounds(75, 190, 150, 25);
@@ -890,13 +894,12 @@ public class EazyFinderGUI {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                forgotPassword.setText("<html><u>Forgot Password?</u></html>");
                 forgotPassword.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                forgotPassword.setText("Forgot Password?");
+
             }
 
             public void mousePressed(MouseEvent e) {
@@ -954,7 +957,7 @@ public class EazyFinderGUI {
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\Images\\finder.png"));
 
     String[] settingsMenu = {"Menu", "Account", "Settings"};
-    JComboBox<String> settings = new JComboBox<>(settingsMenu);
+    JComboBox<String> settingsJCB = new JComboBox<>(settingsMenu);
 
     // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
     void displayMenu() {
@@ -973,7 +976,7 @@ public class EazyFinderGUI {
         JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
         JButton logoutButton = new JButton("Logout");
 
-        frame.add(settings);
+        frame.add(settingsJCB);
         frame.add(usernameLabel);
         frame.add(finderImage);
         frame.add(menuBookingButton);
@@ -985,10 +988,10 @@ public class EazyFinderGUI {
         frame.add(menuSwitchAccountsButton);
         frame.add(logoutButton);
 
-        settings.setBounds(550, 30, 100, 25);
-        settings.setSelectedItem("Menu");
-        settings.setFont(timesNewRoman);
-        settings.addActionListener(new Settings());
+        settingsJCB.setBounds(550, 30, 100, 25);
+        settingsJCB.setSelectedItem("Menu");
+        settingsJCB.setFont(timesNewRoman);
+        settingsJCB.addActionListener(new Settings());
 
         usernameLabel.setText("Username: " + username);
         usernameLabel.setBounds(0, 0, frameSize, 25);
@@ -1067,16 +1070,16 @@ public class EazyFinderGUI {
         boolean[] alreadyDeleted = {false};
 
         // Settings
-        JToggleButton sudoModeTB = new JToggleButton();
+        JButton sudoModeButton = new JButton();
 
         @Override
         public void actionPerformed(ActionEvent e) {
             frame.getContentPane().removeAll();
             frame.repaint();
 
-            if (settings.getSelectedIndex() == 0) { // Menu
+            if (settingsJCB.getSelectedIndex() == 0) { // Menu
                 displayMenu();
-            } else if (settings.getSelectedIndex() == 1) { // Account
+            } else if (settingsJCB.getSelectedIndex() == 1) { // Account
                 backButton = new JButton("Back");
                 JButton viewPhotoButton = new JButton("View Photo");
                 JButton changePhotoButton = new JButton("Change Photo");
@@ -1092,6 +1095,7 @@ public class EazyFinderGUI {
                 JButton goToENQButton = new JButton("Go to Enquiries Page");
                 JLabel profilePictureInAccount = new JLabel();
 
+                frame.add(settingsJCB);
                 frame.add(backButton);
                 frame.add(accountLabel);
                 frame.add(profilePictureInAccount);
@@ -1114,7 +1118,12 @@ public class EazyFinderGUI {
                 backButton.setFont(timesNewRoman);
                 backButton.addActionListener(new Back((byte) 3));
 
-                accountLabel.setBounds(0, 30, frameSize, 25);
+                settingsJCB.setBounds(550, 35, 100, 25);
+                settingsJCB.setSelectedItem("Account");
+                settingsJCB.setFont(timesNewRoman);
+                settingsJCB.addActionListener(new Settings());
+
+                accountLabel.setBounds(250, 30, 200, 25);
                 accountLabel.setHorizontalAlignment(0);
                 accountLabel.setFont(headingFont);
                 accountLabel.setToolTipText(username + "'s Account");
@@ -1294,6 +1303,7 @@ public class EazyFinderGUI {
                 JLabel sudoModeLabel = new JLabel("Sudo Mode");
                 JButton logoutButton = new JButton("Logout");
 
+                frame.add(settingsJCB);
                 frame.add(backButton);
                 frame.add(settingsLabel);
                 frame.add(deleteTHButton);
@@ -1301,7 +1311,7 @@ public class EazyFinderGUI {
                 frame.add(deleteAccountData);
                 frame.add(deleteAccount);
                 frame.add(sudoModeLabel);
-                frame.add(sudoModeTB);
+                frame.add(sudoModeButton);
                 frame.add(logoutButton);
 
                 backButton.setBounds(0, 0, 80, 30);
@@ -1310,11 +1320,15 @@ public class EazyFinderGUI {
                 backButton.setFont(timesNewRoman);
                 backButton.addActionListener(new Back((byte) 3));
 
+                settingsJCB.setBounds(550, 35, 100, 25);
+                settingsJCB.setSelectedItem("Settings");
+                settingsJCB.setFont(timesNewRoman);
+                settingsJCB.addActionListener(new Settings());
+
                 settingsLabel.setBounds(0, 30, frameSize, 25);
                 settingsLabel.setForeground(Color.GRAY);
                 settingsLabel.setFont(headingFont);
                 settingsLabel.setHorizontalAlignment(0);
-
 
                 File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
                 File enq = new File(dirname + "\\Enquiries\\" + username + ".txt");
@@ -1364,7 +1378,7 @@ public class EazyFinderGUI {
                 });
 
                 deleteAccountData.setBounds(200, 155, 300, 30);
-                deleteAccountData.setForeground(Color.BLACK);
+                deleteAccountData.setForeground(Color.WHITE);
                 deleteAccountData.setBackground(Color.red);
                 deleteAccountData.setFont(timesNewRoman);
                 deleteAccountData.addActionListener(ae -> {
@@ -1388,7 +1402,7 @@ public class EazyFinderGUI {
                 });
 
                 deleteAccount.setBounds(200, 200, 300, 30);
-                deleteAccount.setForeground(Color.BLACK);
+                deleteAccount.setForeground(Color.WHITE);
                 deleteAccount.setBackground(Color.RED);
                 deleteAccount.setFont(timesNewRoman);
                 deleteAccount.addActionListener(new Verification("AccountDeletion"));
@@ -1397,31 +1411,21 @@ public class EazyFinderGUI {
                 sudoModeLabel.setFont(timesNewRoman);
 
                 // TODO check this
-                if (sudoMode()) sudoModeTB.setText("OFF");
-                else sudoModeTB.setText("ON");
-                sudoModeTB.setBounds(370, 245, 70, 25);
-                sudoModeTB.setForeground(Color.WHITE);
-                sudoModeTB.setBackground(Color.DARK_GRAY);
-                sudoModeTB.addItemListener(ae -> {
-                    if (sudoMode()) {
-                        if (sudoModeTB.isSelected()) {
-                            sudoModeTB.setText("OFF");
-                            sudoModeAccepted = true;
-                            showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for every 1 minute</html>".replaceAll("\n", "<br>"),
-                                    "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            sudoModeTB.setText("ON");
-                            sudoModeAccepted = false;
-                            showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode is Off", JOptionPane.INFORMATION_MESSAGE);
-                        }
+                if (sudoModeAccepted) sudoModeButton.setText("OFF");
+                else sudoModeButton.setText("ON");
+                sudoModeButton.setBounds(370, 245, 70, 25);
+                sudoModeButton.setForeground(Color.WHITE);
+                sudoModeButton.setBackground(Color.DARK_GRAY);
+                sudoModeButton.addActionListener(ae -> {
+                    if (sudoModeButton.getText().equals("ON")) {
+                        sudoModeButton.setText("OFF");
+                        sudoModeAccepted = true;
+                        showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for\n1 minute of Interval</html>".replaceAll("\n", "<br>"),
+                                "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        if (sudoModeTB.isSelected()) {
-                            sudoModeTB.setText("ON");
-                            sudoModeAccepted = false;
-                        } else {
-                            sudoModeTB.setText("OFF");
-                            sudoModeAccepted = true;
-                        }
+                        sudoModeButton.setText("ON");
+                        sudoModeAccepted = false;
+                        showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode is Off", JOptionPane.INFORMATION_MESSAGE);
                     }
                 });
 
@@ -2198,7 +2202,7 @@ public class EazyFinderGUI {
                 } else {
                     boolean found = false;
                     if (newUsername.equals(username)) {
-                        msg.setText("New Username Cannot be the Same as old one");
+                        msg.setText("<html>New Username Cannot be the Same as\nold one</html>".replaceAll("\n", "<br>"));
                     } else {
                         try {
                             BufferedReader reader = new BufferedReader(new FileReader(db));
