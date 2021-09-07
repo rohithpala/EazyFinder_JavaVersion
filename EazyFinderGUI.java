@@ -7,8 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
@@ -469,26 +468,20 @@ public class EazyFinderGUI {
         }
     }
 
-    boolean fileDeleted;
-
+    // https://stackoverflow.com/questions/1146153/copying-files-from-one-directory-to-another-in-java
     void savePP() {
         try {
-            fileDeleted = true;
+            boolean fileCreated = true;
             File destinationFile = new File(dirname + "\\ProfilePictures\\" + username + profilePictureExtension);
 
-            File ppDir = new File(dirname + "\\ProfilePictures");
-            String fileName;
-            for (File file : Objects.requireNonNull(ppDir.listFiles())) {
-                fileName = file.getName();
-                if (username.equals(fileName.substring(0, fileName.lastIndexOf(".")))) {
-                    fileDeleted = file.delete();
-                    break;
-                }
-            }
+            if (!destinationFile.exists()) fileCreated = destinationFile.createNewFile();
 
-            if (fileDeleted && destinationFile.createNewFile()) {
-                System.out.println("IN");
-                Files.copy(Paths.get(profilePicturePath), new FileOutputStream(destinationFile));
+            if (fileCreated) {
+                FileChannel source = new FileInputStream(profilePicturePath).getChannel();
+                FileChannel destination = new FileOutputStream(destinationFile).getChannel();
+                destination.transferFrom(source, 0, source.size());
+                source.close();
+                destination.close();
             }
         } catch (IOException ignored) {
         }
@@ -770,11 +763,12 @@ public class EazyFinderGUI {
      * sudoMode() method checks if the prescribed time of sudo mode is already over or not by
      * checking the difference b/w hours, minutes, seconds of the current time and the last time
      * at which the password was typed.
-     *
+     * <p>
      * Return true if the sudo mode is over, false otherwise
-     * */
+     */
     Date ct = new Date(), pta = new Date(); // ct -> current time, pta -> password typed at
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
     boolean sudoMode() {
         String currentTime;
         long diffInMilliSeconds;
@@ -877,7 +871,8 @@ public class EazyFinderGUI {
             JLabel forgotPassword;
             JFrame jFrame;
             String calledBy;
-            ForgotPassword(JFrame jFrame, JLabel forgotPassword, String calledBy){
+
+            ForgotPassword(JFrame jFrame, JLabel forgotPassword, String calledBy) {
                 this.jFrame = jFrame;
                 this.forgotPassword = forgotPassword;
                 this.calledBy = calledBy;
@@ -1065,6 +1060,8 @@ public class EazyFinderGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    boolean[] alreadyDeleted = {false};
+    boolean same;
     class Settings implements ActionListener {
         // Components needed for Account Page
         JLabel accountLabel = new JLabel("Account");
@@ -1157,8 +1154,36 @@ public class EazyFinderGUI {
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
                 deletePhotoButton.addActionListener(ae -> {
-                    // TODO Check if the PP is already deleted here
-                    if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
+                    // checking if the PP is already deleted TODO check this a small problem
+                    same = false;
+                    if(!alreadyDeleted[0]) {
+                        File file1 = new File(dirname + "\\Images\\defaultPP.png");
+                        File file2 = new File(profilePicturePath);
+                        if (file1.length() != file2.length()) {
+                            same = false;
+                        } else {
+                            try {
+                                BufferedReader reader1 = new BufferedReader(new FileReader(file1));
+                                BufferedReader reader2 = new BufferedReader(new FileReader(file2));
+                                String str;
+                                StringBuilder buf1 = new StringBuilder();
+                                StringBuilder buf2 = new StringBuilder();
+                                while ((str = reader1.readLine()) != null) buf1.append(str);
+                                while ((str = reader2.readLine()) != null) buf2.append(str);
+                                same = String.valueOf(buf1).equals(String.valueOf(buf2));
+                                reader1.close();
+                                reader2.close();
+                                alreadyDeleted[0] = true;
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+
+                    if (alreadyDeleted[0] && same) {
+                        showMessageDialogJOP(frame, "The Profile Picture is already Deleted", "Profile Picture Already Deleted", JOptionPane.PLAIN_MESSAGE);
+                        alreadyDeleted[0] = true;
+                    } else if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
                         profilePicturePath = dirname + "\\Images\\defaultPP.png";
                         profilePicture = new ImageIcon(dirname + "\\Images\\defaultPP.png");
                         profilePictureExtension = ".png";
@@ -1173,6 +1198,7 @@ public class EazyFinderGUI {
                         // save the profile picture
                         savePP();
                         showMessageDialogJOP(frame, "Deleted Profile Picture Successfully", "Profile Picture Deleted", JOptionPane.INFORMATION_MESSAGE);
+                        alreadyDeleted[0] = false;
                     }
                 });
 
