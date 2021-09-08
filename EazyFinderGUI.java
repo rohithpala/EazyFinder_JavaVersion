@@ -113,12 +113,14 @@ public class EazyFinderGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            optionPaneLabel.setText("<html>We are giving you the guest credentials so that you can have the same experience as a registered user\n\nUsername: Guest\nPassword: Guest@123\n\nWe delete all the date provided by you in the guest mode once you logout\nSo feel free to be a registered user\n\nHappy Browsing 😃</html>"
+            generateReferenceID();
+            optionPaneLabel.setText("<html>We are giving you the guest credentials so that you can have the same experience as a registered user\n\nUsername: Guest\nPassword: Guest@123\nReference ID: 1\n\nWe delete all the date provided by you in the guest mode once you logout\nSo feel free to be a registered user\n\nHappy Browsing 😃</html>"
                     .replaceAll("\n", "<br>"));
             if (JOptionPane.showOptionDialog(frame, optionPaneLabel, "Guest Mode", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, guestPaneOptions, null) == JOptionPane.YES_OPTION) {
                 username = "Guest";
                 password = "Guest@123";
+                refID = 1;
                 profilePicturePath = dirname + "\\Images\\defaultPP.png";
                 profilePicture = new ImageIcon(profilePicturePath);
                 profilePictureExtension = ".png";
@@ -155,7 +157,16 @@ public class EazyFinderGUI {
             if (num == 1 || num == 2) {
                 if (areYouSureJOP(frame) == JOptionPane.YES_OPTION) {
                     if (num == 1) {
-                        username = password = "";
+                        // resetting all the variables to their default values after logging out
+                        username = password = name = phoneNumber = emailID = "";
+                        refID = 0;
+                        // resetting profile picture details
+                        tempProfilePicturePath = profilePicturePath = dirname + "\\Images\\defaultPP.png";
+                        profilePictureExtension = ".png";
+                        tempProfilePicture = profilePicture = new ImageIcon(profilePicturePath);
+                        // resetting sudo mode related variables
+                        sudoModeAccepted = false;
+                        passwordTypedAt = null;
                         Homepage();
                     } else if (num == 2) displayMenu();
                 }
@@ -165,11 +176,9 @@ public class EazyFinderGUI {
         }
     }
 
-    long a;
-
     void generateReferenceID() {
         refID = 0;
-        a = 1;
+        long a = 1;
         short i, len = (short) username.length();
         for (i = 0; i < len; i++) {
             refID += ((int) username.charAt(i)) * a;
@@ -178,9 +187,8 @@ public class EazyFinderGUI {
     }
 
     long encryptPassword(String password) {
-        long encryptedPassword = 0;
+        long encryptedPassword = 0, a = 1;
         short i, len = (short) password.length();
-        a = 1;
         for (i = 0; i < len; i++) {
             encryptedPassword += ((int) password.charAt(i)) * a;
             a *= 100;
@@ -408,10 +416,10 @@ public class EazyFinderGUI {
 
     // profile picture attributes;
     String profilePicturePath = dirname + "\\Images\\defaultPP.png", profilePictureExtension = ".png";
-    ImageIcon profilePicture = new ImageIcon(dirname + "\\Images\\defaultPP.png");
+    ImageIcon profilePicture = new ImageIcon(profilePicturePath);
     int profilePictureWidth, profilePictureHeight;
-    String tempProfilePicturePath = dirname + "\\Images\\defaultPP.png";
-    ImageIcon tempProfilePicture = new ImageIcon(dirname + "\\Images\\defaultPP.png");
+    String tempProfilePicturePath = profilePicturePath;
+    ImageIcon tempProfilePicture = new ImageIcon(tempProfilePicturePath);
     int tempProfilePictureWidth, tempProfilePictureHeight;
 
     int i;
@@ -970,8 +978,12 @@ public class EazyFinderGUI {
     final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64, imageX = (frameSize - IMAGE_WIDTH) / 2, imageY = (buttonsY - IMAGE_HEIGHT) / 2;
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\Images\\finder.png"));
 
-    String[] settingsMenu = {"Menu", "Account", "Settings"};
-    JComboBox<String> settingsJCB = new JComboBox<>(settingsMenu);
+//    String[] settingsMenu = {"Menu", "Account", "Settings"};
+//    JComboBox<String> settingsJCB = new JComboBox<>(settingsMenu);
+    JMenuBar menuBar = new JMenuBar();
+    JMenuItem menu = new JMenuItem("Menu");
+    JMenuItem account = new JMenuItem("Account");
+    JMenuItem settings = new JMenuItem("Settings");
 
     // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
     void displayMenu() {
@@ -990,7 +1002,11 @@ public class EazyFinderGUI {
         JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
         JButton logoutButton = new JButton("Logout");
 
-        frame.add(settingsJCB);
+        menuBar.add(menu);
+        menuBar.add(account);
+        menuBar.add(settings);
+
+        frame.add(menuBar);
         frame.add(usernameLabel);
         frame.add(finderImage);
         frame.add(menuBookingButton);
@@ -1002,13 +1018,16 @@ public class EazyFinderGUI {
         frame.add(menuSwitchAccountsButton);
         frame.add(logoutButton);
 
-        settingsJCB.setBounds(550, 30, 100, 25);
-        settingsJCB.setSelectedItem("Menu");
-        settingsJCB.setFont(timesNewRoman);
-        settingsJCB.addActionListener(new Settings());
+        menuBar.setBounds(0, 0, frameSize, 25);
+        menu.addActionListener(new Settings());
+        menu.setFont(timesNewRoman);
+        account.addActionListener(new Settings());
+        account.setFont(timesNewRoman);
+        settings.addActionListener(new Settings());
+        settings.setFont(timesNewRoman);
 
         usernameLabel.setText("Username: " + username);
-        usernameLabel.setBounds(0, 0, frameSize, 25);
+        usernameLabel.setBounds(400, 30, frameSize-400, 25);
         usernameLabel.setBackground(Color.cyan);
         usernameLabel.setForeground(Color.DARK_GRAY);
         usernameLabel.setHorizontalAlignment(0);
@@ -1091,9 +1110,9 @@ public class EazyFinderGUI {
             frame.getContentPane().removeAll();
             frame.repaint();
 
-            if (settingsJCB.getSelectedIndex() == 0) { // Menu
+            if (e.getSource() == menu) { // Menu
                 displayMenu();
-            } else if (settingsJCB.getSelectedIndex() == 1) { // Account
+            } else if (e.getSource() == account) { // Account
                 backButton = new JButton("Back");
                 JButton viewPhotoButton = new JButton("View Photo");
                 JButton changePhotoButton = new JButton("Change Photo");
@@ -1109,7 +1128,6 @@ public class EazyFinderGUI {
                 JButton goToENQButton = new JButton("Go to Enquiries Page");
                 JLabel profilePictureInAccount = new JLabel();
 
-                frame.add(settingsJCB);
                 frame.add(backButton);
                 frame.add(accountLabel);
                 frame.add(profilePictureInAccount);
@@ -1131,11 +1149,6 @@ public class EazyFinderGUI {
                 backButton.setForeground(Color.WHITE);
                 backButton.setFont(timesNewRoman);
                 backButton.addActionListener(new Back((byte) 3));
-
-                settingsJCB.setBounds(550, 35, 100, 25);
-                settingsJCB.setSelectedItem("Account");
-                settingsJCB.setFont(timesNewRoman);
-                settingsJCB.addActionListener(new Settings());
 
                 accountLabel.setBounds(250, 30, 200, 25);
                 accountLabel.setHorizontalAlignment(0);
@@ -1318,7 +1331,6 @@ public class EazyFinderGUI {
                 JButton sudoModeButton = new JButton();
                 JButton logoutButton = new JButton("Logout");
 
-                frame.add(settingsJCB);
                 frame.add(backButton);
                 frame.add(settingsLabel);
                 frame.add(deleteTHButton);
@@ -1335,10 +1347,10 @@ public class EazyFinderGUI {
                 backButton.setFont(timesNewRoman);
                 backButton.addActionListener(new Back((byte) 3));
 
-                settingsJCB.setBounds(550, 35, 100, 25);
-                settingsJCB.setSelectedItem("Settings");
-                settingsJCB.setFont(timesNewRoman);
-                settingsJCB.addActionListener(new Settings());
+//                settingsJCB.setBounds(550, 35, 100, 25);
+//                settingsJCB.setSelectedItem("Settings");
+//                settingsJCB.setFont(timesNewRoman);
+//                settingsJCB.addActionListener(new Settings());
 
                 settingsLabel.setBounds(0, 30, frameSize, 25);
                 settingsLabel.setForeground(Color.DARK_GRAY);
