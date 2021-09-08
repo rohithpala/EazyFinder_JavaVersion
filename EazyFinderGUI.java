@@ -39,7 +39,7 @@ public class EazyFinderGUI {
     String username, password, name, phoneNumber, emailID; // User Details
     long refID;
     final File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
-    final File userDetailsFile = new File(dirname + "\\Databases\\UserDetails.txt");
+    final File ud = new File(dirname + "\\Databases\\UserDetails.txt");
 
     // frame related
     JFrame frame = new JFrame(); //Main frame
@@ -321,6 +321,18 @@ public class EazyFinderGUI {
                         msg.setText("Password Incorrect");
                     } else if (usernameFound && passwordFound) {
                         refID = Integer.parseInt(credentials[2]);
+
+                        try {
+                            BufferedReader reader = new BufferedReader(new FileReader(ud));
+                            while ((str = reader.readLine()) != null) {
+                                credentials = str.split(",");
+                                name = credentials[1];
+                                phoneNumber = credentials[2];
+                                emailID = credentials[3];
+                            }
+                        } catch (Exception ignored) {
+                        }
+
                         optionPaneLabel.setText("Do you want to enter sudo mode?");
                         optionPaneResult = JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Sudo Mode Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                         if (optionPaneResult == JOptionPane.YES_OPTION) {
@@ -727,7 +739,7 @@ public class EazyFinderGUI {
                         writer.close();
 
                         // Adding the user details into the UserDetails.txt file
-                        writer = new BufferedWriter(new FileWriter(userDetailsFile, true));
+                        writer = new BufferedWriter(new FileWriter(ud, true));
                         writer.write(username + "," + name + "," + phoneNumber + "," + emailID + "\n");
                         writer.flush();
                         writer.close();
@@ -806,7 +818,7 @@ public class EazyFinderGUI {
         JLabel forgotPassword = new JLabel("<html><u>Forgot Password?</u></html>");
 
         // All Objects
-        BookingUI bookingsObj = new BookingUI();
+        BookingUI bookingObj = new BookingUI();
         EnquireUI enqObj = new EnquireUI();
         UpdateUsernameUI updateUsernameObj = new UpdateUsernameUI();
         PasswordChangeUI passwordChangeObj = new PasswordChangeUI();
@@ -886,6 +898,8 @@ public class EazyFinderGUI {
             public void mouseClicked(MouseEvent e) {
                 String refIDString = JOptionPane.showInputDialog(jFrame, "Reference ID:");
                 if (String.valueOf(refID).equals(refIDString)) {
+                    passwordTypedAt = setCurrentTime();
+                    showMessageDialogJOP(jFrame, "Hey " + name + "! Please reset the Password", "Reset the Password", JOptionPane.PLAIN_MESSAGE);
                     callingCorrespondingFunction();
                 } else {
                     showMessageDialogJOP(jFrame, "Reference ID is wrong", "Reference ID is wrong", JOptionPane.INFORMATION_MESSAGE);
@@ -939,7 +953,7 @@ public class EazyFinderGUI {
             else AccountDeletion(verificationFrame);
 
             switch (calledBy) {
-                case "Booking" -> bookingsObj.bookingUI(0);
+                case "Booking" -> bookingObj.bookingUI("verification");
                 case "TH" -> TransactionHistory();
                 case "Enquiry" -> enqObj.enquireUI();
                 case "UpdateUsername" -> updateUsernameObj.updateUsernameUI();
@@ -1070,7 +1084,7 @@ public class EazyFinderGUI {
         boolean[] alreadyDeleted = {false};
 
         // Settings
-        JButton sudoModeButton = new JButton();
+//        int sudoButtonClicked = 0;
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -1293,7 +1307,7 @@ public class EazyFinderGUI {
                 logoutButton.setForeground(Color.WHITE);
                 logoutButton.setFont(timesNewRoman);
                 logoutButton.addActionListener(new Back((byte) 1));
-            } else { // Settings. put the account deletion, password change, update username options in here
+            } else { // Settings. TODO put the account deletion, password change, update username options in here
                 backButton = new JButton("Back");
                 JLabel settingsLabel = new JLabel("Settings");
                 JButton deleteTHButton = new JButton("Delete all the Transaction Histories");
@@ -1301,6 +1315,7 @@ public class EazyFinderGUI {
                 JButton deleteAccountData = new JButton("Delete all my account Data");
                 JButton deleteAccount = new JButton("Delete My Account");
                 JLabel sudoModeLabel = new JLabel("Sudo Mode");
+                JButton sudoModeButton = new JButton();
                 JButton logoutButton = new JButton("Logout");
 
                 frame.add(settingsJCB);
@@ -1326,7 +1341,7 @@ public class EazyFinderGUI {
                 settingsJCB.addActionListener(new Settings());
 
                 settingsLabel.setBounds(0, 30, frameSize, 25);
-                settingsLabel.setForeground(Color.GRAY);
+                settingsLabel.setForeground(Color.DARK_GRAY);
                 settingsLabel.setFont(headingFont);
                 settingsLabel.setHorizontalAlignment(0);
 
@@ -1422,7 +1437,7 @@ public class EazyFinderGUI {
                         sudoModeAccepted = true;
                         showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for\n1 minute of Interval</html>".replaceAll("\n", "<br>"),
                                 "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
+                    } else if (sudoModeButton.getText().equals("OFF")) {
                         sudoModeButton.setText("ON");
                         sudoModeAccepted = false;
                         showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode is Off", JOptionPane.INFORMATION_MESSAGE);
@@ -1508,18 +1523,23 @@ public class EazyFinderGUI {
 
 
     class BookingUI {
+        final int bookingLabelWidth = 100, bookingFieldWidth = 200, bookingComponentHeight = 25;
+        final int messageX = 510, bookingLabelX = 200, bookingFieldX = 330, diffInYs = 50;
+        int componentY = 50;
+
         JLabel nameLabel, phoneLabel, emailLabel, adultLabel, childrenLabel, cityLabel, sourceLabel, destinationLabel;
         JLabel phoneMessage, emailMessage;
         JTextField nameField, phoneField, emailField;
         JComboBox<String> cityField, sourceField, destinationField;
         JSpinner adultField, childrenField;
 
-        short noOfAdults, noOfChildren;
-        String name, phone, email;
-        String enqCity, enqSource, enqDestination;
-        int enqAdults, enqChildren;
+        // MOT related
+        String[] motOptions = {"Choose Mode Of Transportation Option", "One Transport for Whole Journey",
+                "Mode Of Transportation Place to Place"};
+        JComboBox<String> modeOfTransportationCB = new JComboBox<>(motOptions);
+        JButton modeOfTransportationButton = new JButton();
 
-        void bookingUI(int case_) {
+        void bookingUI(String calledBy) {
             frame.getContentPane().removeAll();
             frame.repaint();
             frame.setTitle("Booking");
@@ -1527,7 +1547,7 @@ public class EazyFinderGUI {
             backButton = new JButton("Back");
             nameLabel = new JLabel("Name:");
             nameField = new JTextField();
-            phoneLabel = new JLabel("Mobile Number:");
+            phoneLabel = new JLabel("Mobile No.:");
             phoneField = new JTextField();
             phoneMessage = new JLabel();
             emailLabel = new JLabel("Email ID:");
@@ -1537,23 +1557,17 @@ public class EazyFinderGUI {
             sourceLabel = new JLabel("Source:");
             destinationLabel = new JLabel("Destination:");
             adultLabel = new JLabel("Adults:");
-            adultField = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
             childrenLabel = new JLabel("Children:");
-            childrenField = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
-            JButton continueButton = new JButton("Continue");
+            JButton nextButton = new JButton("Next");
             msg = new JLabel();
             JButton logoutButton = new JButton("Logout");
 
-            if (case_ == 1) {
-                cityField.setSelectedItem(enqCity);
-                sourceField.setSelectedItem(enqSource);
-                destinationField.setSelectedItem(enqDestination);
-                adultField.setValue(enqAdults);
-                childrenField.setValue(enqChildren);
-            } else {
+            if (calledBy.equals("verification")) {
                 cityField = new JComboBox<>(citiesArray);
                 sourceField = new JComboBox<>(temp);
                 destinationField = new JComboBox<>(temp);
+                adultField = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+                childrenField = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
             }
 
             frame.add(backButton);
@@ -1575,9 +1589,12 @@ public class EazyFinderGUI {
             frame.add(adultField);
             frame.add(childrenLabel);
             frame.add(childrenField);
-            frame.add(continueButton);
-            frame.add(msg);
+            frame.add(nextButton);
             frame.add(logoutButton);
+
+            if (modeOfTransportationCB.isEnabled()) frame.remove(modeOfTransportationCB);
+            if (modeOfTransportationButton.isEnabled()) frame.remove(modeOfTransportationButton);
+            msg.setText("");
 
             backButton.setBounds(0, 0, 80, 30);
             backButton.setBackground(Color.BLACK);
@@ -1585,73 +1602,84 @@ public class EazyFinderGUI {
             backButton.setFont(timesNewRoman);
             backButton.addActionListener(new Back((byte) 2));
 
-            nameLabel.setBounds(200, 50, 100, 25);
+            nameLabel.setBounds(bookingLabelX, componentY, bookingLabelWidth, bookingComponentHeight);
             nameLabel.setFont(timesNewRoman);
 
-            nameField.setBounds(330, 50, 200, 25);
+            nameField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             nameField.setFont(timesNewRoman);
-            nameField.setText(username);
+            nameField.setText(name);
+            componentY += diffInYs;
 
-            phoneLabel.setBounds(20, 100, 130, 25); //200, 100, 130, 25
+            phoneLabel.setBounds(bookingLabelX, componentY, bookingLabelWidth, bookingComponentHeight);
             phoneLabel.setFont(timesNewRoman);
 
-            phoneField.setBounds(135, 100, 200, 25); //330, 100, 200, 25
+            phoneField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             phoneField.setFont(timesNewRoman);
+            phoneField.setText(phoneNumber);
 
-            phoneMessage.setBounds(0, 125, 330, 20); //510, 100, 200, 25
+            phoneMessage.setBounds(messageX, componentY, bookingFieldWidth, bookingComponentHeight);
             phoneMessage.setFont(timesNewRoman);
             phoneMessage.setForeground(Color.RED);
             phoneMessage.setHorizontalAlignment(0);
             phoneMessage.setVerticalAlignment(0);
+            componentY += diffInYs;
 
-            emailLabel.setBounds(365, 100, 90, 25);
+            emailLabel.setBounds(bookingLabelX, componentY, bookingLabelWidth, bookingComponentHeight);
             emailLabel.setFont(timesNewRoman);
 
-            emailField.setBounds(440, 100, 200, 25);
+            emailField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             emailField.setFont(timesNewRoman);
+            emailField.setText(emailID);
 
-            emailMessage.setBounds(350, 125, 330, 20);
+            emailMessage.setBounds(messageX, componentY, bookingFieldWidth, bookingComponentHeight);
             emailMessage.setFont(timesNewRoman);
             emailMessage.setForeground(Color.RED);
             emailMessage.setHorizontalAlignment(0);
             emailMessage.setVerticalAlignment(0);
+            componentY += diffInYs;
 
-            cityLabel.setBounds(200, 150, 100, 25);
+            cityLabel.setBounds(bookingLabelX, componentY, bookingLabelWidth, bookingComponentHeight);
             cityLabel.setFont(timesNewRoman);
 
-            cityField.setBounds(330, 150, 200, 25);
+            cityField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             cityField.setFont(timesNewRoman);
             cityField.addActionListener(new InitializeCombos(cityField, sourceField, destinationField));
+            componentY += diffInYs;
 
-            sourceLabel.setBounds(200, 200, 100, 25);
+            sourceLabel.setBounds(bookingLabelX, componentY, bookingLabelWidth, bookingComponentHeight);
             sourceLabel.setFont(timesNewRoman);
 
-            sourceField.setBounds(330, 200, 200, 25);
+            sourceField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             sourceField.setFont(timesNewRoman);
+            componentY += diffInYs;
 
-            destinationLabel.setBounds(200, 250, 100, 25);
+            destinationLabel.setBounds(bookingLabelX, componentY, bookingLabelWidth, bookingComponentHeight);
             destinationLabel.setFont(timesNewRoman);
 
-            destinationField.setBounds(330, 250, 200, 25);
+            destinationField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             destinationField.setFont(timesNewRoman);
+            componentY += diffInYs;
 
-            adultLabel.setBounds(200, 300, 100, 25);
+            adultLabel.setBounds(bookingLabelX, componentY, bookingLabelWidth, bookingComponentHeight);
             adultLabel.setFont(timesNewRoman);
 
-            adultField.setBounds(330, 300, 200, 25);
+            adultField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             adultField.setFont(timesNewRoman);
+            componentY += diffInYs;
 
-            childrenLabel.setBounds(200, 350, 100, 25);
+            childrenLabel.setBounds(bookingLabelX, componentY, bookingLabelWidth, bookingComponentHeight);
             childrenLabel.setFont(timesNewRoman);
 
-            childrenField.setBounds(330, 350, 200, 25);
+            childrenField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             childrenField.setFont(timesNewRoman);
+            componentY += diffInYs;
 
-            continueButton.setBounds(275, 400, 150, 25);
-            continueButton.setBackground(Color.GREEN);
-            continueButton.setForeground(Color.WHITE);
-            continueButton.setFont(timesNewRoman);
-            continueButton.addActionListener(new ContinueToModeOfTransportation());
+            nextButton.setBounds(300, componentY, 100, bookingComponentHeight);
+            nextButton.setBackground(Color.DARK_GRAY);
+            nextButton.setForeground(Color.WHITE);
+            nextButton.setFont(timesNewRoman);
+            nextButton.addActionListener(new ContinueToModeOfTransportation());
+            componentY += diffInYs;
 
             logoutButton.setBounds(586, 0, 100, 30);
             logoutButton.setBackground(Color.RED);
@@ -1662,41 +1690,46 @@ public class EazyFinderGUI {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
+        // user details related objects/variables
+        short noOfAdults, noOfChildren;
+        String typedName, typedPhoneNumber, typedEmailID;
+
         class ContinueToModeOfTransportation implements ActionListener {
             BookingMainCode bookingObj;
-            String[] motOptions = {"Choose Mode Of Transportation Option", "One Transport for Whole Journey",
-                    "Mode Of Transportation Place to Place"};
-            JComboBox<String> modeOfTransportationCB = new JComboBox<>(motOptions);
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                msg.setText("");
-                phoneMessage.setText("");
-                emailMessage.setText("");
+                frame.add(msg);
 
                 msg.setFont(timesNewRoman);
                 msg.setForeground(Color.RED);
                 msg.setHorizontalAlignment(0);
+                msg.setOpaque(true);
+
+                msg.setText("");
+                phoneMessage.setText("");
+                emailMessage.setText("");
 
                 name = nameField.getText().trim();
-                phone = phoneField.getText().trim();
-                email = emailField.getText().trim();
+                typedPhoneNumber = phoneField.getText().trim();
+                typedEmailID = emailField.getText().trim();
                 city = String.valueOf(cityField.getSelectedItem());
                 source = String.valueOf(sourceField.getSelectedItem());
                 destination = String.valueOf(destinationField.getSelectedItem());
                 noOfAdults = Short.parseShort(String.valueOf(adultField.getValue()));
                 noOfChildren = Short.parseShort(String.valueOf(childrenField.getValue()));
 
-                if (name.equals("") || phone.equals("") || source.equals("--Select--") || destination.equals("--Select--")) {
-                    msg.setBounds(225, 470, 250, 25);
+                if (name.equals("") || typedPhoneNumber.equals("") || source.equals("--Select--") || destination.equals("--Select--")) {
+                    msg.setBounds(225, 480, 250, 25);
                     msg.setText("Please Complete all the fields");
                 } else if (source.equals(destination)) {
-                    msg.setBounds(200, 470, 350, 25);
+                    msg.setBounds(200, 480, 350, 25);
                     msg.setText("Source and Destination Cannot be the same");
-                } else if (!phone.matches(phoneNumberRegex) || !email.matches(emailIDRegex)) {
-                    if (!phone.matches(phoneNumberRegex)) phoneMessage.setText("Invalid Phone Number");
-                    if (!email.matches(emailIDRegex)) emailMessage.setText("Invalid Email Address");
+                } else if (!typedPhoneNumber.matches(phoneNumberRegex) || !typedEmailID.matches(emailIDRegex)) {
+                    if (!typedPhoneNumber.matches(phoneNumberRegex)) phoneMessage.setText("Invalid Phone Number");
+                    if (!typedEmailID.matches(emailIDRegex)) emailMessage.setText("Invalid Email Address");
                 } else {
+                    msg.setText("");
                     bookingObj = new BookingMainCode(city, source, destination, noOfAdults, noOfChildren);
 
                     bookingObj.new EnquireAndBookings().bookings();
@@ -1712,28 +1745,32 @@ public class EazyFinderGUI {
                     }
                     routeCost.append("\nCost: ").append(cost).append(" /-").append("</html>");
 
-                    JLabel routeCostMessage = new JLabel();
+                    String[] optionPaneButtons = {"Go Back", "Continue to Booking", "Break the Fare"};
+                    optionPaneLabel.setText(String.valueOf(routeCost).replaceAll("\n", "<br>"));
+                    optionPaneLabel.setFont(timesNewRoman);
+                    optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel,
+                            "Route and Details", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                            null, optionPaneButtons, null);
 
-                    frame.add(routeCostMessage);
+                    if (optionPaneResult == JOptionPane.NO_OPTION) {
+                        frame.add(modeOfTransportationCB);
 
-                    routeCostMessage.setOpaque(true);
-                    routeCostMessage.setBounds(0, 430, frameSize, 50);
-                    routeCostMessage.setFont(timesNewRoman);
-                    routeCostMessage.setHorizontalAlignment(0);
-                    routeCostMessage.setText(String.valueOf(routeCost).replaceAll("\n", "<br>"));
+                        modeOfTransportationCB.setBounds(200, 510, 300, 25);
+                        modeOfTransportationCB.setFont(timesNewRoman);
 
-                    frame.add(modeOfTransportationCB);
-
-                    modeOfTransportationCB.setBounds(200, 500, 300, 25);
-                    modeOfTransportationCB.setFont(timesNewRoman);
-
-                    JButton modeOfTransportationButton = new JButton("GO");
-                    frame.add(modeOfTransportationButton);
-                    modeOfTransportationButton.setBounds(300, 540, 100, 25);
-                    modeOfTransportationButton.setBackground(Color.GREEN);
-                    modeOfTransportationButton.setForeground(Color.WHITE);
-                    modeOfTransportationButton.setFont(timesNewRoman);
-                    modeOfTransportationButton.addActionListener(new AfterMOT());
+                        modeOfTransportationButton = new JButton("GO");
+                        frame.add(modeOfTransportationButton);
+                        modeOfTransportationButton.setBounds(300, 550, 100, 25);
+                        modeOfTransportationButton.setBackground(Color.GREEN);
+                        modeOfTransportationButton.setForeground(Color.WHITE);
+                        modeOfTransportationButton.setFont(timesNewRoman);
+                        modeOfTransportationButton.addActionListener(new AfterMOT());
+                    } else if (optionPaneResult == JOptionPane.CANCEL_OPTION) {
+                        showMessageDialogJOP(frame,
+                                ("<html>No. of Adults: " + noOfAdults + "\n" + "Fare: " + cost * noOfAdults + "\n\n" +
+                                        "No. of Children: " + noOfChildren + "\n" + "Fare: " + (cost / 2) * noOfChildren + "\n\n</html>").replaceAll("\n", "<br>"),
+                                "Fare break", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
 
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1749,7 +1786,7 @@ public class EazyFinderGUI {
                     msg.setOpaque(true);
 
                     if (selectedOption == 0) {
-                        msg.setBounds(0, 570, frameSize, 25);
+                        msg.setBounds(0, 600, frameSize, 25);
                         msg.setHorizontalAlignment(0);
                         msg.setText("Please Select an Option for Mode of Transportation first");
                     } else if (selectedOption == 1) {
@@ -1831,7 +1868,7 @@ public class EazyFinderGUI {
                 book.setFont(timesNewRoman);
                 book.setBounds(0, 600, 100, 25);
 
-                book.addActionListener(book_E -> {
+                book.addActionListener(e -> {
                     short motIndex = (short) vehicleCB.getSelectedIndex();
                     BookingMainCode bookingObj = new BookingMainCode(motIndex,
                             Short.parseShort(String.valueOf(adultField.getValue())),
@@ -1866,8 +1903,8 @@ public class EazyFinderGUI {
 
                     BookingMainCode bookingObj = new BookingMainCode();
 
-                    bookingObj.loadDetails(username, city, source, destination, bookingObj.calculateTotalCost(), name, phone, email,
-                            noOfAdults, noOfChildren,
+                    bookingObj.loadDetails(username, city, source, destination, bookingObj.calculateTotalCost(),
+                            typedName, typedPhoneNumber, typedEmailID, noOfAdults, noOfChildren,
                             new SimpleDateFormat("dd:MM:yyyy").format(date),
                             new SimpleDateFormat("HH:mm:ss").format(date));
 
@@ -2103,22 +2140,34 @@ public class EazyFinderGUI {
                             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
                             null, optionPaneButtonNames, null);
 
-                    if (optionPaneResult == JOptionPane.NO_OPTION) {
+                    if (optionPaneResult == JOptionPane.YES_OPTION) {
+                        // store the enquiries
+                        File enquiryFile = new File(dirname + "\\Enquiries\\" + username + ".txt");
+                        try {
+                            BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile, true));
+                            writer.write(enquireCity.toUpperCase() + "," + enquireSource.toUpperCase() + "," + enquireDestination.toUpperCase() + "," + cost + "\n");
+                            writer.flush();
+                            writer.close();
+                        } catch (Exception ex) {
+                            msg.setText("Error Occurred");
+                        }
+                    } else if (optionPaneResult == JOptionPane.NO_OPTION) {
                         BookingUI bookingObj = new BookingUI();
 
                         bookingObj.cityField = enquireCityField;
                         bookingObj.sourceField = enquireSourceField;
                         bookingObj.destinationField = enquireDestinationField;
+                        bookingObj.adultField = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+                        bookingObj.childrenField = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
 
-                        bookingObj.enqCity = enquireCity;
-                        bookingObj.enqSource = enquireSource;
-                        bookingObj.enqDestination = enquireDestination;
-                        bookingObj.enqAdults = enquireAdults;
-                        bookingObj.enqChildren = enquireChildren;
+                        bookingObj.cityField.setSelectedItem(enquireCity);
+                        bookingObj.sourceField.setSelectedItem(enquireSource);
+                        bookingObj.destinationField.setSelectedItem(enquireDestination);
+                        bookingObj.adultField.setValue(enquireAdults);
+                        bookingObj.childrenField.setValue(enquireChildren);
 
-                        enquireCityField.addActionListener(new InitializeCombos(enquireCityField, bookingObj.sourceField, bookingObj.destinationField));
-                        bookingObj.bookingUI(1);
-                    } else if (optionPaneResult == JOptionPane.CANCEL_OPTION) {
+                        bookingObj.bookingUI("enquiry");
+                    } else {
                         JLabel fareDivision = new JLabel();
 
                         fareDivision.setText(
@@ -2130,17 +2179,6 @@ public class EazyFinderGUI {
                         fareDivision.setFont(timesNewRoman);
 
                         JOptionPane.showMessageDialog(frame, fareDivision, "Fare Division", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        // store the enquiries
-                        File enquiryFile = new File(dirname + "\\Enquiries\\" + username + ".txt");
-                        try {
-                            BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile, true));
-                            writer.write(enquireCity.toUpperCase() + "," + enquireSource.toUpperCase() + "," + enquireDestination.toUpperCase() + "," + cost + "\n");
-                            writer.flush();
-                            writer.close();
-                        } catch (Exception ex) {
-                            msg.setText("Error Occurred");
-                        }
                     }
                 }
 
