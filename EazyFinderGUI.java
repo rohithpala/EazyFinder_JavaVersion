@@ -1425,7 +1425,6 @@ public class EazyFinderGUI {
                 sudoModeLabel.setBounds(265, 245, 100, 25);
                 sudoModeLabel.setFont(timesNewRoman);
 
-                // TODO check this
                 if (sudoModeAccepted) sudoModeButton.setText("OFF");
                 else sudoModeButton.setText("ON");
                 sudoModeButton.setBounds(370, 245, 70, 25);
