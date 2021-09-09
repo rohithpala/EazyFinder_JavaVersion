@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /*
-TODO:
 1. add refID related things in MainCodes and wherever needed
 1.1. add forgot password option for every password field and prompt for refID
 2. caps lock warning while typing passwords
@@ -56,6 +55,8 @@ public class EazyFinderGUI {
     JLabel optionPaneLabel = new JLabel(); // label added into JOptionPanes to show corresponding messages
     int optionPaneResult; // used for storing option pane results
 
+    Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\Images\\TitleBarIcon.png");
+
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
     }
@@ -73,6 +74,7 @@ public class EazyFinderGUI {
         frame.setLayout(null);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
+        frame.setIconImage(icon);
 //        frame.setResizable(false);
 
         optionPaneLabel.setFont(timesNewRoman);
@@ -997,7 +999,6 @@ public class EazyFinderGUI {
     String[] settingsMenu = {"Menu", "Account", "Settings"};
     JComboBox<String> settingsCB = new JComboBox<>(settingsMenu);
 
-    // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
     void displayMenu() {
         frame.getContentPane().removeAll();
         frame.repaint();
@@ -1101,10 +1102,50 @@ public class EazyFinderGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    class PasswordRefIDJOP {
+        Font tempFont = new Font("Times New Roman", Font.BOLD, 15);
+        JLabel msg;
+        JPasswordField pf;
+
+        boolean passwordRefIDJOP(String calledBy, String jopTitle) {
+            msg = new JLabel(jopTitle + ":");
+            msg.setFont(tempFont);
+            pf = new JPasswordField();
+
+            if (calledBy.equals("SudoMode")) {
+                if (jopTitle.equals("Enter Password")) {
+                    optionPaneResult = JOptionPane.showOptionDialog(frame, new Object[]{msg, pf}, jopTitle, JOptionPane.YES_NO_OPTION,
+                            JOptionPane.PLAIN_MESSAGE, null, new String[]{"Continue with Ref ID", "Ok"}, null);
+                    if (optionPaneResult == JOptionPane.YES_OPTION) {
+                        return passwordRefIDJOP(calledBy, "Enter Ref ID");
+                    }
+                } else if (jopTitle.equals("Enter Ref ID")) {
+                    optionPaneResult = JOptionPane.showOptionDialog(frame, new Object[]{msg, pf}, jopTitle, JOptionPane.YES_NO_OPTION,
+                            JOptionPane.PLAIN_MESSAGE, null, new String[]{"Continue with Password", "Ok"}, null);
+                    if (optionPaneResult == JOptionPane.YES_OPTION) {
+                        return passwordRefIDJOP(calledBy, "Enter Password");
+                    }
+                }
+
+                if (optionPaneResult == JOptionPane.NO_OPTION) {
+                    if (jopTitle.equals("Enter Password")) return String.valueOf(pf.getPassword()).equals(password);
+                    else return String.valueOf(pf.getPassword()).equals(String.valueOf(refID));
+                }
+            } else if (calledBy.equals("ShowPasswordInAccount")) {
+                JOptionPane.showMessageDialog(frame, new Object[]{msg, pf}, jopTitle, JOptionPane.PLAIN_MESSAGE);
+                return String.valueOf(pf.getPassword()).equals(String.valueOf(refID));
+            }
+
+            return false;
+        }
+    }
+
+    // Components needed for Account Page
+    JLabel accountLabel = new JLabel("Account");
+    final Font headingFont = new Font("Times New Roman", Font.BOLD, 25);
+    PasswordRefIDJOP prObj = new PasswordRefIDJOP();
+
     class Settings implements ActionListener {
-        // Components needed for Account Page
-        JLabel accountLabel = new JLabel("Account");
-        final Font headingFont = new Font("Times New Roman", Font.BOLD, 25);
         boolean[] alreadyDeleted = {false};
 
         @Override
@@ -1206,16 +1247,14 @@ public class EazyFinderGUI {
                     }
                 });
 
-                // https://stackoverflow.com/questions/27379059/determine-if-two-files-store-the-same-content
                 deletePhotoButton.setBounds(500, 250, 150, 25);
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
                 deletePhotoButton.setFont(timesNewRoman);
                 deletePhotoButton.addActionListener(ae -> {
-                    // checking if the PP is already deleted TODO check this a small problem
                     try {
                         BufferedReader reader1 = new BufferedReader(new FileReader(dirname + "\\Images\\defaultPP.png"));
-                        BufferedReader reader2 = new BufferedReader(new FileReader(dirname + "\\ProfilePictures\\" + username + profilePictureExtension));
+                        BufferedReader reader2 = new BufferedReader(new FileReader(dirname + "\\Databases\\ProfilePictures\\" + username + profilePictureExtension));
                         String str;
                         StringBuilder buf1 = new StringBuilder(), buf2 = new StringBuilder();
                         while ((str = reader1.readLine()) != null) buf1.append(str);
@@ -1267,8 +1306,7 @@ public class EazyFinderGUI {
                 passwordButton.setHorizontalAlignment(0);
                 passwordButton.addActionListener(ae -> {
                     if (passwordButton.getText().equals("Show Password")) {
-                        String refIDString = JOptionPane.showInputDialog(frame, "Enter Reference ID:");
-                        if (String.valueOf(refID).equals(refIDString)) {
+                        if (prObj.passwordRefIDJOP("ShowPasswordInAccount", "Enter Ref ID")) {
                             passwordLabel.setText("Password: " + password);
                             passwordButton.setText("Hide Password");
                             passwordButton.setBackground(Color.BLUE);
@@ -1454,10 +1492,10 @@ public class EazyFinderGUI {
                 sudoModeButton.setBounds(370, 245, 70, 25);
                 sudoModeButton.setForeground(Color.WHITE);
                 sudoModeButton.setBackground(Color.DARK_GRAY);
+                sudoModeButton.setFont(timesNewRoman);
                 sudoModeButton.addActionListener(ae -> {
                     if (sudoModeButton.getText().equals("ON")) {
-                        String typedPassword = JOptionPane.showInputDialog(frame, "Enter Password:");
-                        if (typedPassword.equals(password)) {
+                        if (prObj.passwordRefIDJOP("SudoMode", "Enter Password")) {
                             passwordTypedAt = setCurrentTime();
                             sudoModeButton.setText("OFF");
                             sudoModeAccepted = true;
@@ -1697,7 +1735,7 @@ public class EazyFinderGUI {
             childrenField.setFont(timesNewRoman);
             componentY += diffInYs;
 
-            clearFormButton.setBounds(0, componentY, 100, bookingComponentHeight);
+            clearFormButton.setBounds(536, componentY, 150, bookingComponentHeight);
             clearFormButton.setForeground(Color.WHITE);
             clearFormButton.setBackground(Color.RED);
             clearFormButton.setFont(timesNewRoman);
@@ -1957,6 +1995,7 @@ public class EazyFinderGUI {
                     backButton.setBounds(0, 0, 80, 30);
                     backButton.setBackground(Color.BLACK);
                     backButton.setForeground(Color.WHITE);
+                    backButton.setFont(timesNewRoman);
                     backButton.addActionListener(new Back((byte) 2));
 
                     msg.setBounds(0, 0, frameSize, frameSize);
@@ -1993,6 +2032,7 @@ public class EazyFinderGUI {
         backButton.setBounds(0, 0, 80, 30);
         backButton.setBackground(Color.BLACK);
         backButton.setForeground(Color.WHITE);
+        backButton.setFont(timesNewRoman);
         backButton.addActionListener(new Back((byte) 2));
 
         logoutButton.setBounds(586, 0, 100, 30);
@@ -2068,6 +2108,7 @@ public class EazyFinderGUI {
             backButton.setBounds(0, 0, 80, 30);
             backButton.setBackground(Color.BLACK);
             backButton.setForeground(Color.WHITE);
+            backButton.setFont(timesNewRoman);
             backButton.addActionListener(new Back((byte) 2));
 
             enquireCityLabel.setBounds(200, 200, 100, 25);
