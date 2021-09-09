@@ -2,7 +2,7 @@ package EazyFinderGUI.MainCodes;
 
 import java.io.*;
 
-public class BookingMainCode {
+public class BookingAndEnquireMainCode {
     String city;
     public String source, destination;
     short noOfPlaces, noOfAdults, noOfChildren;
@@ -19,24 +19,24 @@ public class BookingMainCode {
     String str, dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
     BufferedReader cityReader, cityConnectionsReader;
 
-    public BookingMainCode() {
+    public BookingAndEnquireMainCode() {
     }
 
     short motIndex;
 
-    public BookingMainCode(short motIndex, short noOfAdults, short noOfChildren) {
+    public BookingAndEnquireMainCode(short motIndex, short noOfAdults, short noOfChildren) {
         this.motIndex = motIndex;
         this.noOfAdults = noOfAdults;
         this.noOfChildren = noOfChildren;
     }
 
-    public BookingMainCode(String city, String source, String destination) {
+    public BookingAndEnquireMainCode(String city, String source, String destination) {
         this.city = city;
         this.source = source.toLowerCase();
         this.destination = destination.toLowerCase();
     }
 
-    public BookingMainCode(String city, String source, String destination, short noOfAdults, short noOfChildren) {
+    public BookingAndEnquireMainCode(String city, String source, String destination, short noOfAdults, short noOfChildren) {
         this.city = city;
         this.source = source.toLowerCase();
         this.destination = destination.toLowerCase();
@@ -75,7 +75,7 @@ public class BookingMainCode {
     public short routeLen;
     public float cost;
 
-    public class EnquireAndBookings {
+    public class BookingAndEnquire {
         void getRoute(short sourceIndex, short destinationIndex, short[] shortestPath, short[] path) {
             route = new String[noOfPlaces];
             j = destinationIndex;

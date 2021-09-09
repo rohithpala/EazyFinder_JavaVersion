@@ -1727,7 +1727,7 @@ public class EazyFinderGUI {
         String typedName, typedPhoneNumber, typedEmailID;
 
         class ContinueToModeOfTransportation implements ActionListener {
-            BookingMainCode bookingObj;
+            BookingAndEnquireMainCode bookingObj;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1762,9 +1762,9 @@ public class EazyFinderGUI {
                     if (!typedEmailID.matches(emailIDRegex)) emailMessage.setText("Invalid Email Address");
                 } else {
                     msg.setText("");
-                    bookingObj = new BookingMainCode(city, source, destination, noOfAdults, noOfChildren);
+                    bookingObj = new BookingAndEnquireMainCode(city, source, destination, noOfAdults, noOfChildren);
 
-                    bookingObj.new EnquireAndBookings().bookings();
+                    bookingObj.new BookingAndEnquire().bookings();
 
                     String[] route = bookingObj.route;
                     cost = bookingObj.cost;
@@ -1902,7 +1902,7 @@ public class EazyFinderGUI {
 
                 book.addActionListener(e -> {
                     short motIndex = (short) vehicleCB.getSelectedIndex();
-                    BookingMainCode bookingObj = new BookingMainCode(motIndex,
+                    BookingAndEnquireMainCode bookingObj = new BookingAndEnquireMainCode(motIndex,
                             Short.parseShort(String.valueOf(adultField.getValue())),
                             Short.parseShort(String.valueOf(childrenField.getValue())));
                     float totalCost = bookingObj.calculateTotalCost();
@@ -1933,7 +1933,7 @@ public class EazyFinderGUI {
 
                     Date date = new Date();
 
-                    BookingMainCode bookingObj = new BookingMainCode();
+                    BookingAndEnquireMainCode bookingObj = new BookingAndEnquireMainCode();
 
                     bookingObj.loadDetails(username, city, source, destination, bookingObj.calculateTotalCost(),
                             typedName, typedPhoneNumber, typedEmailID, noOfAdults, noOfChildren,
@@ -2143,10 +2143,9 @@ public class EazyFinderGUI {
                     msg.setText("Source and Destination Cannot be same");
                 } else {
                     msg.setText("");
-                    JLabel routeCostMessage = new JLabel();
 
-                    BookingMainCode enquiryObj = new BookingMainCode(enquireCity, enquireSource, enquireDestination);
-                    enquiryObj.new EnquireAndBookings().bookings();
+                    BookingAndEnquireMainCode enquiryObj = new BookingAndEnquireMainCode(enquireCity, enquireSource, enquireDestination);
+                    enquiryObj.new BookingAndEnquire().bookings();
 
                     String[] route = enquiryObj.route;
                     short i, routeLen = enquiryObj.routeLen;
@@ -2160,24 +2159,17 @@ public class EazyFinderGUI {
                     }
                     routeCost.append("\n\nTotal Fare: ").append(totalCost).append(" /-").append("</html>");
 
-                    routeCostMessage.setBounds(0, 0, 500, 500);
-                    routeCostMessage.setHorizontalAlignment(0);
-                    routeCostMessage.setVerticalAlignment(0);
-                    routeCostMessage.setFont(timesNewRoman);
-                    routeCostMessage.setText(String.valueOf(routeCost).replaceAll("\n", "<br>"));
-                    routeCostMessage.setText(routeCostMessage.getText().toUpperCase());
-
-                    optionPaneResult = JOptionPane.showOptionDialog(frame, routeCostMessage,
+                    optionPaneResult = JOptionPane.showOptionDialog(frame, String.valueOf(routeCost).replaceAll("\n", "<br>"),
                             enquiryObj.source.toUpperCase() + " to " + enquiryObj.destination.toUpperCase(),
                             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
                             null, optionPaneButtonNames, null);
 
                     if (optionPaneResult == JOptionPane.YES_OPTION) {
-                        // store the enquiries
-                        File enquiryFile = new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt");
+                        // storing the enquiries
                         try {
-                            BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile, true));
-                            writer.write(enquireCity.toUpperCase() + "," + enquireSource.toUpperCase() + "," + enquireDestination.toUpperCase() + "," + cost + "\n");
+                            BufferedWriter writer = new BufferedWriter(new FileWriter(dirname + "\\Databases\\Enquiries\\" + username + ".txt", true));
+                            writer.write(enquireCity.toUpperCase() + "," + enquireSource.toUpperCase() + "," + enquireDestination.toUpperCase() + "," +
+                                     enquireAdults + "," + enquireChildren + "," + cost + "," + totalCost + "\n");
                             writer.flush();
                             writer.close();
                         } catch (Exception ex) {
