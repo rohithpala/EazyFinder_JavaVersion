@@ -41,9 +41,8 @@ public class EazyFinderGUI {
     final File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
     final File ud = new File(dirname + "\\Databases\\UserDetails.txt");
 
-    // frame related
     JFrame frame = new JFrame(); //Main frame
-    final short frameSize = 700;
+    final short frameSize = 700; // frame size
 
     // common components in every frame change
     JButton backButton;
@@ -55,7 +54,7 @@ public class EazyFinderGUI {
     JLabel optionPaneLabel = new JLabel(); // label added into JOptionPanes to show corresponding messages
     int optionPaneResult; // used for storing option pane results
 
-    Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\Images\\TitleBarIcon.png");
+    Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\Images\\TitleBarIcon.png"); // Title Bar Icon
 
     public static void main(String[] args) {
         new EazyFinderGUI().Homepage();
@@ -921,13 +920,12 @@ public class EazyFinderGUI {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                String refIDString = JOptionPane.showInputDialog(jFrame, "Reference ID:");
-                if (String.valueOf(refID).equals(refIDString)) {
+                if (prObj.passwordRefIDJOP(verificationFrame, "Verification", "Enter Ref ID")) {
                     passwordTypedAt = setCurrentTime();
                     showMessageDialogJOP(jFrame, "Hey " + name + "! Please reset the Password", "Reset the Password", JOptionPane.PLAIN_MESSAGE);
                     callingCorrespondingFunction();
                 } else {
-                    showMessageDialogJOP(jFrame, "Reference ID is wrong", "Reference ID is wrong", JOptionPane.INFORMATION_MESSAGE);
+                    showMessageDialogJOP(jFrame, "Reference ID is wrong", "Reference ID is wrong", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
@@ -1107,23 +1105,23 @@ public class EazyFinderGUI {
         JLabel msg;
         JPasswordField pf;
 
-        boolean passwordRefIDJOP(String calledBy, String jopTitle) {
+        boolean passwordRefIDJOP(JFrame jFrame, String calledBy, String jopTitle) {
             msg = new JLabel(jopTitle + ":");
             msg.setFont(tempFont);
             pf = new JPasswordField();
 
             if (calledBy.equals("SudoMode")) {
                 if (jopTitle.equals("Enter Password")) {
-                    optionPaneResult = JOptionPane.showOptionDialog(frame, new Object[]{msg, pf}, jopTitle, JOptionPane.YES_NO_OPTION,
+                    optionPaneResult = JOptionPane.showOptionDialog(jFrame, new Object[]{msg, pf}, jopTitle, JOptionPane.YES_NO_OPTION,
                             JOptionPane.PLAIN_MESSAGE, null, new String[]{"Continue with Ref ID", "Ok"}, null);
                     if (optionPaneResult == JOptionPane.YES_OPTION) {
-                        return passwordRefIDJOP(calledBy, "Enter Ref ID");
+                        return passwordRefIDJOP(jFrame, calledBy, "Enter Ref ID");
                     }
                 } else if (jopTitle.equals("Enter Ref ID")) {
-                    optionPaneResult = JOptionPane.showOptionDialog(frame, new Object[]{msg, pf}, jopTitle, JOptionPane.YES_NO_OPTION,
+                    optionPaneResult = JOptionPane.showOptionDialog(jFrame, new Object[]{msg, pf}, jopTitle, JOptionPane.YES_NO_OPTION,
                             JOptionPane.PLAIN_MESSAGE, null, new String[]{"Continue with Password", "Ok"}, null);
                     if (optionPaneResult == JOptionPane.YES_OPTION) {
-                        return passwordRefIDJOP(calledBy, "Enter Password");
+                        return passwordRefIDJOP(jFrame, calledBy, "Enter Password");
                     }
                 }
 
@@ -1131,8 +1129,8 @@ public class EazyFinderGUI {
                     if (jopTitle.equals("Enter Password")) return String.valueOf(pf.getPassword()).equals(password);
                     else return String.valueOf(pf.getPassword()).equals(String.valueOf(refID));
                 }
-            } else if (calledBy.equals("ShowPasswordInAccount")) {
-                JOptionPane.showMessageDialog(frame, new Object[]{msg, pf}, jopTitle, JOptionPane.PLAIN_MESSAGE);
+            } else if (calledBy.equals("ShowPasswordInAccount") || calledBy.equals("Verification")) {
+                JOptionPane.showMessageDialog(jFrame, new Object[]{msg, pf}, jopTitle, JOptionPane.PLAIN_MESSAGE);
                 return String.valueOf(pf.getPassword()).equals(String.valueOf(refID));
             }
 
@@ -1306,7 +1304,7 @@ public class EazyFinderGUI {
                 passwordButton.setHorizontalAlignment(0);
                 passwordButton.addActionListener(ae -> {
                     if (passwordButton.getText().equals("Show Password")) {
-                        if (prObj.passwordRefIDJOP("ShowPasswordInAccount", "Enter Ref ID")) {
+                        if (prObj.passwordRefIDJOP(frame, "ShowPasswordInAccount", "Enter Ref ID")) {
                             passwordLabel.setText("Password: " + password);
                             passwordButton.setText("Hide Password");
                             passwordButton.setBackground(Color.BLUE);
@@ -1495,7 +1493,7 @@ public class EazyFinderGUI {
                 sudoModeButton.setFont(timesNewRoman);
                 sudoModeButton.addActionListener(ae -> {
                     if (sudoModeButton.getText().equals("ON")) {
-                        if (prObj.passwordRefIDJOP("SudoMode", "Enter Password")) {
+                        if (prObj.passwordRefIDJOP(frame, "SudoMode", "Enter Password")) {
                             passwordTypedAt = setCurrentTime();
                             sudoModeButton.setText("OFF");
                             sudoModeAccepted = true;
