@@ -73,14 +73,14 @@ public class UpdateUsernameMainCode {
             // Updating Profile Picture Name
             File ppDir = new File(dirname + "\\Databases\\ProfilePictures");
             String fileName;
-            boolean ppUpdated;
             int i;
             for(File file : Objects.requireNonNull(ppDir.listFiles())){
                 fileName = file.getName();
                 i = fileName.lastIndexOf(".");
                 if(username.equals(fileName.substring(0, i))){
-                    ppUpdated = file.renameTo(new File(dirname + "\\Databases\\ProfilePictures\\" + newUsername + fileName.substring(i)));
-                    return th.renameTo(newTH) && enq.renameTo(newENQ) && ppUpdated;
+                    // renaming Transaction History, Enquiry and Profile Picture files
+                    return th.renameTo(newTH) && enq.renameTo(newENQ) &&
+                            file.renameTo(new File(dirname + "\\Databases\\ProfilePictures\\" + newUsername + fileName.substring(i)));
                 }
             }
 

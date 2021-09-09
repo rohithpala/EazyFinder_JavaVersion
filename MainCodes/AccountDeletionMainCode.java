@@ -30,7 +30,7 @@ public class AccountDeletionMainCode {
             }
             reader.close();
 
-            // writing user's data to db
+            // writing data leaving current user's data to db
             BufferedWriter writer = new BufferedWriter(new FileWriter(db));
             String[] s = String.valueOf(credentials).split(";");
             for (String s1 : s)
@@ -47,7 +47,7 @@ public class AccountDeletionMainCode {
             }
             reader.close();
 
-            // writing user's data to ud
+            // writing data leaving current user's data to ud
             writer = new BufferedWriter(new FileWriter(ud));
             s = String.valueOf(credentials).split(";");
             for (String s1 : s)
@@ -57,17 +57,12 @@ public class AccountDeletionMainCode {
 
             // Deleting profile picture
             File ppDir = new File(dirname + "\\Databases\\ProfilePictures");
-            String fileName, temp;
-            boolean ppDeleted;
-            int i;
+            String fileName;
             for(File file : Objects.requireNonNull(ppDir.listFiles())){
                 fileName = file.getName();
-                i = fileName.lastIndexOf(".");
-                temp = fileName.substring(0, i);
-                if(username.equals(temp)){
-                    ppDeleted = file.delete();
+                if(username.equals(fileName.substring(0, fileName.lastIndexOf(".")))){
                     return new File(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt").delete() &&
-                            new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt").delete() && ppDeleted;
+                            new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt").delete() && file.delete();
                 }
             }
 

@@ -329,7 +329,7 @@ public class EazyFinderGUI {
                         msg.setForeground(Color.RED);
                         msg.setText("Password Incorrect");
                     } else if (usernameFound && passwordFound) {
-                        refID = Integer.parseInt(credentials[2]);
+                        refID = Long.parseLong(credentials[2]);
 
                         try {
                             BufferedReader reader = new BufferedReader(new FileReader(ud));
@@ -450,9 +450,13 @@ public class EazyFinderGUI {
                 if (i > 0) profilePictureExtension = profilePicturePath.substring(i);
 
                 if (profilePictureExtension.equals(".png") || profilePictureExtension.equals(".jpg") || profilePictureExtension.equals(".jpeg")) {
-                    optionPaneLabel.setText(profilePicturePath);
-                    optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel, "Profile Picture Path",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                    int[] wh = {profilePictureWidth, profilePictureHeight};
+                    changeWH(wh);
+                    JLabel ppLabel = new JLabel();
+                    ppLabel.setHorizontalAlignment(0);
+                    ppLabel.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
+                    optionPaneResult = JOptionPane.showOptionDialog(frame, ppLabel, "Profile Picture",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
                             null, optionPaneButtonNames, null);
                 } else {
                     showMessageDialogJOP(frame,
@@ -507,6 +511,15 @@ public class EazyFinderGUI {
             }
         } catch (IOException ignored) {
         }
+    }
+
+    // used in signup and settings
+    void changeWH(int[] wh) {
+        if (wh[0] >= 375) wh[0] /= 2;
+        else if (wh[0] >= 250) wh[0] /= 1.5;
+
+        if (wh[1] >= 375) wh[1] /= 2;
+        else if (wh[1] >= 250) wh[1] /= 1.5;
     }
 
     class SignUpUI {
@@ -882,6 +895,7 @@ public class EazyFinderGUI {
             verifyButton.setBounds(75, 190, 150, 25);
             verifyButton.setBackground(Color.BLUE);
             verifyButton.setForeground(Color.WHITE);
+            verifyButton.setFont(timesNewRoman);
             if (calledBy.equals("AccountDeletion")) {
                 verifyButton.setText("Delete Account");
                 verifyButton.setBackground(Color.RED);
@@ -1157,20 +1171,16 @@ public class EazyFinderGUI {
                 accountLabel.setToolTipText(username + "'s Account");
 
                 int width = profilePictureWidth, height = profilePictureHeight;
-                if (width >= 375) width /= 2;
-                else if (width >= 250) width /= 1.5;
-
-                if (height >= 375) height /= 2;
-                else if (height >= 250) height /= 1.5;
                 int[] wh = {width, height};
+                changeWH(wh);
 
-                profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-                profilePictureInAccount.setBounds((frameSize - width) / 2, ((250 - height) / 2) + 70, width, height);
+                profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
+                profilePictureInAccount.setBounds((frameSize - wh[0]) / 2, ((250 - wh[1]) / 2) + 70, wh[0], wh[1]);
                 profilePictureInAccount.setHorizontalAlignment(0);
                 profilePictureInAccount.setVerticalAlignment(0);
 
                 // profile picture operations
-                viewPhotoButton.setBounds(500, 150, 120, 25);
+                viewPhotoButton.setBounds(500, 150, 150, 25);
                 viewPhotoButton.setForeground(Color.WHITE);
                 viewPhotoButton.setBackground(Color.DARK_GRAY);
                 viewPhotoButton.setFont(timesNewRoman);
@@ -1180,7 +1190,7 @@ public class EazyFinderGUI {
                     JOptionPane.showMessageDialog(frame, ppLabel, "Profile Picture", JOptionPane.PLAIN_MESSAGE);
                 });
 
-                changePhotoButton.setBounds(500, 200, 120, 25);
+                changePhotoButton.setBounds(500, 200, 150, 25);
                 changePhotoButton.setForeground(Color.WHITE);
                 changePhotoButton.setBackground(Color.DARK_GRAY);
                 changePhotoButton.setFont(timesNewRoman);
@@ -1200,7 +1210,7 @@ public class EazyFinderGUI {
                 });
 
                 // https://stackoverflow.com/questions/27379059/determine-if-two-files-store-the-same-content
-                deletePhotoButton.setBounds(500, 250, 120, 25);
+                deletePhotoButton.setBounds(500, 250, 150, 25);
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
                 deletePhotoButton.setFont(timesNewRoman);
@@ -1465,14 +1475,6 @@ public class EazyFinderGUI {
                 logoutButton.setFont(timesNewRoman);
                 logoutButton.addActionListener(new Back((byte) 1));
             }
-        }
-
-        void changeWH(int[] wh) {
-            if (wh[0] >= 375) wh[0] /= 2;
-            else if (wh[0] >= 250) wh[0] /= 1.5;
-
-            if (wh[1] >= 375) wh[1] /= 2;
-            else if (wh[1] >= 250) wh[1] /= 1.5;
         }
     }
 
