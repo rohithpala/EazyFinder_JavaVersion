@@ -1177,18 +1177,20 @@ public class EazyFinderGUI {
                 profilePictureInAccount.setVerticalAlignment(0);
 
                 // profile picture operations
-                viewPhotoButton.setBounds(500, 150, 120, 25);
+                viewPhotoButton.setBounds(500, 150, 150, 25);
                 viewPhotoButton.setForeground(Color.WHITE);
                 viewPhotoButton.setBackground(Color.DARK_GRAY);
+                viewPhotoButton.setFont(timesNewRoman);
                 viewPhotoButton.addActionListener(ae -> {
                     JLabel ppLabel = new JLabel();
                     ppLabel.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
                     JOptionPane.showMessageDialog(frame, ppLabel, "Profile Picture", JOptionPane.PLAIN_MESSAGE);
                 });
 
-                changePhotoButton.setBounds(500, 200, 120, 25);
+                changePhotoButton.setBounds(500, 200, 150, 25);
                 changePhotoButton.setForeground(Color.WHITE);
                 changePhotoButton.setBackground(Color.DARK_GRAY);
+                changePhotoButton.setFont(timesNewRoman);
                 changePhotoButton.addActionListener(ae -> {
                     if (setPPDetails() == JOptionPane.YES_OPTION) {
                         wh[0] = profilePictureWidth;
@@ -1205,9 +1207,10 @@ public class EazyFinderGUI {
                 });
 
                 // https://stackoverflow.com/questions/27379059/determine-if-two-files-store-the-same-content
-                deletePhotoButton.setBounds(500, 250, 120, 25);
+                deletePhotoButton.setBounds(500, 250, 150, 25);
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
+                deletePhotoButton.setFont(timesNewRoman);
                 deletePhotoButton.addActionListener(ae -> {
                     // checking if the PP is already deleted TODO check this a small problem
                     try {
@@ -1454,7 +1457,7 @@ public class EazyFinderGUI {
                 sudoModeButton.addActionListener(ae -> {
                     if (sudoModeButton.getText().equals("ON")) {
                         String typedPassword = JOptionPane.showInputDialog(frame, "Enter Password:");
-                        if(typedPassword.equals(password)) {
+                        if (typedPassword.equals(password)) {
                             passwordTypedAt = setCurrentTime();
                             sudoModeButton.setText("OFF");
                             sudoModeAccepted = true;
@@ -2170,7 +2173,7 @@ public class EazyFinderGUI {
                         try {
                             BufferedWriter writer = new BufferedWriter(new FileWriter(dirname + "\\Databases\\Enquiries\\" + username + ".txt", true));
                             writer.write(enquireCity.toUpperCase() + "," + enquireSource.toUpperCase() + "," + enquireDestination.toUpperCase() + "," +
-                                     enquireAdults + "," + enquireChildren + "," + cost + "," + totalCost + "\n");
+                                    enquireAdults + "," + enquireChildren + "," + cost + "," + totalCost + "\n");
                             writer.flush();
                             writer.close();
                         } catch (Exception ex) {
