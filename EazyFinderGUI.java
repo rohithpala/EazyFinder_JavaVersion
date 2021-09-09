@@ -990,8 +990,9 @@ public class EazyFinderGUI {
 
     final int menuButtonWidth = 300, menuButtonHeight = 30, buttonsX = 200, diffInYs = 70;
     int buttonsY = 130;
-    final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64, imageX = (frameSize - IMAGE_WIDTH) / 2, imageY = (buttonsY - IMAGE_HEIGHT) / 2;
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\Images\\finder.png"));
+    final int IMAGE_WIDTH = finderImage.getIcon().getIconWidth(), IMAGE_HEIGHT = finderImage.getIcon().getIconHeight();
+    final int imageX = (frameSize - IMAGE_WIDTH) / 2, imageY = (buttonsY - IMAGE_HEIGHT) / 2;
 
     //    String[] settingsMenu = {"Menu", "Account", "Settings"};
 //    JComboBox<String> settingsJCB = new JComboBox<>(settingsMenu);
@@ -1049,7 +1050,7 @@ public class EazyFinderGUI {
         usernameLabel.setFont(timesNewRoman);
         usernameLabel.setOpaque(true);
 
-        finderImage.setBounds(imageX, imageY, IMAGE_WIDTH, IMAGE_HEIGHT);
+        finderImage.setBounds(imageX, imageY + 15, IMAGE_WIDTH, IMAGE_HEIGHT);
 
         menuBookingButton.setBounds(buttonsX, buttonsY, menuButtonWidth, menuButtonHeight);
         menuBookingButton.setBackground(Color.DARK_GRAY);
