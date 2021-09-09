@@ -27,6 +27,7 @@ button. Give options like "Look at UI" and show the UI)
 7. add clear form option and also cross symbol in text fields
 9. add sorting option based on filters wherever possible
 10. save the previous frame state while redirection
+11. add change name, phone, email id options in account
 */
 
 public class EazyFinderGUI {
@@ -978,7 +979,7 @@ public class EazyFinderGUI {
     final int IMAGE_WIDTH = 64, IMAGE_HEIGHT = 64, imageX = (frameSize - IMAGE_WIDTH) / 2, imageY = (buttonsY - IMAGE_HEIGHT) / 2;
     final JLabel finderImage = new JLabel(new ImageIcon(dirname + "\\Images\\finder.png"));
 
-//    String[] settingsMenu = {"Menu", "Account", "Settings"};
+    //    String[] settingsMenu = {"Menu", "Account", "Settings"};
 //    JComboBox<String> settingsJCB = new JComboBox<>(settingsMenu);
     JMenuBar menuBar = new JMenuBar();
     JMenuItem menu = new JMenuItem("Menu");
@@ -1027,7 +1028,7 @@ public class EazyFinderGUI {
         settings.setFont(timesNewRoman);
 
         usernameLabel.setText("Username: " + username);
-        usernameLabel.setBounds(400, 30, frameSize-400, 25);
+        usernameLabel.setBounds(400, 30, frameSize - 400, 25);
         usernameLabel.setBackground(Color.cyan);
         usernameLabel.setForeground(Color.DARK_GRAY);
         usernameLabel.setHorizontalAlignment(0);
@@ -1172,6 +1173,7 @@ public class EazyFinderGUI {
                 viewPhotoButton.setBounds(500, 150, 120, 25);
                 viewPhotoButton.setForeground(Color.WHITE);
                 viewPhotoButton.setBackground(Color.DARK_GRAY);
+                viewPhotoButton.setFont(timesNewRoman);
                 viewPhotoButton.addActionListener(ae -> {
                     JLabel ppLabel = new JLabel();
                     ppLabel.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
@@ -1181,6 +1183,7 @@ public class EazyFinderGUI {
                 changePhotoButton.setBounds(500, 200, 120, 25);
                 changePhotoButton.setForeground(Color.WHITE);
                 changePhotoButton.setBackground(Color.DARK_GRAY);
+                changePhotoButton.setFont(timesNewRoman);
                 changePhotoButton.addActionListener(ae -> {
                     if (setPPDetails() == JOptionPane.YES_OPTION) {
                         wh[0] = profilePictureWidth;
@@ -1200,6 +1203,7 @@ public class EazyFinderGUI {
                 deletePhotoButton.setBounds(500, 250, 120, 25);
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
+                deletePhotoButton.setFont(timesNewRoman);
                 deletePhotoButton.addActionListener(ae -> {
                     // checking if the PP is already deleted TODO check this a small problem
                     try {
@@ -1570,6 +1574,7 @@ public class EazyFinderGUI {
             adultLabel = new JLabel("Adults:");
             childrenLabel = new JLabel("Children:");
             JButton nextButton = new JButton("Next");
+            JButton clearFormButton = new JButton("Clear Form");
             msg = new JLabel();
             JButton logoutButton = new JButton("Logout");
 
@@ -1600,6 +1605,7 @@ public class EazyFinderGUI {
             frame.add(adultField);
             frame.add(childrenLabel);
             frame.add(childrenField);
+            frame.add(clearFormButton);
             frame.add(nextButton);
             frame.add(logoutButton);
 
@@ -1684,6 +1690,19 @@ public class EazyFinderGUI {
             childrenField.setBounds(bookingFieldX, componentY, bookingFieldWidth, bookingComponentHeight);
             childrenField.setFont(timesNewRoman);
             componentY += diffInYs;
+
+            clearFormButton.setBounds(0, componentY, 100, bookingComponentHeight);
+            clearFormButton.setForeground(Color.WHITE);
+            clearFormButton.setBackground(Color.RED);
+            clearFormButton.setFont(timesNewRoman);
+            clearFormButton.addActionListener(e -> {
+                nameField.setText("");
+                phoneField.setText("");
+                emailField.setText("");
+                cityField.setSelectedItem("--Select--");
+                adultField.setValue(1);
+                childrenField.setValue(0);
+            });
 
             nextButton.setBounds(300, componentY, 100, bookingComponentHeight);
             nextButton.setBackground(Color.DARK_GRAY);
