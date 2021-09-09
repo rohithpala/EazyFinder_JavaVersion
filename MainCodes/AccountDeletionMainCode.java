@@ -15,10 +15,10 @@ public class AccountDeletionMainCode {
     }
 
     public boolean accountDeletion(String username, String password, long refID) {
-        String str, dirname = System.getProperty("user.dir");
+        String str, dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
         StringBuilder credentials = new StringBuilder();
-        File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
-        File ud = new File(dirname + "\\EazyFinderGUI\\Databases\\UserDetails.txt");
+        File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
+        File ud = new File(dirname + "\\Databases\\UserDetails.txt");
 
         try {
             // removing user's data in db
@@ -56,7 +56,7 @@ public class AccountDeletionMainCode {
             writer.close();
 
             // Deleting profile picture
-            File ppDir = new File(dirname + "\\EazyFinderGUI\\ProfilePictures");
+            File ppDir = new File(dirname + "\\Databases\\ProfilePictures");
             String fileName, temp;
             boolean ppDeleted;
             int i;
@@ -66,8 +66,8 @@ public class AccountDeletionMainCode {
                 temp = fileName.substring(0, i);
                 if(username.equals(temp)){
                     ppDeleted = file.delete();
-                    return new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt").delete() &&
-                            new File(dirname + "\\EazyFinderGUI\\Enquiries\\" + username + ".txt").delete() && ppDeleted;
+                    return new File(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt").delete() &&
+                            new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt").delete() && ppDeleted;
                 }
             }
 

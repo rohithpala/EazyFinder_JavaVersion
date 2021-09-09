@@ -11,9 +11,9 @@ public class FlushWholeData {
         String dirname = System.getProperty("user.dir"); // Path till EazyFinderGUI
 
         // Directories
-        File enq = new File(dirname + "\\Enquiries");
-        File th = new File(dirname + "\\TransactionHistories");
-        File pp = new File(dirname + "\\ProfilePictures");
+        File enq = new File(dirname + "\\Databases\\Enquiries");
+        File th = new File(dirname + "\\Databases\\TransactionHistories");
+        File pp = new File(dirname + "\\Databases\\ProfilePictures");
 
         // Files
         File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");

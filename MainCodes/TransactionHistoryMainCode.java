@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 
 public class TransactionHistoryMainCode {
     public String transactionHistory(String username){
-        File th = new File(System.getProperty("user.dir") + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+        File th = new File(System.getProperty("user.dir") + "\\EazyFinderGUI\\Databases\\TransactionHistories\\" + username + ".txt");
         if(th.length() == 0)
             return "NO";
         String str;

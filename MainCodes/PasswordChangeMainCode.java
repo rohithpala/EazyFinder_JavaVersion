@@ -14,9 +14,9 @@ public class PasswordChangeMainCode {
     }
 
     public boolean passwordChange(String username, String oldPassword, String newPassword, long refID) {
-        String str, dirname = System.getProperty("user.dir");
+        String str, dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
         StringBuilder credentials = new StringBuilder();
-        File db = new File(dirname + "\\EazyFinderGUI\\Databases\\LogInSignUpDatabase.txt");
+        File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
         try {
             // initializing "credentials" with correct details
             BufferedReader reader = new BufferedReader(new FileReader(db));

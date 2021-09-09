@@ -474,7 +474,7 @@ public class EazyFinderGUI {
     }
 
     void getPPDetails() {
-        File ppDir = new File(dirname + "\\ProfilePictures");
+        File ppDir = new File(dirname + "\\Databases\\ProfilePictures");
         int i;
         String fileName;
         for (File file : Objects.requireNonNull(ppDir.listFiles())) {
@@ -494,7 +494,7 @@ public class EazyFinderGUI {
     void savePP() {
         try {
             boolean fileCreated = true;
-            File destinationFile = new File(dirname + "\\ProfilePictures\\" + username + profilePictureExtension);
+            File destinationFile = new File(dirname + "\\Databases\\ProfilePictures\\" + username + profilePictureExtension);
 
             if (!destinationFile.exists()) fileCreated = destinationFile.createNewFile();
 
@@ -757,8 +757,8 @@ public class EazyFinderGUI {
                         savePP();
 
                         // Creating Transaction History and Enquiry Files for the user
-                        File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
-                        File en = new File(dirname + "\\Enquiries\\" + username + ".txt");
+                        File th = new File(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt");
+                        File en = new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt");
                         if (th.createNewFile() && en.createNewFile()) {
                             showMessageDialogJOP(frame, "Account Created Successfully", "SignUp Successful", JOptionPane.INFORMATION_MESSAGE);
                             showMessageDialogJOP(frame, "<html>Your Reference ID is " + refID + "\nStore or Remember this as it will be helpful when you forget password</html>".replaceAll("\n", "<br>"),
@@ -1208,7 +1208,7 @@ public class EazyFinderGUI {
                     // checking if the PP is already deleted TODO check this a small problem
                     try {
                         BufferedReader reader1 = new BufferedReader(new FileReader(dirname + "\\Images\\defaultPP.png"));
-                        BufferedReader reader2 = new BufferedReader(new FileReader(dirname + "\\ProfilePictures\\" + username + profilePictureExtension));
+                        BufferedReader reader2 = new BufferedReader(new FileReader(dirname + "\\Databases\\ProfilePictures\\" + username + profilePictureExtension));
                         String str;
                         StringBuilder buf1 = new StringBuilder(), buf2 = new StringBuilder();
                         while ((str = reader1.readLine()) != null) buf1.append(str);
@@ -1278,7 +1278,7 @@ public class EazyFinderGUI {
                 // Calculating no. of enquiries made
                 int noOfEnquiries = 0;
                 try {
-                    Scanner scanner = new Scanner(new File(dirname + "\\Enquiries\\" + username + ".txt"));
+                    Scanner scanner = new Scanner(new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt"));
                     while (scanner.hasNextLine()) {
                         scanner.nextLine();
                         noOfEnquiries++;
@@ -1300,7 +1300,7 @@ public class EazyFinderGUI {
                 // Calculating no. of transactions made
                 int noOfTransactions = 0;
                 try {
-                    Scanner scanner = new Scanner(new File(dirname + "\\TransactionHistories\\" + username + ".txt"));
+                    Scanner scanner = new Scanner(new File(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt"));
                     while (scanner.hasNextLine()) {
                         scanner.nextLine();
                         noOfTransactions++;
@@ -1361,8 +1361,8 @@ public class EazyFinderGUI {
                 settingsLabel.setFont(headingFont);
                 settingsLabel.setHorizontalAlignment(0);
 
-                File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
-                File enq = new File(dirname + "\\Enquiries\\" + username + ".txt");
+                File th = new File(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt");
+                File enq = new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt");
 
                 deleteTHButton.setBounds(200, 65, 300, 30);
                 deleteTHButton.setForeground(Color.BLACK);
@@ -1421,8 +1421,8 @@ public class EazyFinderGUI {
                         if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                             try {
-                                new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
-                                new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
+                                new FileWriter(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt", false).close();
+                                new FileWriter(dirname + "\\Databases\\Enquiries\\" + username + ".txt", false).close();
                                 showMessageDialogJOP(frame, "All the Account Data Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
                             } catch (Exception ex) {
                                 showMessageDialogJOP(frame, "<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
@@ -2172,7 +2172,7 @@ public class EazyFinderGUI {
 
                     if (optionPaneResult == JOptionPane.YES_OPTION) {
                         // store the enquiries
-                        File enquiryFile = new File(dirname + "\\Enquiries\\" + username + ".txt");
+                        File enquiryFile = new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt");
                         try {
                             BufferedWriter writer = new BufferedWriter(new FileWriter(enquiryFile, true));
                             writer.write(enquireCity.toUpperCase() + "," + enquireSource.toUpperCase() + "," + enquireDestination.toUpperCase() + "," + cost + "\n");

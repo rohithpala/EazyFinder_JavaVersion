@@ -19,10 +19,10 @@ public class UpdateUsernameMainCode {
         StringBuilder credentials = new StringBuilder();
         File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
         File ud = new File(dirname + "\\Databases\\UserDetails.txt");
-        File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
-        File newTH = new File(dirname + "\\TransactionHistories\\" + newUsername + ".txt");
-        File enq = new File(dirname + "\\Enquiries\\" + username + ".txt");
-        File newENQ = new File(dirname + "\\Enquiries\\" + newUsername + ".txt");
+        File th = new File(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt");
+        File newTH = new File(dirname + "\\Databases\\TransactionHistories\\" + newUsername + ".txt");
+        File enq = new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt");
+        File newENQ = new File(dirname + "\\Databases\\Enquiries\\" + newUsername + ".txt");
 
         try {
             // reading db and loading correct details into "credentials"
@@ -71,7 +71,7 @@ public class UpdateUsernameMainCode {
             writer.close();
 
             // Updating Profile Picture Name
-            File ppDir = new File(dirname + "\\ProfilePictures");
+            File ppDir = new File(dirname + "\\Databases\\ProfilePictures");
             String fileName;
             boolean ppUpdated;
             int i;
@@ -79,7 +79,7 @@ public class UpdateUsernameMainCode {
                 fileName = file.getName();
                 i = fileName.lastIndexOf(".");
                 if(username.equals(fileName.substring(0, i))){
-                    ppUpdated = file.renameTo(new File(dirname + "\\ProfilePictures\\" + newUsername + fileName.substring(i)));
+                    ppUpdated = file.renameTo(new File(dirname + "\\Databases\\ProfilePictures\\" + newUsername + fileName.substring(i)));
                     return th.renameTo(newTH) && enq.renameTo(newENQ) && ppUpdated;
                 }
             }

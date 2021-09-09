@@ -16,12 +16,14 @@ public class BookingMainCode {
     short[] childCost = {10, 15, 7, 7, 15};
     short i, j, k;
 
-    String str, dirname = System.getProperty("user.dir");
+    String str, dirname = System.getProperty("user.dir") + "\\EazyFinderGUI";
     BufferedReader cityReader, cityConnectionsReader;
 
-    public BookingMainCode() {}
+    public BookingMainCode() {
+    }
 
     short motIndex;
+
     public BookingMainCode(short motIndex, short noOfAdults, short noOfChildren) {
         this.motIndex = motIndex;
         this.noOfAdults = noOfAdults;
@@ -43,10 +45,9 @@ public class BookingMainCode {
     }
 
     public void loadDetails(String username, String city, String source, String destination, float cost, String name, String phone, String email,
-                     short noOfAdults, short noOfChildren, String date, String time) {
-        File th = new File(dirname + "\\EazyFinderGUI\\TransactionHistories\\" + username + ".txt");
+                            short noOfAdults, short noOfChildren, String date, String time) {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(th, true));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt", true));
             writer.write("Name: " + name + "," +
                     "Phone Number: " + phone + "," +
                     "Email ID: " + email + "," +
@@ -138,7 +139,7 @@ public class BookingMainCode {
 
         void formCity() {
             try {
-                File cityConnectionsFile = new File(dirname + "\\EazyFinderGUI\\CitiesInfo\\" + city + "-connections.txt");
+                File cityConnectionsFile = new File(dirname + "\\CitiesInfo\\" + city + "-connections.txt");
                 cityConnectionsReader = new BufferedReader(new FileReader(cityConnectionsFile));
                 while ((str = cityConnectionsReader.readLine()) != null) {
                     tempArray = str.split(" ");
@@ -149,7 +150,7 @@ public class BookingMainCode {
         }
 
         void getPlaces() {
-            File cityFile = new File(dirname + "\\EazyFinderGUI\\CitiesInfo\\" + city + ".txt");
+            File cityFile = new File(dirname + "\\CitiesInfo\\" + city + ".txt");
             try {
                 noOfPlaces = 0;
                 cityReader = new BufferedReader(new FileReader(cityFile));
