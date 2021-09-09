@@ -994,12 +994,8 @@ public class EazyFinderGUI {
     final int IMAGE_WIDTH = finderImage.getIcon().getIconWidth(), IMAGE_HEIGHT = finderImage.getIcon().getIconHeight();
     final int imageX = (frameSize - IMAGE_WIDTH) / 2, imageY = (buttonsY - IMAGE_HEIGHT) / 2;
 
-    //    String[] settingsMenu = {"Menu", "Account", "Settings"};
-//    JComboBox<String> settingsJCB = new JComboBox<>(settingsMenu);
-    JMenuBar menuBar = new JMenuBar();
-    JMenuItem menu = new JMenuItem("Menu");
-    JMenuItem account = new JMenuItem("Account");
-    JMenuItem settings = new JMenuItem("Settings");
+    String[] settingsMenu = {"Menu", "Account", "Settings"};
+    JComboBox<String> settingsCB = new JComboBox<>(settingsMenu);
 
     // use type of singleton class because the frame ui is static, not needed to always set bounds and all TODO
     void displayMenu() {
@@ -1018,11 +1014,7 @@ public class EazyFinderGUI {
         JButton menuSwitchAccountsButton = new JButton("Switch Accounts");
         JButton logoutButton = new JButton("Logout");
 
-        menuBar.add(menu);
-        menuBar.add(account);
-        menuBar.add(settings);
-
-        frame.add(menuBar);
+        frame.add(settingsCB);
         frame.add(usernameLabel);
         frame.add(finderImage);
         frame.add(menuBookingButton);
@@ -1034,16 +1026,13 @@ public class EazyFinderGUI {
         frame.add(menuSwitchAccountsButton);
         frame.add(logoutButton);
 
-        menuBar.setBounds(0, 0, frameSize, 25);
-        menu.addActionListener(new Settings());
-        menu.setFont(timesNewRoman);
-        account.addActionListener(new Settings());
-        account.setFont(timesNewRoman);
-        settings.addActionListener(new Settings());
-        settings.setFont(timesNewRoman);
+        settingsCB.setBounds(550, 30, 100, 25);
+        settingsCB.setSelectedItem("Menu");
+        settingsCB.setFont(timesNewRoman);
+        settingsCB.addActionListener(new Settings());
 
         usernameLabel.setText("Username: " + username);
-        usernameLabel.setBounds(400, 30, frameSize - 400, 25);
+        usernameLabel.setBounds(0, 0, frameSize, 25);
         usernameLabel.setBackground(Color.cyan);
         usernameLabel.setForeground(Color.DARK_GRAY);
         usernameLabel.setHorizontalAlignment(0);
@@ -1118,17 +1107,14 @@ public class EazyFinderGUI {
         final Font headingFont = new Font("Times New Roman", Font.BOLD, 25);
         boolean[] alreadyDeleted = {false};
 
-        // Settings
-//        int sudoButtonClicked = 0;
-
         @Override
         public void actionPerformed(ActionEvent e) {
             frame.getContentPane().removeAll();
             frame.repaint();
 
-            if (e.getSource() == menu) { // Menu
+            if (settingsCB.getSelectedIndex() == 0) { // Menu
                 displayMenu();
-            } else if (e.getSource() == account) { // Account
+            } else if (settingsCB.getSelectedIndex() == 1) { // Account
                 backButton = new JButton("Back");
                 JButton viewPhotoButton = new JButton("View Photo");
                 JButton changePhotoButton = new JButton("Change Photo");
@@ -1144,6 +1130,7 @@ public class EazyFinderGUI {
                 JButton goToENQButton = new JButton("Go to Enquiries Page");
                 JLabel profilePictureInAccount = new JLabel();
 
+                frame.add(settingsCB);
                 frame.add(backButton);
                 frame.add(accountLabel);
                 frame.add(profilePictureInAccount);
@@ -1166,35 +1153,42 @@ public class EazyFinderGUI {
                 backButton.setFont(timesNewRoman);
                 backButton.addActionListener(new Back((byte) 3));
 
+                settingsCB.setBounds(550, 35, 100, 25);
+                settingsCB.setSelectedItem("Account");
+                settingsCB.setFont(timesNewRoman);
+                settingsCB.addActionListener(new Settings());
+
                 accountLabel.setBounds(250, 30, 200, 25);
                 accountLabel.setHorizontalAlignment(0);
                 accountLabel.setFont(headingFont);
                 accountLabel.setToolTipText(username + "'s Account");
 
                 int width = profilePictureWidth, height = profilePictureHeight;
-                int[] wh = {width, height};
-                changeWH(wh);
+                if (width >= 375) width /= 2;
+                else if (width >= 250) width /= 1.5;
 
-                profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
-                profilePictureInAccount.setBounds((frameSize - wh[0]) / 2, ((250 - wh[1]) / 2) + 70, wh[0], wh[1]);
+                if (height >= 375) height /= 2;
+                else if (height >= 250) height /= 1.5;
+                int[] wh = {width, height};
+
+                profilePictureInAccount.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
+                profilePictureInAccount.setBounds((frameSize - width) / 2, ((250 - height) / 2) + 70, width, height);
                 profilePictureInAccount.setHorizontalAlignment(0);
                 profilePictureInAccount.setVerticalAlignment(0);
 
                 // profile picture operations
-                viewPhotoButton.setBounds(500, 150, 150, 25);
+                viewPhotoButton.setBounds(500, 150, 120, 25);
                 viewPhotoButton.setForeground(Color.WHITE);
                 viewPhotoButton.setBackground(Color.DARK_GRAY);
-                viewPhotoButton.setFont(timesNewRoman);
                 viewPhotoButton.addActionListener(ae -> {
                     JLabel ppLabel = new JLabel();
                     ppLabel.setIcon(new ImageIcon(profilePicture.getImage().getScaledInstance(wh[0], wh[1], Image.SCALE_DEFAULT)));
                     JOptionPane.showMessageDialog(frame, ppLabel, "Profile Picture", JOptionPane.PLAIN_MESSAGE);
                 });
 
-                changePhotoButton.setBounds(500, 200, 150, 25);
+                changePhotoButton.setBounds(500, 200, 120, 25);
                 changePhotoButton.setForeground(Color.WHITE);
                 changePhotoButton.setBackground(Color.DARK_GRAY);
-                changePhotoButton.setFont(timesNewRoman);
                 changePhotoButton.addActionListener(ae -> {
                     if (setPPDetails() == JOptionPane.YES_OPTION) {
                         wh[0] = profilePictureWidth;
@@ -1211,15 +1205,14 @@ public class EazyFinderGUI {
                 });
 
                 // https://stackoverflow.com/questions/27379059/determine-if-two-files-store-the-same-content
-                deletePhotoButton.setBounds(500, 250, 150, 25);
+                deletePhotoButton.setBounds(500, 250, 120, 25);
                 deletePhotoButton.setForeground(Color.WHITE);
                 deletePhotoButton.setBackground(Color.RED);
-                deletePhotoButton.setFont(timesNewRoman);
                 deletePhotoButton.addActionListener(ae -> {
                     // checking if the PP is already deleted TODO check this a small problem
                     try {
                         BufferedReader reader1 = new BufferedReader(new FileReader(dirname + "\\Images\\defaultPP.png"));
-                        BufferedReader reader2 = new BufferedReader(new FileReader(dirname + "\\Databases\\ProfilePictures\\" + username + profilePictureExtension));
+                        BufferedReader reader2 = new BufferedReader(new FileReader(dirname + "\\ProfilePictures\\" + username + profilePictureExtension));
                         String str;
                         StringBuilder buf1 = new StringBuilder(), buf2 = new StringBuilder();
                         while ((str = reader1.readLine()) != null) buf1.append(str);
@@ -1289,7 +1282,7 @@ public class EazyFinderGUI {
                 // Calculating no. of enquiries made
                 int noOfEnquiries = 0;
                 try {
-                    Scanner scanner = new Scanner(new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt"));
+                    Scanner scanner = new Scanner(new File(dirname + "\\Enquiries\\" + username + ".txt"));
                     while (scanner.hasNextLine()) {
                         scanner.nextLine();
                         noOfEnquiries++;
@@ -1311,7 +1304,7 @@ public class EazyFinderGUI {
                 // Calculating no. of transactions made
                 int noOfTransactions = 0;
                 try {
-                    Scanner scanner = new Scanner(new File(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt"));
+                    Scanner scanner = new Scanner(new File(dirname + "\\TransactionHistories\\" + username + ".txt"));
                     while (scanner.hasNextLine()) {
                         scanner.nextLine();
                         noOfTransactions++;
@@ -1335,7 +1328,7 @@ public class EazyFinderGUI {
                 logoutButton.setForeground(Color.WHITE);
                 logoutButton.setFont(timesNewRoman);
                 logoutButton.addActionListener(new Back((byte) 1));
-            } else { // Settings. TODO put the account deletion, password change, update username options in here
+            } else { // Settings. put the account deletion, password change, update username options in here
                 backButton = new JButton("Back");
                 JLabel settingsLabel = new JLabel("Settings");
                 JButton deleteTHButton = new JButton("Delete all the Transaction Histories");
@@ -1346,6 +1339,7 @@ public class EazyFinderGUI {
                 JButton sudoModeButton = new JButton();
                 JButton logoutButton = new JButton("Logout");
 
+                frame.add(settingsCB);
                 frame.add(backButton);
                 frame.add(settingsLabel);
                 frame.add(deleteTHButton);
@@ -1362,18 +1356,18 @@ public class EazyFinderGUI {
                 backButton.setFont(timesNewRoman);
                 backButton.addActionListener(new Back((byte) 3));
 
-//                settingsJCB.setBounds(550, 35, 100, 25);
-//                settingsJCB.setSelectedItem("Settings");
-//                settingsJCB.setFont(timesNewRoman);
-//                settingsJCB.addActionListener(new Settings());
+                settingsCB.setBounds(550, 35, 100, 25);
+                settingsCB.setSelectedItem("Settings");
+                settingsCB.setFont(timesNewRoman);
+                settingsCB.addActionListener(new Settings());
 
                 settingsLabel.setBounds(0, 30, frameSize, 25);
-                settingsLabel.setForeground(Color.DARK_GRAY);
+                settingsLabel.setForeground(Color.GRAY);
                 settingsLabel.setFont(headingFont);
                 settingsLabel.setHorizontalAlignment(0);
 
-                File th = new File(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt");
-                File enq = new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt");
+                File th = new File(dirname + "\\TransactionHistories\\" + username + ".txt");
+                File enq = new File(dirname + "\\Enquiries\\" + username + ".txt");
 
                 deleteTHButton.setBounds(200, 65, 300, 30);
                 deleteTHButton.setForeground(Color.BLACK);
@@ -1432,8 +1426,8 @@ public class EazyFinderGUI {
                         if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                             try {
-                                new FileWriter(dirname + "\\Databases\\TransactionHistories\\" + username + ".txt", false).close();
-                                new FileWriter(dirname + "\\Databases\\Enquiries\\" + username + ".txt", false).close();
+                                new FileWriter(dirname + "\\TransactionHistories\\" + username + ".txt", false).close();
+                                new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
                                 showMessageDialogJOP(frame, "All the Account Data Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
                             } catch (Exception ex) {
                                 showMessageDialogJOP(frame, "<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
@@ -1459,11 +1453,17 @@ public class EazyFinderGUI {
                 sudoModeButton.setBackground(Color.DARK_GRAY);
                 sudoModeButton.addActionListener(ae -> {
                     if (sudoModeButton.getText().equals("ON")) {
-                        sudoModeButton.setText("OFF");
-                        sudoModeAccepted = true;
-                        showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for\n1 minute of Interval</html>".replaceAll("\n", "<br>"),
-                                "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
-                    } else if (sudoModeButton.getText().equals("OFF")) {
+                        String typedPassword = JOptionPane.showInputDialog(frame, "Enter Password:");
+                        if(typedPassword.equals(password)) {
+                            passwordTypedAt = setCurrentTime();
+                            sudoModeButton.setText("OFF");
+                            sudoModeAccepted = true;
+                            showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for\n1 minute of Interval</html>".replaceAll("\n", "<br>"),
+                                    "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            showMessageDialogJOP(frame, "Incorrect Password", "Incorrect Password", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
                         sudoModeButton.setText("ON");
                         sudoModeAccepted = false;
                         showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode is Off", JOptionPane.INFORMATION_MESSAGE);
