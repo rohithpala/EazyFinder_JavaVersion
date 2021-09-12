@@ -57,15 +57,15 @@ public class EazyFinderGUI {
     Image icon = Toolkit.getDefaultToolkit().getImage(dirname + "\\Images\\TitleBarIcon.png"); // Title Bar Icon
 
     public static void main(String[] args) {
-        new EazyFinderGUI().Homepage();
+        new EazyFinderGUI().homepage();
     }
 
-    void Homepage() {
+    void homepage() {
         frame.getContentPane().removeAll();
         frame.repaint();
 
         JButton homepageLoginButton = new JButton("LogIn");
-        JButton homepageSignupButton = new JButton("SignUp");
+        JButton homepageSignUpButton = new JButton("SignUp");
         JButton homepageGuestButton = new JButton("Browse as Guest");
 
         frame.setSize(350, 300);
@@ -79,7 +79,7 @@ public class EazyFinderGUI {
         optionPaneLabel.setFont(timesNewRoman);
 
         frame.add(homepageLoginButton);
-        frame.add(homepageSignupButton);
+        frame.add(homepageSignUpButton);
         frame.add(homepageGuestButton);
 
         homepageLoginButton.setBounds(50, 95, 100, 30);
@@ -88,11 +88,11 @@ public class EazyFinderGUI {
         homepageLoginButton.setFont(timesNewRoman);
         homepageLoginButton.addActionListener(new LoginUI());
 
-        homepageSignupButton.setBounds(180, 95, 100, 30);
-        homepageSignupButton.setForeground(Color.BLACK);
-        homepageSignupButton.setBackground(Color.ORANGE);
-        homepageSignupButton.setFont(timesNewRoman);
-        homepageSignupButton.addActionListener(e -> new SignUpUI().signUpUI("homepage"));
+        homepageSignUpButton.setBounds(180, 95, 100, 30);
+        homepageSignUpButton.setForeground(Color.BLACK);
+        homepageSignUpButton.setBackground(Color.ORANGE);
+        homepageSignUpButton.setFont(timesNewRoman);
+        homepageSignUpButton.addActionListener(e -> new SignUpUI().signUpUI("homepage"));
 
         homepageGuestButton.setBounds(50, 142, 230, 30);
         homepageGuestButton.setForeground(Color.WHITE);
@@ -116,8 +116,7 @@ public class EazyFinderGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             generateReferenceID();
-            optionPaneLabel.setText("<html>We are giving you the guest credentials so that you can have the same experience as a registered user\n\nUsername: Guest\nPassword: Guest@123\nReference ID: 1\n\nWe delete all the date provided by you in the guest mode once you logout\nSo feel free to be a registered user\n\nHappy Browsing 😃</html>"
-                    .replaceAll("\n", "<br>"));
+            optionPaneLabel.setText("<html>We are giving you the guest credentials so that you can have the same experience as a registered user<br><br>Username: Guest<br>Password: Guest@123<br>Reference ID: 1<br><br>We delete all the date provided by you in the guest mode once you logout<br>So feel free to be a registered user<br><br>Happy Browsing 😃</html>");
             if (JOptionPane.showOptionDialog(frame, optionPaneLabel, "Guest Mode", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, guestPaneOptions, null) == JOptionPane.YES_OPTION) {
                 username = "Guest";
@@ -169,7 +168,7 @@ public class EazyFinderGUI {
                         // resetting sudo mode related variables
                         sudoModeAccepted = false;
                         passwordTypedAt = null;
-                        Homepage();
+                        homepage();
                     } else if (num == 2) displayMenu();
                 }
             } else if (num == 3) {
@@ -212,6 +211,17 @@ public class EazyFinderGUI {
         }
     }
 
+    /**
+     * This Method is used to show a message dialog that contains a JLabel.
+     * The messages are kept in JLabel so that they can be equipped with
+     * "timesNewRoman" font.
+     * optionPaneLabel has been set to have font "timesNewRoman" in Homepage method
+     */
+    void showMessageDialogJOP(JFrame jFrame, String msg, String title, int magicConstant) {
+        optionPaneLabel.setText(msg);
+        JOptionPane.showMessageDialog(jFrame, optionPaneLabel, title, magicConstant);
+    }
+
     // components used in Login and SignUp
     JLabel userLabel = new JLabel("Username:");
     JLabel passwordLabel = new JLabel("Password:");
@@ -224,7 +234,7 @@ public class EazyFinderGUI {
     class LoginUI implements ActionListener {
         JTextField userField;
         JPasswordField passwordField;
-        JButton loginButton = new JButton("LogIn");
+        JButton loginButton = new JButton("Login");
         JCheckBox showPasswordCB;
 
         @Override
@@ -318,7 +328,7 @@ public class EazyFinderGUI {
                     }
 
                     if (!usernameFound && !passwordFound) {
-                        optionPaneLabel.setText("<html>No User With Given Credentials\nDo You Want to SignUp?</html>".replaceAll("\n", "<br>"));
+                        optionPaneLabel.setText("<html>No User With Given Credentials<br>Do You Want to SignUp?</html>");
                         if (JOptionPane.showConfirmDialog(frame, optionPaneLabel,
                                 "Account Not Found", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                             SignUpUI signUpObj = new SignUpUI();
@@ -348,7 +358,7 @@ public class EazyFinderGUI {
                         if (optionPaneResult == JOptionPane.YES_OPTION) {
                             sudoModeAccepted = true;
                             passwordTypedAt = setCurrentTime();
-                            showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for\n1 minute of Interval</html>".replaceAll("\n", "<br>"),
+                            showMessageDialogJOP(frame, "<html>Sudo Mode is On<br>Password will be prompted only for<br>1 minute of Interval</html>",
                                     "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             showMessageDialogJOP(frame, "Sudo Mode is Off", "Sudo Mode Off", JOptionPane.INFORMATION_MESSAGE);
@@ -364,18 +374,7 @@ public class EazyFinderGUI {
         }
     }
 
-    /**
-     * This Method is used to show a message dialog that contains a JLabel.
-     * The messages are kept in JLabel so that they can be equipped with
-     * "timesNewRoman" font.
-     * optionPaneLabel has been set to have font "timesNewRoman" in Homepage method
-     */
-    void showMessageDialogJOP(JFrame jFrame, String msg, String title, int magicConstant) {
-        optionPaneLabel.setText(msg);
-        JOptionPane.showMessageDialog(jFrame, optionPaneLabel, title, magicConstant);
-    }
-
-    boolean isPasswordAccepted(String password, JFrame frame1) {
+    boolean isPasswordAccepted(String password, JFrame jFrame) {
         boolean inRange = false, hasWhiteSpace = false, hasLowerCaseLetter = false, hasUpperCaseLetter = false, hasDigit = false,
                 hasSpecialCharacter = false;
         byte i, len = (byte) password.length();
@@ -385,7 +384,7 @@ public class EazyFinderGUI {
         msg.setText("");
 
         if (!inRange) {
-            showMessageDialogJOP(frame1, "Password isn't in the Range of 8-16\nPlease try with another Password",
+            showMessageDialogJOP(jFrame, "<html>Password isn't in the Range of 8-16<br>Please try with another Password</html>",
                     "Password Not Accepted", JOptionPane.ERROR_MESSAGE);
         } else {
             for (i = 0; i < len; i++) {
@@ -407,7 +406,8 @@ public class EazyFinderGUI {
                 if (!hasSpecialCharacter) message.append("Password Must Contain at least one Special Character").append("\n");
                 if (hasWhiteSpace) message.append("Password Shouldn't Contain a White space Character");
 
-                JOptionPane.showMessageDialog(frame1, message, "Password Not Accepted", JOptionPane.ERROR_MESSAGE);
+                optionPaneLabel.setText(String.valueOf(message));
+                JOptionPane.showMessageDialog(jFrame, optionPaneLabel, "Password Not Accepted", JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -461,8 +461,7 @@ public class EazyFinderGUI {
                             null, optionPaneButtonNames, null);
                 } else {
                     showMessageDialogJOP(frame,
-                            "<html>You have selected an unsupported file\nPlease choose another file\nSupported Files: .png, .jpg, .jpeg</html>"
-                                    .replaceAll("\n", "<br>"),
+                            "<html>You have selected an unsupported file<br>Please choose another file<br>Supported Files: .png, .jpg, .jpeg</html>",
                             "File Not Supported", JOptionPane.ERROR_MESSAGE);
                     return JOptionPane.NO_OPTION;
                 }
@@ -529,7 +528,7 @@ public class EazyFinderGUI {
         JButton nextButton = new JButton("Next");
         JCheckBox showPasswordCB1, showPasswordCB2;
 
-        void signUpUI(String str) {
+        void signUpUI(String calledBy) {
             frame.getContentPane().removeAll();
             frame.repaint();
             frame.setTitle("SignUp");
@@ -540,19 +539,19 @@ public class EazyFinderGUI {
             showPasswordCB2 = new JCheckBox("Show Password");
             msg = new JLabel();
 
-            if (str.equals("homepage")) {
+            if (calledBy.equals("homepage")) {
                 userField = new JTextField();
                 passwordField = new JPasswordField();
             }
 
             frame.add(userLabel);
             frame.add(passwordLabel);
+            frame.add(rePasswordLabel);
             frame.add(userField);
             frame.add(passwordField);
             frame.add(showPasswordCB1);
-            frame.add(showPasswordCB2);
-            frame.add(rePasswordLabel);
             frame.add(rePasswordField);
+            frame.add(showPasswordCB2);
             frame.add(nextButton);
             frame.add(msg);
             frame.add(backButton);
@@ -597,7 +596,7 @@ public class EazyFinderGUI {
 
             msg.setBounds(0, 230, 350, 25);
             msg.setFont(timesNewRoman);
-            msg.setHorizontalAlignment(JLabel.CENTER);
+            msg.setHorizontalAlignment(0);
         }
 
         class CredentialCheck implements ActionListener {
@@ -612,7 +611,7 @@ public class EazyFinderGUI {
                     msg.setText("Please Fill all the fields");
                 } else if (!password.equals(rePassword)) {
                     msg.setText("Passwords doesn't match");
-                } else { // CheckingPassword if username is already present
+                } else { // Checking Password if username is already present
                     String str;
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(db));
@@ -775,7 +774,7 @@ public class EazyFinderGUI {
                         File en = new File(dirname + "\\Databases\\Enquiries\\" + username + ".txt");
                         if (th.createNewFile() && en.createNewFile()) {
                             showMessageDialogJOP(frame, "Account Created Successfully", "SignUp Successful", JOptionPane.INFORMATION_MESSAGE);
-                            showMessageDialogJOP(frame, "<html>Your Reference ID is " + refID + "\nStore or Remember this as it will be helpful when you forget password</html>".replaceAll("\n", "<br>"),
+                            showMessageDialogJOP(frame, "<html>Your Reference ID is " + refID + "<br>Remember this, it will be helpful when you forget password</html>",
                                     "Reference ID", JOptionPane.INFORMATION_MESSAGE);
                             displayMenu();
                         }
@@ -1101,24 +1100,26 @@ public class EazyFinderGUI {
     }
 
     class PasswordRefIDJOP {
-        Font tempFont = new Font("Times New Roman", Font.BOLD, 15);
-        JLabel msg;
-        JPasswordField pf;
-
         boolean passwordRefIDJOP(JFrame jFrame, String calledBy, String jopTitle) {
-            msg = new JLabel(jopTitle + ":");
-            msg.setFont(tempFont);
-            pf = new JPasswordField();
+            JLabel msg = new JLabel(jopTitle + ":");
+            msg.setFont(timesNewRoman);
+
+            JPasswordField pf = new JPasswordField();
+            pf.setFont(timesNewRoman);
+
+            JCheckBox cb = new JCheckBox("Show " + jopTitle.substring(6));
+            cb.setFont(timesNewRoman);
+            cb.addActionListener(new ShowPasswordsCheckBox(pf));
 
             if (calledBy.equals("SudoMode")) {
                 if (jopTitle.equals("Enter Password")) {
-                    optionPaneResult = JOptionPane.showOptionDialog(jFrame, new Object[]{msg, pf}, jopTitle, JOptionPane.YES_NO_OPTION,
+                    optionPaneResult = JOptionPane.showOptionDialog(jFrame, new Object[]{msg, pf, cb}, jopTitle, JOptionPane.YES_NO_OPTION,
                             JOptionPane.PLAIN_MESSAGE, null, new String[]{"Continue with Ref ID", "Ok"}, null);
                     if (optionPaneResult == JOptionPane.YES_OPTION) {
                         return passwordRefIDJOP(jFrame, calledBy, "Enter Ref ID");
                     }
                 } else if (jopTitle.equals("Enter Ref ID")) {
-                    optionPaneResult = JOptionPane.showOptionDialog(jFrame, new Object[]{msg, pf}, jopTitle, JOptionPane.YES_NO_OPTION,
+                    optionPaneResult = JOptionPane.showOptionDialog(jFrame, new Object[]{msg, pf, cb}, jopTitle, JOptionPane.YES_NO_OPTION,
                             JOptionPane.PLAIN_MESSAGE, null, new String[]{"Continue with Password", "Ok"}, null);
                     if (optionPaneResult == JOptionPane.YES_OPTION) {
                         return passwordRefIDJOP(jFrame, calledBy, "Enter Password");
@@ -1130,7 +1131,7 @@ public class EazyFinderGUI {
                     else return String.valueOf(pf.getPassword()).equals(String.valueOf(refID));
                 }
             } else if (calledBy.equals("ShowPasswordInAccount") || calledBy.equals("Verification")) {
-                JOptionPane.showMessageDialog(jFrame, new Object[]{msg, pf}, jopTitle, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(jFrame, new Object[]{msg, pf, cb}, jopTitle, JOptionPane.PLAIN_MESSAGE);
                 return String.valueOf(pf.getPassword()).equals(String.valueOf(refID));
             }
 
@@ -1416,14 +1417,14 @@ public class EazyFinderGUI {
                     if (th.length() == 0) {
                         showMessageDialogJOP(frame, "No Transaction History", "No Transaction History", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        optionPaneLabel.setText("<html>Are You Sure?\nAll your Transaction History will be lost</html>".replaceAll("\n", "<br>"));
+                        optionPaneLabel.setText("<html>Are You Sure?<br>All your Transaction History will be lost</html>");
                         if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                             try {
                                 new FileWriter(th, false).close();
                                 showMessageDialogJOP(frame, "Transaction History Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
                             } catch (Exception ex) {
-                                showMessageDialogJOP(frame, "<html>Some Error Occurred\nTransaction History not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                showMessageDialogJOP(frame, "<html>Some Error Occurred<br>Transaction History not Deleted<br>Sorry for the inconvenience caused</html>",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
@@ -1438,14 +1439,14 @@ public class EazyFinderGUI {
                     if (enq.length() == 0) {
                         showMessageDialogJOP(frame, "No Enquiries", "No Enquiries", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        optionPaneLabel.setText("<html>Are You Sure?\nAll your Enquiries will be lost</html>".replaceAll("\n", "<br>"));
+                        optionPaneLabel.setText("<html>Are You Sure?<br>All your Enquiries will be lost</html>");
                         if (JOptionPane.showConfirmDialog(frame, optionPaneLabel, "Confirmation",
                                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                             try {
                                 new FileWriter(enq, false).close();
                                 showMessageDialogJOP(frame, "All Enquiries Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
                             } catch (Exception ex) {
-                                showMessageDialogJOP(frame, "<html>Some Error Occurred\nEnquiries not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                showMessageDialogJOP(frame, "<html>Some Error Occurred<br>Enquiries not Deleted<br>Sorry for the inconvenience caused</html>",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
@@ -1469,7 +1470,7 @@ public class EazyFinderGUI {
                                 new FileWriter(dirname + "\\Enquiries\\" + username + ".txt", false).close();
                                 showMessageDialogJOP(frame, "All the Account Data Deleted Successfully", "Success", JOptionPane.PLAIN_MESSAGE);
                             } catch (Exception ex) {
-                                showMessageDialogJOP(frame, "<html>Some Error Occurred\nAccount Data not Deleted\nSorry for the inconvenience caused</html>".replaceAll("\n", "<br>"),
+                                showMessageDialogJOP(frame, "<html>Some Error Occurred<br>Account Data not Deleted<br>Sorry for the inconvenience caused</html>",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
@@ -1497,7 +1498,7 @@ public class EazyFinderGUI {
                             passwordTypedAt = setCurrentTime();
                             sudoModeButton.setText("OFF");
                             sudoModeAccepted = true;
-                            showMessageDialogJOP(frame, "<html>Sudo Mode is On\nPassword will be prompted only for\n1 minute of Interval</html>".replaceAll("\n", "<br>"),
+                            showMessageDialogJOP(frame, "<html>Sudo Mode is On<br>Password will be prompted only for<br>1 minute of Interval</html>",
                                     "Sudo Mode is On", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             showMessageDialogJOP(frame, "Incorrect Password", "Incorrect Password", JOptionPane.ERROR_MESSAGE);
@@ -1810,15 +1811,15 @@ public class EazyFinderGUI {
                     cost = bookingObj.cost;
                     short i, len = bookingObj.routeLen;
 
-                    StringBuilder routeCost = new StringBuilder("<html>\nRoute: ");
+                    StringBuilder routeCost = new StringBuilder("<html>Route: ");
                     for (i = len; i >= 0; i--) {
                         routeCost.append(route[i].toUpperCase());
                         if (i != 0) routeCost.append(" => ");
                     }
-                    routeCost.append("\nCost: ").append(cost).append(" /-").append("</html>");
+                    routeCost.append("<br>Cost: ").append(cost).append(" /-").append("</html>");
 
                     String[] optionPaneButtons = {"Go Back", "Continue to Booking", "Break the Fare"};
-                    optionPaneLabel.setText(String.valueOf(routeCost).replaceAll("\n", "<br>"));
+                    optionPaneLabel.setText(String.valueOf(routeCost));
                     optionPaneLabel.setFont(timesNewRoman);
                     optionPaneResult = JOptionPane.showOptionDialog(frame, optionPaneLabel,
                             "Route and Details", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
@@ -1839,8 +1840,8 @@ public class EazyFinderGUI {
                         modeOfTransportationButton.addActionListener(new AfterMOT());
                     } else if (optionPaneResult == JOptionPane.CANCEL_OPTION) {
                         showMessageDialogJOP(frame,
-                                ("<html>No. of Adults: " + noOfAdults + "\n" + "Fare: " + cost * noOfAdults + "\n\n" +
-                                        "No. of Children: " + noOfChildren + "\n" + "Fare: " + (cost / 2) * noOfChildren + "\n\n</html>").replaceAll("\n", "<br>"),
+                                ("<html>No. of Adults: " + noOfAdults + "<br>" + "Fare: " + cost * noOfAdults + "<br><br>" +
+                                        "No. of Children: " + noOfChildren + "<br>" + "Fare: " + (cost / 2) * noOfChildren + "<br><br></html>"),
                                 "Fare break", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
@@ -1982,8 +1983,7 @@ public class EazyFinderGUI {
 
                     backButton = new JButton("Back");
                     msg = new JLabel(("<html>Successfully Booked a Ticket from " +
-                            source.toUpperCase() + " to " + destination.toUpperCase() + "\n" + "Total Cost: " + cost +
-                            "\n" + "</html>").replaceAll("\n", "<br>"));
+                            source.toUpperCase() + " to " + destination.toUpperCase() + "<br>" + "Total Cost: " + cost + "<br></html>"));
                     JButton logoutButton = new JButton("Logout");
 
                     frame.add(backButton);
@@ -2195,14 +2195,14 @@ public class EazyFinderGUI {
                     cost = enquiryObj.cost;
                     float totalCost = (cost) * enquireAdults + (cost / 2) * enquireChildren;
 
-                    StringBuilder routeCost = new StringBuilder("<html>\nRoute: ");
+                    StringBuilder routeCost = new StringBuilder("<html>Route: ");
                     for (i = routeLen; i >= 0; i--) {
                         routeCost.append(route[i].toUpperCase());
                         if (i != 0) routeCost.append(" => ");
                     }
-                    routeCost.append("\n\nTotal Fare: ").append(totalCost).append(" /-").append("</html>");
+                    routeCost.append("<br><br>Total Fare: ").append(totalCost).append(" /-").append("</html>");
 
-                    optionPaneResult = JOptionPane.showOptionDialog(frame, String.valueOf(routeCost).replaceAll("\n", "<br>"),
+                    optionPaneResult = JOptionPane.showOptionDialog(frame, String.valueOf(routeCost),
                             enquiryObj.source.toUpperCase() + " to " + enquiryObj.destination.toUpperCase(),
                             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
                             null, optionPaneButtonNames, null);
@@ -2307,7 +2307,7 @@ public class EazyFinderGUI {
                 } else {
                     boolean found = false;
                     if (newUsername.equals(username)) {
-                        msg.setText("<html>New Username Cannot be the Same as\nold one</html>".replaceAll("\n", "<br>"));
+                        msg.setText("<html>New Username Cannot be the Same as<br>old one</html>");
                     } else {
                         try {
                             BufferedReader reader = new BufferedReader(new FileReader(db));
@@ -2447,14 +2447,14 @@ public class EazyFinderGUI {
 
 
     void AccountDeletion(JFrame frame1) {
-        optionPaneLabel.setText("<html>Are You Sure?\nAll Your Transactions, Enquiries will be lost\nThis is irreversible</html>".replaceAll("\n", "<br>"));
+        optionPaneLabel.setText("<html>Are You Sure?<br>All Your Transactions, Enquiries will be lost<br>This is irreversible</html>");
         optionPaneResult = JOptionPane.showConfirmDialog(frame1, optionPaneLabel, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (optionPaneResult == JOptionPane.YES_OPTION) {
             frame1.dispose();
             boolean deleted = new AccountDeletionMainCode().accountDeletion(username, password, refID);
             if (deleted) {
-                Homepage();
-                showMessageDialogJOP(frame, "<html>Account Deleted Successfully\nWe are Sorry to see you go</html>".replaceAll("\n", "<br>"),
+                homepage();
+                showMessageDialogJOP(frame, "<html>Account Deleted Successfully<br>We are Sorry to see you go</html>",
                         "Account Deleted", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 showMessageDialogJOP(frame1, "Some Error Occurred, Account not Deleted", "Account Not Deleted", JOptionPane.ERROR_MESSAGE);
