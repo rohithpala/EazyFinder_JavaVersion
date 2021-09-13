@@ -41,7 +41,7 @@ public class EazyFinderGUI {
     final File db = new File(dirname + "\\Databases\\LogInSignUpDatabase.txt");
     final File ud = new File(dirname + "\\Databases\\UserDetails.txt");
 
-    JFrame frame = new JFrame(); //Main frame
+    public JFrame frame = new JFrame(); //Main frame
     final short frameSize = 700; // frame size
 
     // common components in every frame change
@@ -1585,11 +1585,14 @@ public class EazyFinderGUI {
         final int messageX = 510, bookingLabelX = 200, bookingFieldX = 330, diffInYs = 50;
         int componentY = 50;
 
-        JLabel nameLabel, phoneLabel, emailLabel, adultLabel, childrenLabel, cityLabel, sourceLabel, destinationLabel;
         JLabel phoneMessage, emailMessage;
         JTextField nameField, phoneField, emailField;
         JComboBox<String> cityField, sourceField, destinationField;
         JSpinner adultField, childrenField;
+
+        JLabel nameLabel = new JLabel("Name:"), phoneLabel = new JLabel("Mobile No.:"), emailLabel = new JLabel("Email ID:");
+        JLabel cityLabel = new JLabel("City"), sourceLabel = new JLabel("Source:"), destinationLabel = new JLabel("Destination:");
+        JLabel adultLabel = new JLabel("Adults:"), childrenLabel = new JLabel("Children:");
 
         // MOT related
         String[] motOptions = {"Choose Mode Of Transportation Option", "One Transport for Whole Journey",
@@ -1603,19 +1606,11 @@ public class EazyFinderGUI {
             frame.setTitle("Booking");
 
             backButton = new JButton("Back");
-            nameLabel = new JLabel("Name:");
             nameField = new JTextField();
-            phoneLabel = new JLabel("Mobile No.:");
             phoneField = new JTextField();
             phoneMessage = new JLabel();
-            emailLabel = new JLabel("Email ID:");
             emailField = new JTextField();
             emailMessage = new JLabel();
-            cityLabel = new JLabel("City");
-            sourceLabel = new JLabel("Source:");
-            destinationLabel = new JLabel("Destination:");
-            adultLabel = new JLabel("Adults:");
-            childrenLabel = new JLabel("Children:");
             JButton nextButton = new JButton("Next");
             JButton clearFormButton = new JButton("Clear Form");
             msg = new JLabel();
@@ -1773,6 +1768,9 @@ public class EazyFinderGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.add(msg);
+
+                frame.remove(modeOfTransportationCB);
+                frame.remove(modeOfTransportationButton);
 
                 msg.setFont(timesNewRoman);
                 msg.setForeground(Color.RED);
