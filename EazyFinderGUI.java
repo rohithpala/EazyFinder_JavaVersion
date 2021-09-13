@@ -15,8 +15,6 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /*
-1. add refID related things in MainCodes and wherever needed
-1.1. add forgot password option for every password field and prompt for refID
 2. caps lock warning while typing passwords
 3. look at problems with guest mode like account ...
 4. guest mode option (show option panes like "Guests cannot update their usernames or passwords or cannot switch accounts" after clicking the
@@ -47,6 +45,9 @@ public class EazyFinderGUI {
     // common components in every frame change
     JButton backButton;
     JLabel msg; // Used to print corresponding messages
+
+    JLabel capsLockLabel; // used to print warning msg when caps lock in on
+    CapsLockCheck capsLockObj = new CapsLockCheck();
 
     final Font timesNewRoman = new Font("Times New Roman", Font.BOLD, 15); // font equipped by every component
     final Font forgotPasswordFont = new Font("Times New Roman", Font.BOLD, 10); // font equipped by forgot password label
@@ -211,6 +212,14 @@ public class EazyFinderGUI {
         }
     }
 
+    class CapsLockCheck extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK)) capsLockLabel.setText("Caps Lock is On");
+            else capsLockLabel.setText("");
+        }
+    }
+
     /**
      * This Method is used to show a message dialog that contains a JLabel.
      * The messages are kept in JLabel so that they can be equipped with
@@ -247,7 +256,7 @@ public class EazyFinderGUI {
             userField = new JTextField();
             passwordField = new JPasswordField();
             showPasswordCB = new JCheckBox("Show Password");
-            msg = new JLabel();
+            capsLockLabel = new JLabel();
 
             frame.add(backButton);
             frame.add(userLabel);
@@ -256,7 +265,7 @@ public class EazyFinderGUI {
             frame.add(passwordField);
             frame.add(showPasswordCB);
             frame.add(loginButton);
-            frame.add(msg);
+            frame.add(capsLockLabel);
 
             backButton.setBounds(0, 0, 80, 30);
             backButton.setBackground(Color.BLACK);
@@ -275,6 +284,7 @@ public class EazyFinderGUI {
 
             passwordField.setBounds(130, 80, 120, 25);
             passwordField.setFont(timesNewRoman);
+            passwordField.addKeyListener(capsLockObj);
 
             userField.setText("r");
             passwordField.setText("Rohith_02");
@@ -289,9 +299,10 @@ public class EazyFinderGUI {
             loginButton.setFont(timesNewRoman);
             loginButton.addActionListener(new LoginMainCode());
 
-            msg.setBounds(0, 190, 350, 25);
-            msg.setFont(timesNewRoman);
-            msg.setHorizontalAlignment(0);
+            capsLockLabel.setBounds(0, 220, 350, 25);
+            capsLockLabel.setForeground(Color.RED);
+            capsLockLabel.setFont(timesNewRoman);
+            capsLockLabel.setHorizontalAlignment(0);
         }
 
         class LoginMainCode implements ActionListener {
@@ -300,8 +311,15 @@ public class EazyFinderGUI {
                 username = userField.getText().trim();
                 password = String.valueOf(passwordField.getPassword()).trim();
 
-                msg.setText("");
+                msg = new JLabel();
+
+                frame.add(msg);
+
+                msg.setBounds(0, 190, 350, 25);
                 msg.setForeground(Color.BLACK);
+                msg.setFont(timesNewRoman);
+                msg.setHorizontalAlignment(0);
+
 
                 if (username.equals("") || password.equals("")) {
                     msg.setText("Please Fill all the Fields");
@@ -573,6 +591,7 @@ public class EazyFinderGUI {
 
             passwordField.setBounds(130, 80, 120, 25);
             passwordField.setFont(timesNewRoman);
+            passwordField.addKeyListener(capsLockObj);
 
             showPasswordCB1.setBounds(90, 110, 150, 25);
             showPasswordCB1.setFont(timesNewRoman);
@@ -583,6 +602,7 @@ public class EazyFinderGUI {
 
             rePasswordField.setBounds(130, 140, 120, 25);
             rePasswordField.setFont(timesNewRoman);
+            rePasswordField.addKeyListener(capsLockObj);
 
             showPasswordCB2.setBounds(90, 170, 150, 25);
             showPasswordCB2.setFont(timesNewRoman);
@@ -597,6 +617,11 @@ public class EazyFinderGUI {
             msg.setBounds(0, 230, 350, 25);
             msg.setFont(timesNewRoman);
             msg.setHorizontalAlignment(0);
+
+            capsLockLabel.setBounds(0, 260, 350, 25);
+            capsLockLabel.setForeground(Color.RED);
+            capsLockLabel.setFont(timesNewRoman);
+            capsLockLabel.setHorizontalAlignment(0);
         }
 
         class CredentialCheck implements ActionListener {
@@ -866,21 +891,29 @@ public class EazyFinderGUI {
             verificationFrame.setSize(300, 300);
             verificationFrame.setLocationRelativeTo(frame);
 
+            capsLockLabel = new JLabel();
             verificationPasswordField = new JPasswordField();
             JCheckBox verificationCB = new JCheckBox("Show Password");
             JButton verifyButton = new JButton("Verify");
 
+            verificationFrame.add(capsLockLabel);
             verificationFrame.add(verificationPasswordLabel);
             verificationFrame.add(verificationPasswordField);
             verificationFrame.add(forgotPassword);
             verificationFrame.add(verificationCB);
             verificationFrame.add(verifyButton);
 
+            capsLockLabel.setBounds(90, 75, 120, 25);
+            capsLockLabel.setForeground(Color.RED);
+            capsLockLabel.setFont(timesNewRoman);
+            capsLockLabel.setHorizontalAlignment(0);
+
             verificationPasswordLabel.setBounds(40, 100, 120, 25);
             verificationPasswordLabel.setFont(timesNewRoman);
 
             verificationPasswordField.setBounds(160, 100, 100, 25);
             verificationPasswordField.setFont(timesNewRoman);
+            verificationPasswordField.addKeyListener(capsLockObj);
 
             forgotPassword.setBounds(110, 130, 80, 10);
             forgotPassword.setFont(forgotPasswordFont);
